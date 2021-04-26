@@ -239,7 +239,7 @@ nestedData = { // Purcell Fairy Queen chaconne // demo
                 let cnode = nestedData["content"][n][1];
                 scroll.push(
                   (i == 0 ? cnode["section"] + " " : "")
-                  + (cnode["content"][i][1]["division"] == "" ? "" : "> ")
+                  + (cnode["content"][i][1]["division"] == "" ? "" : "  > ")
                   + cnode["content"][i][1]["division"]
                 );
               }
