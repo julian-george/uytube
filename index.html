@@ -482,7 +482,7 @@ nestedData = { // Purcell Fairy Queen chaconne // demo
       <button onclick="uploadJson()" accessKey="u">Upload data</button>
       <button onclick="addEntry('large')" accessKey="l">New large section</button>
       <button onclick="addEntry('small')" accessKey="s">New small section</button>
-      <button onclick="compileDataAndRender();playSVG();player.playVideo(0);">Preview SVG</button>
+      <button onclick="compileDataAndRender()">Preview SVG</button>
       <button onclick="compileDataAndRender(download=true)">Download data</button>
     </div>
 
@@ -623,9 +623,9 @@ nestedData = { // Purcell Fairy Queen chaconne // demo
 
         cellCtrl.innerHTML = ''
           + '<button onclick="deleteRow(this)">Delete</button>'
-          + '<button onclick="pushStamp(this,'+ -1/fs +')">←</button>'
+          + '<button onclick="pushStamp(this,'+ -1/fs +')">-</button>'
           + '<button onclick="cueVideo(this)">Cue video</button>'
-          + '<button onclick="pushStamp(this,'+ 1/fs +')">→</button>'
+          + '<button onclick="pushStamp(this,'+ 1/fs +')">+</button>'
           + '<button onclick="redescribe(this)">Redescribe</button>';
         row.appendChild(cellCtrl);
 
@@ -645,7 +645,7 @@ nestedData = { // Purcell Fairy Queen chaconne // demo
           return false;
         }
 
-        var ta = [];
+        let ta = [];
         for (i = 1; i < items.length; i++) {
           stamp = Number(items[i].cells[0].innerText
             || items[i].cells[0].textContent);
@@ -659,7 +659,7 @@ nestedData = { // Purcell Fairy Queen chaconne // demo
         ta = ta.sort( function(a, b){ return a[0]-b[0] } );
 
         // Parse data
-        var newData = [];
+        let newData = [];
         for (i = 0; i < ta.length; i++) {
 
           ds = ta[i][1].split(/ *> */);
@@ -698,7 +698,7 @@ nestedData = { // Purcell Fairy Queen chaconne // demo
         let videoId = player.getVideoData()['video_id'];
         let title = player.getVideoData()['title'];
 
-        json_pretty = 'nestedData = {\n  "videoId": "'
+        let json_pretty = '{\n  "videoId": "'
           + videoId + '",\n  "Youtube title": "'
           + title + '",\n  "content":'
           + JSON.stringify(newData)
@@ -709,16 +709,22 @@ nestedData = { // Purcell Fairy Queen chaconne // demo
           + '\n}'
         console.log(json_pretty);
         if (download) {
-          downloadObjectAsJson(json_pretty.slice(13), videoId);
+          downloadObjectAsJson(json_pretty, videoId);
         }
 
 
-        loadTable();
         renderSVG({
           "videoId":videoId,
           "Youtube title":title,
           "content":newData
         });
+
+        replaceData({
+          "videoId":videoId,
+          "Youtube title":title,
+          "content":newData
+        });
+        loadTable();
 
       }
 
