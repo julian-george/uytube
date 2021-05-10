@@ -1,5 +1,5 @@
 // this file contains everything that I (Julian) created on the frontend
-let backendUrl = window.location.protocol+"//"+window.location.hostname+":3000"
+let backendUrl = window.location.protocol+"//"+window.location.hostname
 let videoId;
 let initialData;
 
