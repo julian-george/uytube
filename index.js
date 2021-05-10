@@ -1,19 +1,16 @@
 const express = require('express');
 const app = express();
-const Music = require('./uytube.js')
+const Music = require('./Music.js')
 require('dotenv').config()
 // defines the port that the static site listens on, makes it so heroku can define it
 const PORT = process.env.PORT;
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose');
-
-mongoose.connect('mongodb://localhost:27017/uytube', {useNewUrlParser: true, useUnifiedTopology: true});
-
+mongoose.connect('mongodb://ec2-3-15-150-147.us-east-2.compute.amazonaws.com:27017/uytube', {useNewUrlParser: true, useUnifiedTopology: true}).then(()=>{console.log("MongoDB successfully connected")}).catch((error)=>{console.log("Connection Error: "+error)});
 
 app.use(cors())
 app.use(bodyParser.json())
-
 
 // creates new, unique ID for each music file
 const ID = async () =>{
@@ -23,9 +20,11 @@ const ID = async () =>{
         str += alphanum.charAt(Math.floor(Math.random()*alphanum.length));
     }
     // fix promise rejection
-    return await Music.findOne({'id':str}).then((file)=>{
+    return await Music.findOne({'id':str}).then((err,file)=>{
             if (!file) return str;
             else return ID();
+        }).catch((error)=>{
+            throw error
         })
 }
 
@@ -44,7 +43,7 @@ app.get('/get',(req,res)=>{
     Music.findOne({'id':id}).then((file)=>{
         if (!file) res.end(JSON.stringify(new Error("ID not found")))
         else res.end(JSON.stringify(new Success({data:file})))
-    })
+    }).catch((error)=>{console.log("Error: "+error)})
 })
 
 app.post('/add', (req,res) =>{
@@ -55,19 +54,13 @@ app.post('/add', (req,res) =>{
                 'id':id,
                 'data':musObj,
             });
-            newMusic.save((err)=>{
-                if (err) throw err;
+            newMusic.save(()=>{
                 res.end(JSON.stringify(new Success({id:id})))
-            });
-        });
+            })
+        }).catch((error)=>{console.log("Error: "+error)});  
     })
 })
 
-
-
-module.exports = app 
-
 app.use(express.static('www'));
 
-app.listen(PORT, () => console.log(`Frontend server listening on port ${PORT}`));
-//backend_app.listen(3001, () => console.log(`Backend server listening on port 3001`));
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
