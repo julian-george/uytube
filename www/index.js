@@ -1,4 +1,4 @@
-let backendUrl = window.location.protocol+"//"+window.location.hostname+":3000"
+let backendUrl = window.location.protocol+"//"+window.location.hostname
 let videoId;
 
 function onPlayerReady() {
