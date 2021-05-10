@@ -70,6 +70,6 @@ app.post('/add', (req,res) =>{
     })
 })
 
-app.use(express.static('../frontend'));
+app.use(express.static('./frontend'));
 
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

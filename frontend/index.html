@@ -710,15 +710,21 @@
         let videoId = player.getVideoData()['video_id'];
         let title = player.getVideoData()['title'];
 
-        let json_pretty = '{\n  "videoId": "'
-          + videoId + '",\n  "Youtube title": "'
-          + title + '",\n  "content":'
-          + JSON.stringify(newData)
-          .replace(/(\[[0-9.]+,{"division")/g, '\n        $1')
-          .replace(/(\[[0-9.]+,{"section")/g, '\n    $1')
-          .replace(/(]}])/g, '\n      $1')
-          .replace(/(}])(])/g, '$1\n  $2')
-          + '\n}'
+        // let json_pretty = '{\n  "videoId": "'
+        //   + videoId + '",\n  "Youtube title": "'
+        //   + title + '",\n  "content":'
+        //   + JSON.stringify(newData)
+        //   .replace(/(\[[0-9.]+,{"division")/g, '\n        $1')
+        //   .replace(/(\[[0-9.]+,{"section")/g, '\n    $1')
+        //   .replace(/(]}])/g, '\n      $1')
+        //   .replace(/(}])(])/g, '$1\n  $2')
+        //   + '\n}'
+        
+        let json_pretty = JSON.stringify({
+          "videoId":videoId,
+          "Youtube title":title,
+          "content":newData,
+        })
         if (download) {
           downloadObjectAsJson(json_pretty, videoId);
         }

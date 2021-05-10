@@ -1,13 +1,14 @@
-// this file contains everything that I (Julian) created
-let backendUrl = window.location.protocol+"//"+window.location.hostname
+// this file contains everything that I (Julian) created on the frontend
+let backendUrl = window.location.protocol+"//"+window.location.hostname+":3000"
 let videoId;
+let initialData;
 
 function onPlayerReady() {
     // when the page & player loads, fetch the id from the URL
     const urlId = new URLSearchParams(window.location.search).get("id");
     if (urlId!=null) {
         $('#idInput').attr('value',urlId);
-        fetchData(urlId)
+        fetchData(urlId);
     }
 }
 
@@ -20,9 +21,9 @@ function openId(id = document.getElementById('idInput').value) {
 //fetches data from the backend based on desired ID
 function fetchData(id) {
     $.get(backendUrl+"/get", {id: id}, function(result){
-        result=JSON.parse(result)
+        result=JSON.parse(result);
         if (result.status) {
-            loadData(result.message.data.data)
+            loadData(result.message.data.data);
         }
         else if (!result.status) alert("Error: "+result.message)
     })
@@ -30,6 +31,7 @@ function fetchData(id) {
 
 //fully loads the data into the UI
 function loadData(data) {
+    initialData=data;
     replaceData(data);
     loadTable();
     renderSVG(data);
@@ -38,11 +40,13 @@ function loadData(data) {
 
 //uploads the data
 function uploadData() {
-    let data = compileDataAndRender()
-    if (data) {
-        data=JSON.parse(data)
-        $.post(backendUrl+'/add',JSON.stringify(data), function(result){
-            result=JSON.parse(result)
+    let data = compileDataAndRender();
+    if (initialData&&data==JSON.stringify(initialData)) {
+        alert("Error: No Changes Made")
+    }
+    else if (data) {
+        $.post(backendUrl+'/add',data, function(result){
+            result=JSON.parse(result);
             if (!result.status) alert("Error: " + result.message)
             else if (result.status) openId(result.message.id)
         })
