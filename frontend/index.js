@@ -1,3 +1,4 @@
+// this file contains everything that I (Julian) created
 let backendUrl = window.location.protocol+"//"+window.location.hostname
 let videoId;
 
