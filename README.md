@@ -12,7 +12,7 @@ View the app [here](https://uytube.herokuapp.com)
     * index.js - the additional scripting I (Julian George) added to connect to backend
 
 ## Local Deployment
-To fully deploy Uytube locally, the followin steps is how you do it. If you need to just 
+To fully deploy Uytube locally, the following steps is how you do it. If you need to just edit the front end, just skip steps 3-5.
 1. `git clone` this repo locally to download it
 2. Run `npm i` on the command line within this folder to install all needed packages
 3. Install mongodb and initialize a database. Good instructions [here](https://docs.mongodb.com/manual/administration/install-community/)
@@ -23,4 +23,4 @@ To fully deploy Uytube locally, the followin steps is how you do it. If you need
 5. In frontend/index.js, change the backendUrl variable to include the port (the same as in the .env, which is 3000 by default)
 6. Run `npm start` or `npm run-script start` on the command line to initialize the app.
 7. Visit localhost:3000 in your browser to view it!
-8. If you have permissions, `git push` at the end to push changes to the main app.
+8. If you have permissions, `git push` when you're finished editing to push changes to the main app.
