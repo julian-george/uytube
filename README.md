@@ -1,7 +1,7 @@
 ## Description
 This is an app that allows users to create annotations to YouTube videos, and save them for others to view. This is intended to be used in a musical context, but it can possibly be used in many ways. The frontend of this was completed before me, in this [repo](https://github.com/ospreyelm/uytube), so I hooked it up to a nodejs backend and a MongoDB database to allow storing and sharing annotations remotely.
 
-View the app [here](uytube.herokuapp.com)
+View the app [here](https://uytube.herokuapp.com)
 
 ## File Structure
 * backend - contains the backend files to serve html and save annotations
