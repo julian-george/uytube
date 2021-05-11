@@ -12,7 +12,7 @@ View the app [here](https://uytube.herokuapp.com)
     * index.js - the additional scripting I (Julian George) added to connect to backend
 
 ## Local Deployment
-To fully deploy Uytube locally, the following steps is how you do it. If you need to just edit the front end, just skip steps 3-5.
+To fully deploy Uytube locally, the following steps is how you do it. If you need to just edit the front end, skip steps 3-5.
 1. `git clone` this repo locally to download it
 2. Run `npm i` on the command line within this folder to install all needed packages
 3. Install mongodb and initialize a database. Good instructions [here](https://docs.mongodb.com/manual/administration/install-community/)
