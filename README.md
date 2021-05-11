@@ -15,7 +15,7 @@ View the app [here](https://uytube.herokuapp.com)
 To fully deploy Uytube locally, the followin steps is how you do it. If you need to just 
 1. `git clone` this repo locally to download it
 2. Run `npm i` on the command line within this folder to install all needed packages
-3. Install mongodb and initialize a database. Good instructions [here] (https://docs.mongodb.com/manual/administration/install-community/)
+3. Install mongodb and initialize a database. Good instructions [here](https://docs.mongodb.com/manual/administration/install-community/)
 4. Create a .env file with the following in it:
     * PORT=3000
     * MONGOURL=(insert your db url here)
