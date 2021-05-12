@@ -21,6 +21,6 @@ To fully deploy Uytube locally, the following steps is how you do it. If you nee
     * MONGOURL=(insert your db url here)
         * Contact me if you need the url to the app's main database for any reason, since that's what's here in production
 5. In frontend/index.js, change the backendUrl variable to include the port (the same as in the .env, which is 3000 by default)
-6. Run `npm start` or `npm run-script start` on the command line to initialize the app.
+6. Run `npm start` or `npm run-script start` on the command line to initialize the app. Run it every time you edit the backend.
 7. Visit localhost:3000 in your browser to view it!
 8. If you have permissions, `git push` when you're finished editing to push changes to the main app.
