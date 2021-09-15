@@ -484,18 +484,17 @@
 
     <!-- Buttons -->
     <div>
-      
-      <button onclick="addEntry('large')" accessKey="l">New large section</button>
-      <button onclick="addEntry('small')" accessKey="s">New small section</button>
-      <button onclick="compileDataAndRender()">Preview SVG</button>
+      <button onclick="importJson()" accesskey="u" style="margin-bottom:6px">Import</button>
+      <button onclick="compileDataAndRender(download=true)">Download</button>
       <br>
-      <button onclick="importJson()" accessKey="u">Import data</button>
-      <button onclick="compileDataAndRender(download=true)">Download data</button>
+      <button onclick="uploadData()" style="margin-bottom:6px">Save to Cloud</button>
       <br>
-      <button onclick="uploadData()">Upload data </button>
+      <input type="text" placeholder="Type ID Here" id="idInput"> 
+      <button onclick="openId()" style="margin-bottom:6px">Load from Cloud</button>
       <br>
-      <input type="text" placeholder="Type ID Here" id="idInput"/> 
-      <button onclick="openId()"> Fetch data </button>
+      <button onclick="addEntry('large')" accesskey="l" style="margin-bottom:6px">Start large section</button>
+      <button onclick="addEntry('small')" accesskey="s">Start small section</button>
+      <button onclick="compileDataAndRender()">Preview</button>
     </div>
 
 
