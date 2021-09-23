@@ -40,7 +40,6 @@ function Failure (message) {
 }
 
 app.get('/get',(req,res)=>{
-    console.log("GET")
     const id = req.query.id;
     Music.findOne({'id':id}).then((file)=>{
         if (!file) res.end(JSON.stringify(new Failure("ID not found")))
@@ -53,9 +52,8 @@ app.get('/get',(req,res)=>{
 })
 
 app.post('/add', (req,res) =>{
-    console.log("POST")
     req.on("data",(data)=>{
-        let musObj= JSON.parse(data.toString());
+        let musObj= JSON.parse(data);
         ID().then((id)=>{
             const newMusic = new Music({
                 'id':id,
