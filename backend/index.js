@@ -51,9 +51,14 @@ app.get('/get',(req,res)=>{
     })
 })
 
-app.post('/add', (req,res) =>{
+app.post('/add', (req,res,next) =>{
     req.on("data",(data)=>{
-        let musObj= JSON.parse(data.toString());
+        let musObj;
+        try {
+            musObj = JSON.parse(data.toString());
+        } catch (err){
+            res.end(new Failure(err))
+        }
         ID().then((id)=>{
             const newMusic = new Music({
                 'id':id,
