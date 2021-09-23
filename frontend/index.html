@@ -718,15 +718,19 @@
         //   .replace(/(]}])/g, '\n      $1')
         //   .replace(/(}])(])/g, '$1\n  $2')
         //   + '\n}'
-        
-        let json_pretty = JSON.stringify({
+        let returnObject = {
           "videoId":videoId,
           "Youtube title":title,
           "content":newData,
-        })
+        }
+        let json_pretty = JSON.stringify(returnObject)
         if (download) {
           downloadObjectAsJson(json_pretty, videoId);
         }
+        else {
+          return returnObject
+        }
+
 
         renderSVG({
           "videoId":videoId,
