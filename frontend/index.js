@@ -42,7 +42,7 @@ function loadData(data) {
 
 //uploads the data
 function uploadData() {
-    let data = compileDataAndRender(upload=True);
+    let data = compileDataAndRender(false,true);
     if (initialData&&data==JSON.stringify(initialData)) {
         alert("Error: No Changes Made")
     }
