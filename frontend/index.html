@@ -485,7 +485,7 @@
     <!-- Buttons -->
     <div>
       <button onclick="importJson()" accesskey="u" style="margin-bottom:6px">Import</button>
-      <button onclick="compileDataAndRender(download=true)">Download</button>
+      <button onclick="compileDataAndRender(true)">Download</button>
       <br>
       <button onclick="uploadData()" style="margin-bottom:6px">Save to Cloud</button>
       <br>
@@ -647,7 +647,7 @@
       }
 
       // Compile data
-      function compileDataAndRender(download=false) {
+      function compileDataAndRender(download=false, upload=false) {
 
         // Get user entries
         items = document.getElementById("table").rows;
@@ -727,7 +727,7 @@
         if (download) {
           downloadObjectAsJson(json_pretty, videoId);
         }
-        else {
+        else if (upload) {
           return json_pretty
         }
 
