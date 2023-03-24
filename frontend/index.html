@@ -601,12 +601,13 @@
       function newYoutubeSelection() {
         let newVideoId = prompt("Enter new Youtube ID", "");
         player.cueVideoById(newVideoId);
+        addUnloadListener();
       }
       
       // Create table
       function addEntry(scope=null, time=null, desc=null) {
-
-        // to do: sort table
+        addUnloadListener();
+        // TODO: sort table
 
         let stamp = (time != null ? time
           : Math.round(fs * player.getCurrentTime()) / fs);
