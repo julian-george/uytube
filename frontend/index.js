@@ -52,7 +52,7 @@ function uploadData() {
       result = JSON.parse(result);
       if (!result.status) alert("Error: " + result.message);
       else if (result.status) {
-        removeUnloadListener();
+        setSaved();
         openId(result.message.id);
       }
     });
@@ -68,15 +68,21 @@ function unloadHandler(event) {
   return warningString;
 }
 
-function addUnloadListener() {
+// Called whenever the current form state is edited and becomes unsaved
+function setUnsaved() {
   if (!formDirty) {
+    $("#save-button").prop("disabled", false);
     // Listens for the user exiting and returns a warning message to pop up before they do so
     window.addEventListener("beforeunload", unloadHandler);
     formDirty = true;
   }
 }
 
-function removeUnloadListener() {
-  window.removeEventListener("beforeunload", unloadHandler);
-  formDirty = false;
+// Called whenever the current form state has been saved
+function setSaved() {
+  if (formDirty) {
+    $("#save-button").prop("disabled", true);
+    window.removeEventListener("beforeunload", unloadHandler);
+    formDirty = false;
+  }
 }

@@ -487,13 +487,13 @@
       <button onclick="importJson()" accesskey="u" style="margin-bottom:6px">Import</button>
       <button onclick="compileDataAndRender(true)">Download</button>
       <br>
-      <button onclick="uploadData()" style="margin-bottom:6px">Save to Cloud</button>
+      <button id="save-button" onclick="uploadData()" style="margin-bottom:6px" disabled >Save to Cloud</button>
       <br>
       <input type="text" placeholder="Type ID Here" id="idInput"> 
       <button onclick="openId()" style="margin-bottom:6px">Load from Cloud</button>
       <br>
-      <button onclick="addEntry('large')" accesskey="l" style="margin-bottom:6px">Start large section</button>
-      <button onclick="addEntry('small')" accesskey="s">Start small section</button>
+      <button onclick="handleEntryInput('large')" accesskey="l" style="margin-bottom:6px">Start large section</button>
+      <button onclick="handleEntryInput('small')" accesskey="s">Start small section</button>
       <button onclick="compileDataAndRender()">Preview</button>
     </div>
 
@@ -557,6 +557,7 @@
           return;
         }
         entry = r.parentNode.parentNode.firstChild;
+        setUnsaved()
         return entry.innerHTML = Math.round(
           fs * (Number(entry.innerHTML) + Number(num))
         ) / fs;
@@ -565,6 +566,7 @@
       function redescribe(r) {
         entry = r.parentNode.parentNode.lastChild;
         let user_input = prompt("Describe", entry.innerHTML);
+        setUnsaved()
         return (user_input == null ? null : entry.innerHTML = user_input);
       }
 
@@ -601,12 +603,16 @@
       function newYoutubeSelection() {
         let newVideoId = prompt("Enter new Youtube ID", "");
         player.cueVideoById(newVideoId);
-        addUnloadListener();
+        // setUnsaved();
+      }
+
+      function handleEntryInput(scope) {
+        addEntry(scope)
+        setUnsaved()
       }
       
       // Create table
       function addEntry(scope=null, time=null, desc=null) {
-        addUnloadListener();
         // TODO: sort table
 
         let stamp = (time != null ? time
