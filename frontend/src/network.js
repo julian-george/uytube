@@ -5,9 +5,6 @@ let backendUrl =
 let videoId;
 let initialData;
 
-// Keeps track of whether the user has made any edits
-let formDirty = false;
-
 function onPlayerReady() {
   // when the page & player loads, fetch the id from the URL
   const urlId = new URLSearchParams(window.location.search).get("id");
@@ -56,33 +53,5 @@ function uploadData() {
         openId(result.message.id);
       }
     });
-  }
-}
-
-// Before the page is unloaded (exited), returns a warning messages that will pop up for the user
-// On most browsers, our custom string won't be in the popup
-function unloadHandler(event) {
-  const warningString =
-    "Are you sure you want to exit? Your annotations may not have been saved.";
-  event.returnValue = warningString;
-  return warningString;
-}
-
-// Called whenever the current form state is edited and becomes unsaved
-function setUnsaved() {
-  if (!formDirty) {
-    $("#save-button").prop("disabled", false);
-    // Listens for the user exiting and returns a warning message to pop up before they do so
-    window.addEventListener("beforeunload", unloadHandler);
-    formDirty = true;
-  }
-}
-
-// Called whenever the current form state has been saved
-function setSaved() {
-  if (formDirty) {
-    $("#save-button").prop("disabled", true);
-    window.removeEventListener("beforeunload", unloadHandler);
-    formDirty = false;
   }
 }
