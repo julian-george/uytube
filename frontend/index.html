@@ -137,10 +137,8 @@
 
       <!-- Analysis data and SVG scripts -->
       <script>
-          var svg_template = document.getElementById('svg_template').innerHTML;
-
-          var nestedData = {};
-
+        var svg_template = document.getElementById("svg_template").innerHTML;
+        <![CDATA[
 // nestedData = { // Purcell Fairy Queen chaconne // demo
 //   "videoId":"Ct0GJqRRo_8","content":[
 //     [1.9,{"section":"","content":[
@@ -170,7 +168,7 @@
 // };
 
           // DOWNLOAD DATA
-
+          
           function downloadObjectAsJson(exportObj, exportName) {
             // https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
             var dataStr = "data:text/json;charset=utf-8,"
@@ -256,8 +254,7 @@
             let scroll_html = "";
             for (i = 0; i < scroll.length; i++) {
               let begin = preplay + nt_flat[i];
-              scroll_html += '<text class="font_a" x="-75" y="'
-              + (50+i*20).toString() + '"'
+              scroll_html += '<text class="font_a" x="-75" y="'+ (50+i*20).toString() + '"'
               // cue video
               + 'onclick="player.seekTo(' + begin.toString()
               + ');playSVG(' + (preplay + begin).toString() + ')">'
@@ -455,7 +452,7 @@
             hide.setAttribute("begin", preplay+nt[nt.length-1][0]);
 
           }
-
+          ]]>
       </script>
 
     </svg>
@@ -478,14 +475,14 @@
 
     <!-- Upload -->
     <div>
-      <input style="margin-bottom:6px" type="file" id="selectFiles" value="Import" text="Select"/><br>
+      <button onclick="importJson()" accesskey="u" style="margin-bottom:6px">Import</button>
+      <input style="margin-bottom:6px" type="file" id="selectFiles" value="Import" text="Select"/>
     </div>
 
     <!-- Buttons -->
     <div>
-      <button onclick="importJson()" accesskey="u" style="margin-bottom:6px">Import</button>
+      
       <button onclick="compileDataAndRender(true)">Download</button>
-      <br>
       <button id="save-button" onclick="uploadData()" style="margin-bottom:6px" disabled >Save to Cloud</button>
       <br>
       <input type="text" placeholder="Type ID Here" id="idInput"> 
@@ -493,7 +490,8 @@
       <br>
       <button onclick="handleEntryInput('large')" accesskey="l" style="margin-bottom:6px">Start large section</button>
       <button onclick="handleEntryInput('small')" accesskey="s">Start small section</button>
-      <button onclick="compileDataAndRender()">Preview</button>
+      <br>
+      <button onclick="compileDataAndRender()">Preview Animation</button>
     </div>
 
 

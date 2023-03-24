@@ -56,7 +56,7 @@ function pushStamp(r, num = 0) {
 
 function redescribe(r) {
   entry = r.parentNode.parentNode.lastChild;
-  let user_input = prompt("Describe", entry.innerHTML);
+  let user_input = prompt("Describe", $(entry).text());
   setUnsaved();
   return user_input == null ? null : (entry.innerHTML = user_input);
 }
