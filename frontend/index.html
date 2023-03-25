@@ -6,17 +6,10 @@
   <script src="src/network.js"></script>
   <script src="src/video-player.js"></script>
   <script src="src/data-render.js"></script>
+  <script src="src/animation-render.js"></script>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400i,700,700i" />
-  
-  <style>
-    body, .font_a, button, input, input  { font-family: "Roboto Condensed"; }
-    table, table button { font-size: 0.9em; }
-    .row { display: flex; }
-    .column { /*flex: 50%;*/ margin-left: 25px; display: flex; flex-direction: column; }
-    #video-controls-row {display:inline-flex; justify-content: space-between; margin-top: 8px;}
-  </style>
-
+  <link rel="stylesheet" href="./index.css" />
 </head>
 <html>
 <body>
@@ -30,36 +23,10 @@
       </button>
     </div>
 
-    <!-- Co-ordinate SVG -->
-    <script>
-      function playSVG(cue=null) {
-        if (cue == null) {
-          cue = Math.round(fs * player.getCurrentTime()) / fs;
-        }
-        let svg = document.getElementById('form_clock');
-        svg.setCurrentTime(cue);
-        if ( ![0,2].includes(player.getPlayerState()) ) {
-          svg.unpauseAnimations();
-        }
-      }
-      function pauseSVG() {
-        let svg = document.getElementById('form_clock');
-        svg.pauseAnimations();
-      }
-      function renderSVG(newData) {
-        let svg = document.getElementById('form_clock');
-        svg.setCurrentTime(0);
-        replaceData(newData);
-        drawForm();
-        cue = Math.round(fs * player.getCurrentTime()) / fs;
-        svg.setCurrentTime(cue);
-      }
-    </script>
-
     <!-- SVG -->
     <svg id="form_clock" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="304px" height="680px" viewBox="0 0 304 680" 
+    width="300px" height="150px" viewBox="0 0 300 150" 
     onload="drawForm();pauseSVG()">
     <!-- width="304px" height="540px" viewBox="0 0 304 540"  -->
 
@@ -118,9 +85,9 @@
         <!-- subsections -->
         <g id="micro"></g>
 
-        <g stroke="none" id="scroll"></g>
+        <!-- <g stroke="none" id="scroll"></g> -->
 
-        <g id="arrow" opacity="0">
+        <!-- <g id="arrow" opacity="0">
           <animate id="show_arrow" attributeName="opacity" to="0.75" fill="freeze"
             dur=".1s" begin="1h"/>
           <animate id="hide_arrow" attributeName="opacity" to="0" fill="freeze"
@@ -131,7 +98,7 @@
             opacity="1" x1="-90" x2="-85" y1="42" y2="45"/>
           <line stroke-width="2" stroke-linecap="round" stroke="black"
             opacity="1" x1="-90" x2="-85" y1="48" y2="45"/>
-        </g>
+        </g> -->
 
       </g>
 
@@ -139,33 +106,6 @@
       <script>
         var svg_template = document.getElementById("svg_template").innerHTML;
         <![CDATA[
-// nestedData = { // Purcell Fairy Queen chaconne // demo
-//   "videoId":"Ct0GJqRRo_8","content":[
-//     [1.9,{"section":"","content":[
-//         [1.9,{"division":"Variation 1"}],
-//         [12.5,{"division":"Variation 2"}],
-//         [23.7,{"division":"Variation 3"}],
-//         [34.5,{"division":"Variation 4"}],
-//         [45.4,{"division":"Variation 5"}],
-//         [56.2,{"division":"Variation 6"}],
-//         [67,{"division":"Variation 7"}],
-//         [78.3,{"division":"Variation 8"}]
-//       ]}],
-//     [90,{"section":"Minore","content":[
-//         [90,{"division":"Variation 9"}],
-//         [101,{"division":"Variation 10"}]
-//       ]}],
-//     [112,{"section":"Majore","content":[
-//         [112,{"division":"Variation 11"}],
-//         [123.1,{"division":"Variation 12"}],
-//         [134.1,{"division":"Variation 13"}],
-//         [145.1,{"division":"Variation 14"}]
-//       ]}],
-//     [160,{"section":"","content":[
-//         [160,{"division":""}]
-//       ]}]
-//   ]
-// };
 
           // DOWNLOAD DATA
           
@@ -184,9 +124,6 @@
 
           // COMPUTATION
 
-          function replaceData(newData) {
-            nestedData = newData;
-          }
 
           const preplay = 0; // seconds
 
@@ -260,7 +197,7 @@
               + ');playSVG(' + (preplay + begin).toString() + ')">'
               + scroll[i].toString() + '</text>\n'
             }
-            scroll_div.innerHTML = scroll_html;
+            <!-- scroll_div.innerHTML = scroll_html; -->
 
             // render clock segments, macro
             let macro_div = document.getElementById('macro');
@@ -316,7 +253,7 @@
                 to="0 ' + (i*20).toString()
                 + '" begin="' + begin.toString() + '"/>\n';
             }
-            arrow_div.innerHTML = arrow_div.innerHTML + arrow_translations;
+            <!-- arrow_div.innerHTML = arrow_div.innerHTML + arrow_translations; -->
 
             if (nt[nt.length-1].length > 1) {
               // Add final entry for ending (missing due to user error)
@@ -357,8 +294,7 @@
                 .setAttribute("begin", nonNeg(preplay+nt[0][0]-0.1));
             }
 
-            document.getElementById("show_arrow")
-              .setAttribute("begin", nonNeg(preplay+nt[0][0]));
+            <!-- document.getElementById("show_arrow").setAttribute("begin", nonNeg(preplay+nt[0][0])); -->
 
             for (var n = 0; n < nt.length - 1; n++) {
 
@@ -449,13 +385,16 @@
             // fade-out arrow
 
             var hide = document.getElementById("hide_arrow");
-            hide.setAttribute("begin", preplay+nt[nt.length-1][0]);
+            <!-- hide.setAttribute("begin", preplay+nt[nt.length-1][0]); -->
 
           }
           ]]>
       </script>
 
     </svg>
+    <div id="section-guide">
+      <div id="section-arrow" style="display:none">-></div>
+    </div>
 
   </div>
 

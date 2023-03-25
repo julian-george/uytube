@@ -7,3 +7,7 @@ const smallPlayerSize = { width: "640", height: "380" };
 const largePlayerSize = { width: "1080", height: "720" };
 
 var nestedData = {};
+
+function replaceData(newData) {
+  nestedData = newData;
+}

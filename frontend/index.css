@@ -1,0 +1,45 @@
+body,
+.font_a,
+button,
+input,
+input {
+  font-family: "Roboto Condensed";
+}
+table,
+table button {
+  font-size: 0.9em;
+}
+.row {
+  display: flex;
+}
+.column {
+  /*flex: 50%;*/
+  margin-left: 25px;
+  display: flex;
+  flex-direction: column;
+}
+#video-controls-row {
+  display: inline-flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+#section-guide {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 12px;
+}
+#section-arrow {
+  position: absolute;
+  width: 16px;
+  top: 0;
+  animation: top 500ms;
+}
+.section-nav {
+  cursor: pointer;
+  margin-left: 16px;
+}
+.division {
+  font-size: 14px;
+  margin-left: 22px;
+}
