@@ -23,7 +23,7 @@ table button {
   justify-content: space-between;
   margin-top: 8px;
 }
-#section-guide {
+#section-guide-list {
   margin-top: 12px;
   display: flex;
   flex-direction: column;
@@ -38,8 +38,18 @@ table button {
 .section-nav {
   cursor: pointer;
   margin-left: 16px;
+  display: inline-block;
+  word-break: break-word;
+  max-width: 280px;
+  margin-top: 2px;
+  margin-bottom: 2px;
 }
 .division {
   font-size: 14px;
   margin-left: 22px;
+}
+
+.section-color-picker {
+  border-width: 2.5px;
+  border-style: solid;
 }

@@ -2,6 +2,8 @@
 <meta charset="UTF-8">
 <head>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+  <script src="src/lib/iris.js"></script>
   <script src="src/index.js"></script>
   <script src="src/network.js"></script>
   <script src="src/video-player.js"></script>
@@ -9,6 +11,7 @@
   <script src="src/animation-render.js"></script>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400i,700,700i" />
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css"/>
   <link rel="stylesheet" href="./index.css" />
 </head>
 <html>
@@ -131,8 +134,6 @@
           const scope = 180;
           const origin = -90;
 
-          var colors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
-
           var greys = ["#c0c2ce", "#e5e6eb", "#afafaf", "#e5e6eb"];
 
           function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -253,7 +254,6 @@
                 to="0 ' + (i*20).toString()
                 + '" begin="' + begin.toString() + '"/>\n';
             }
-            <!-- arrow_div.innerHTML = arrow_div.innerHTML + arrow_translations; -->
 
             if (nt[nt.length-1].length > 1) {
               // Add final entry for ending (missing due to user error)
@@ -294,8 +294,6 @@
                 .setAttribute("begin", nonNeg(preplay+nt[0][0]-0.1));
             }
 
-            <!-- document.getElementById("show_arrow").setAttribute("begin", nonNeg(preplay+nt[0][0])); -->
-
             for (var n = 0; n < nt.length - 1; n++) {
 
               // draw macro arc segments
@@ -310,6 +308,9 @@
                 origin + scope * (nt[n+1][0] - nt[0][0])
                 / (nt.slice(-1)[0] - nt[0][0])
               );
+
+              colors = nestedData.content.map((section)=>section[1].color)
+              
 
               sec.setAttribute("d",
                 describeArc(0, 0, 100, start_arc, end_arc+1));
@@ -385,7 +386,6 @@
             // fade-out arrow
 
             var hide = document.getElementById("hide_arrow");
-            <!-- hide.setAttribute("begin", preplay+nt[nt.length-1][0]); -->
 
           }
           ]]>
@@ -394,6 +394,9 @@
     </svg>
     <div id="section-guide">
       <div id="section-arrow" style="display:none">-></div>
+      <div id="section-guide-list">
+
+      </div>
     </div>
 
   </div>
@@ -441,6 +444,7 @@
           <th style="text-align:left">Time | </th>
           <th style="text-align:left">Edit</th>
           <th style="text-align:left"> | Description</th>
+          <th style="text-align:left"> | Color</th>
         </tr>
       </table>
     </div>

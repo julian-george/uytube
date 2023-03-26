@@ -46,9 +46,13 @@ function getCurrentSectionIndex(currentTime) {
   }
   return rowIndex;
 }
+let arrowUpdateInterval;
+
 function updateArrow(rowIndex = 0) {
+  // Clear the interval with each manual update so that the interval doesn't change the arrow right before/after the user does
+  if (arrowUpdateInterval) clearInterval(arrowUpdateInterval);
   const arrowElement = $("#section-arrow");
-  const arrowHeight = parseFloat(arrowElement.css("height"));
+  const arrowHeight = parseFloat(arrowElement.css("height") || 0);
   const currentRowElement = $(`#section-row-${rowIndex}`);
   const currentRowHeight = parseFloat(currentRowElement.css("height"));
   const currentRowTop = parseFloat(currentRowElement.offset()?.top || 0);
@@ -57,13 +61,17 @@ function updateArrow(rowIndex = 0) {
     // Only show the arrow once everything has been rendered
     if (newTop) arrowElement.show();
   });
+  arrowUpdateInterval = setInterval(() => {
+    const rowIndex = getCurrentSectionIndex(player.getCurrentTime());
+    updateArrow(rowIndex);
+  }, 500);
 }
 window.onload = () => {
   renderSections();
-  setInterval(() => {
+  arrowUpdateInterval = setInterval(() => {
     const rowIndex = getCurrentSectionIndex(player.getCurrentTime());
     updateArrow(rowIndex);
-  }, 1000);
+  }, 500);
   $(".section-nav").click((event) => {
     const clickedRowIndex = $(event.target)
       .attr("id")
@@ -73,8 +81,10 @@ window.onload = () => {
 };
 
 function renderSections() {
-  const sectionElement = $("#section-guide");
+  const sectionElement = $("#section-guide-list");
+  sectionElement.html("");
   let rowIndex = 0;
+  // Iterate thru nestedData's outer sections and render them
   for (let i = 0; i < nestedData.content.length; i++) {
     const [beginI, contentI] = nestedData.content[i];
     const firstDivision = contentI.content?.[0]?.[1]?.division;
@@ -87,6 +97,7 @@ function renderSections() {
         </div>`
     );
     rowIndex++;
+    // Iterate thru each section's inner divisions and render them
     for (let j = 1; j < (contentI?.content || []).length; j++) {
       const [beginJ, contentJ] = contentI.content[j];
       sectionElement.append(
@@ -95,10 +106,11 @@ function renderSections() {
         })"> ${contentJ.division}</div>`
       );
       rowIndex++;
+      // Iterate thru each division's inner moments and render them
+      // TODO: implement this once 3-level nested structure implemented
       for (let k = 0; k < (contentJ?.content || []).length; k++) {
         const contentK = contentJ[1].content[k];
       }
     }
   }
-  updateArrow(rowIndex);
 }

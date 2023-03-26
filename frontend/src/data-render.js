@@ -55,10 +55,10 @@ function pushStamp(r, num = 0) {
 }
 
 function redescribe(r) {
-  entry = r.parentNode.parentNode.lastChild;
+  entry = $(r.parentNode).siblings(".cell-description");
   let user_input = prompt("Describe", $(entry).text());
   setUnsaved();
-  return user_input == null ? null : (entry.innerHTML = user_input);
+  return user_input == null ? null : entry.text(user_input);
 }
 
 function loadTable() {
@@ -75,18 +75,36 @@ function loadTable() {
   for (n = 0; n < nt.length; n++) {
     for (i = 0; i < nt[n].length; i++) {
       let cnode = nestedData["content"][n][1];
-      scroll.push(
-        (i == 0 ? cnode["section"] + " " : "") +
-          (cnode["content"][i][1]["division"] == "" ? "" : "> ") +
-          cnode["content"][i][1]["division"]
-      );
+      if (i == 0) {
+        const divisionText = cnode["content"][i][1]["division"];
+        console.log(nestedData.content[n][1]);
+        scroll.push({
+          scope: "large",
+          element:
+            cnode["section"] + (divisionText != "" ? ` > ${divisionText}` : ""),
+          sectionIdx: n,
+          color: nestedData.content[n][1]?.color,
+        });
+      } else {
+        scroll.push({
+          scope: "small",
+          element: cnode["content"][i][1]["division"],
+          sectionIdx: n,
+        });
+      }
     }
   }
   if (scroll.length != nt_flat.length) {
     return;
   }
   for (i = 0; i < scroll.length; i++) {
-    addEntry(null, nt_flat[i], scroll[i]);
+    addEntry(
+      scroll[i].scope,
+      nt_flat[i],
+      scroll[i].element,
+      scroll[i].sectionIdx,
+      scroll[i].color
+    );
   }
 }
 
@@ -103,7 +121,13 @@ function handleEntryInput(scope) {
 }
 
 // Create table
-function addEntry(scope = null, time = null, desc = null) {
+function addEntry(
+  scope = null,
+  time = null,
+  desc = null,
+  sectionIdx = nestedData.content.length,
+  color = null
+) {
   // TODO: sort table
 
   let stamp =
@@ -113,7 +137,8 @@ function addEntry(scope = null, time = null, desc = null) {
   var cellTime = document.createElement("TD");
   var cellCtrl = document.createElement("TD");
   var cellDesc = document.createElement("TD");
-  cellDesc.className = "clickable";
+  let cellColor = document.createElement("TD");
+  cellDesc.className = "cell-description clickable";
 
   user_txt = desc != null ? desc : prompt("Describe", "");
   if (!user_txt) {
@@ -145,8 +170,52 @@ function addEntry(scope = null, time = null, desc = null) {
   cellDesc.appendChild(descnode);
   row.appendChild(cellDesc);
 
+  // List of two alernating colors that will be used before user inputs their own
+  const defaultColors = ["#3344aa", "#33bb44"];
+
+  const currentColor = color || defaultColors[sectionIdx % 2];
+
+  cellColor.innerHTML = `
+  <div id="picker-${sectionIdx}">
+  <input type="text" class="section-color-picker" value="${currentColor}" style="border-color:${currentColor}"></input>
+  <button class="section-picker-close" style="display:none">Done Picking Color</button>
+  <div class="section-picker-container"></div></div>`;
+
+  if (scope == "large") row.appendChild(cellColor);
+
   document.getElementById("table").appendChild(row);
+
+  if (scope == "large")
+    $(cellColor)
+      .find("input")
+      .iris({
+        width: 200,
+        hide: true,
+        target: $(cellColor).find(".section-picker-container"),
+        change: (event, ui) => {
+          const hsl = ui.color._hsl;
+          $(cellColor)
+            .find("input")
+            .css("border-color", `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`);
+        },
+      });
 }
+
+$(document).on("focus", ".section-color-picker", (event) => {
+  $(event.target)
+    .siblings(".section-picker-container")
+    .find(".iris-picker")
+    .show();
+  $(event.target).siblings("button").show();
+  setUnsaved();
+});
+$(document).on("click", ".section-picker-close", (event) => {
+  $(event.target)
+    .siblings(".section-picker-container")
+    .find(".iris-picker")
+    .hide();
+  $(event.target).hide();
+});
 
 // Compile data
 function compileDataAndRender(download = false, upload = false) {
@@ -172,21 +241,33 @@ function compileDataAndRender(download = false, upload = false) {
 
   // Parse data
   let newData = [];
+  const colorInputs = $(".section-color-picker").toArray();
+  let sectionIdx = 0;
   for (i = 0; i < ta.length; i++) {
     ds = ta[i][1].split(/ *> */);
     if (ds.length == 1) {
       // new large section
       newData.push([
         ta[i][0],
-        { section: ds[0], content: [[ta[i][0], { division: "" }]] },
+        {
+          section: ds[0],
+          color: $(colorInputs[sectionIdx]).val(),
+          content: [[ta[i][0], { division: "" }]],
+        },
       ]);
+      sectionIdx++;
     } else if (ds.length == 2) {
       if (ds[0] != "") {
         // new large, small sections
         newData.push([
           ta[i][0],
-          { section: ds[0], content: [[ta[i][0], { division: ds[1] }]] },
+          {
+            section: ds[0],
+            color: $(colorInputs[sectionIdx]).val(),
+            content: [[ta[i][0], { division: ds[1] }]],
+          },
         ]);
+        sectionIdx++;
       } else if (ds[0] == "" && newData.length == 0) {
         // new small section; no large section to contain it yet
         newData.push([
@@ -220,26 +301,20 @@ function compileDataAndRender(download = false, upload = false) {
     videoId: videoId,
     "Youtube title": title,
     content: newData,
+    colors,
   };
   let json_pretty = JSON.stringify(returnObject);
+  replaceData(returnObject);
+
+  renderSVG(returnObject);
+
+  loadTable();
+  renderSections();
   if (download) {
     downloadObjectAsJson(json_pretty, videoId);
   } else if (upload) {
     return json_pretty;
   }
-
-  renderSVG({
-    videoId: videoId,
-    "Youtube title": title,
-    content: newData,
-  });
-
-  replaceData({
-    videoId: videoId,
-    "Youtube title": title,
-    content: newData,
-  });
-  loadTable();
 }
 
 // Before the page is unloaded (exited), returns a warning messages that will pop up for the user
