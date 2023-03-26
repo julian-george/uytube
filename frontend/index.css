@@ -32,6 +32,8 @@ table button {
 #section-arrow {
   position: absolute;
   width: 16px;
+  font-size: 24px;
+  font-weight: bold;
   top: 0;
   animation: top 500ms;
 }
@@ -43,10 +45,11 @@ table button {
   max-width: 280px;
   margin-top: 2px;
   margin-bottom: 2px;
+  font-size: 16px;
 }
 .division {
   font-size: 14px;
-  margin-left: 22px;
+  margin-left: 40px;
 }
 
 .section-color-picker {

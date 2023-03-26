@@ -165,11 +165,12 @@
           }
 
           function drawForm() {
-
             // get data
             const nt = nestedData["content"]
               .map(sec => sec[1]["content"].map(div => div[0]));
             const nt_flat = nt.flat();
+
+            if (nt.length == 0) return;
 
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
@@ -255,7 +256,7 @@
                 + '" begin="' + begin.toString() + '"/>\n';
             }
 
-            if (nt[nt.length-1].length > 1) {
+            if (nt.length>0 && nt[nt.length-1].length > 1) {
               // Add final entry for ending (missing due to user error)
               let last_subarray = nt[nt.length-1]
               let stop = 1 + last_subarray[last_subarray.length-1];
@@ -276,7 +277,6 @@
               document.getElementById("hidepreplay")
                 .setAttribute("begin", nonNeg(preplay-0.4));
             }
-
             if (nt[0][0] < 0.1) {
               document.getElementById("readywrapper").remove();
             } else {

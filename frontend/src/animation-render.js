@@ -22,24 +22,26 @@ function renderSVG(newData) {
 }
 
 function getCurrentSectionIndex(currentTime) {
+  if (nestedData.content.length == 0) return;
   // These are the indexes of the current section within the data's three levels of depth
-  let i, j, k;
+  let i, j;
   // This is the index of the html row that corresponds to the current section
   let rowIndex = 0;
   // Using for loops to iterate thru the nested data, stopping when a section is found with a greater timestamp than the current time
   for (
     i = 0;
     i < nestedData.content.length - 1 &&
-    nestedData.content[i + 1][0] < currentTime;
+    nestedData.content[i + 1][0] <= currentTime;
     i++
   ) {
-    rowIndex += nestedData.content[i][1].content.length;
+    rowIndex += nestedData.content[i][1].content.length + 1;
   }
   const currentDivision = nestedData.content[i][1];
+  if (currentDivision.content[0][0] <= currentTime) rowIndex += 1;
   for (
     j = 0;
     j < currentDivision.content.length - 1 &&
-    currentDivision.content[j + 1][0] < currentTime;
+    currentDivision.content[j + 1][0] <= currentTime;
     j++
   ) {
     rowIndex += 1;
@@ -54,9 +56,10 @@ function updateArrow(rowIndex = 0) {
   const arrowElement = $("#section-arrow");
   const arrowHeight = parseFloat(arrowElement.css("height") || 0);
   const currentRowElement = $(`#section-row-${rowIndex}`);
-  const currentRowHeight = parseFloat(currentRowElement.css("height"));
+  const textHeight = parseFloat(currentRowElement.css("font-size"));
   const currentRowTop = parseFloat(currentRowElement.offset()?.top || 0);
-  const newTop = currentRowTop + currentRowHeight / 2 - arrowHeight / 2;
+  // This calculation ensures that the vertical center of the arrow points to the vertical center of the first line of text
+  const newTop = currentRowTop - arrowHeight / 2 + textHeight / 2;
   arrowElement.animate({ top: `${newTop}px` }, 150, () => {
     // Only show the arrow once everything has been rendered
     if (newTop) arrowElement.show();
@@ -90,26 +93,21 @@ function renderSections() {
     const firstDivision = contentI.content?.[0]?.[1]?.division;
     sectionElement.append(
       `<div style="display:inline-flex">
-        <div class="color-icon"></div>
-        <div id="section-row-${rowIndex}" class="section-nav" onclick="player.seekTo(${beginI});">${
-        contentI.section
-      } ${firstDivision != "" ? `- ${firstDivision}` : ""}</div>
+        <div id="section-row-${rowIndex}" class="section-nav" onclick="player.seekTo(${beginI});">${contentI.section}</div>
         </div>`
     );
     rowIndex++;
     // Iterate thru each section's inner divisions and render them
-    for (let j = 1; j < (contentI?.content || []).length; j++) {
+    for (let j = 0; j < (contentI?.content || []).length; j++) {
       const [beginJ, contentJ] = contentI.content[j];
-      sectionElement.append(
-        `<div id="section-row-${rowIndex}" class="section-nav division" onclick="player.seekTo(${
-          beginJ + 1
-        })"> ${contentJ.division}</div>`
-      );
-      rowIndex++;
-      // Iterate thru each division's inner moments and render them
-      // TODO: implement this once 3-level nested structure implemented
-      for (let k = 0; k < (contentJ?.content || []).length; k++) {
-        const contentK = contentJ[1].content[k];
+
+      if (contentJ.division != "") {
+        sectionElement.append(
+          `<div id="section-row-${rowIndex}" class="section-nav division" onclick="player.seekTo(${
+            beginJ + 1
+          })"> ${contentJ.division}</div>`
+        );
+        rowIndex++;
       }
     }
   }
