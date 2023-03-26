@@ -316,7 +316,7 @@
                 describeArc(0, 0, 100, start_arc, end_arc+1));
               sec.removeAttribute("display");
               sec.setAttribute("stroke",
-                colors[n % colors.length]);
+                n >= colors.length ? defaultColors[n%2] : colors[n % colors.length]);
 
               // cue video
               sec.setAttribute("onclick",

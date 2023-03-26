@@ -170,9 +170,6 @@ function addEntry(
   cellDesc.appendChild(descnode);
   row.appendChild(cellDesc);
 
-  // List of two alernating colors that will be used before user inputs their own
-  const defaultColors = ["#3344aa", "#33bb44"];
-
   const currentColor = color || defaultColors[sectionIdx % 2];
 
   cellColor.innerHTML = `
