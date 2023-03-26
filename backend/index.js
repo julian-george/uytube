@@ -68,7 +68,7 @@ app.post("/add", (req, res, next) => {
     try {
       musObj = JSON.parse(data.toString());
     } catch (err) {
-      res.end(new Failure(err));
+      res.end(new Failure(err).message);
     }
     ID()
       .then((id) => {
@@ -76,14 +76,19 @@ app.post("/add", (req, res, next) => {
           id: id,
           data: musObj,
         });
-        newMusic.save(() => {
-          res.end(JSON.stringify(new Success({ id: id })));
-        });
+        newMusic
+          .save()
+          .then(() => {
+            res.end(JSON.stringify(new Success({ id: id })));
+          })
+          .catch((err) => {
+            throw err;
+          });
       })
       .catch((error) => {
         const errorText = "Error: " + error;
         console.log(errorText);
-        res.end(new Failure(errorText));
+        res.end(new Failure(errorText).message);
       });
   });
 });

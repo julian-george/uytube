@@ -77,7 +77,6 @@ function loadTable() {
       let cnode = nestedData["content"][n][1];
       if (i == 0) {
         const divisionText = cnode["content"][i][1]["division"];
-        console.log(nestedData.content[n][1]);
         scroll.push({
           scope: "large",
           element:
