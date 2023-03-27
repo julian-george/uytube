@@ -3,8 +3,15 @@ var fs = 10; // fractions of a second
 // Keeps track of whether the user has made any edits
 let formDirty = false;
 
-// Whether or not the page is currently in theatre mode
-let theatreActive = false;
+// Whether or not the page is currently in theater mode
+let theaterActive = false;
+
+$(window).on("load", () => {
+  // If there is a theater variable in the URL, call theaterHandler to resize player on load
+  if (new URLSearchParams(window.location.search).get("theater") != null)
+    theaterHandler();
+  console.log("E");
+});
 
 function importJson() {
   // loads existing data into table if no file selected
@@ -57,26 +64,24 @@ function pushStamp(r, num = 0) {
 function redescribe(r) {
   entry = $(r.parentNode).siblings(".cell-description");
   let user_input = prompt("Describe", $(entry).text());
-  // TODO: we shouldn't be using the HTML to store titles
+  if (user_input == null) return null;
   let prefix = "";
-  let message = "";
-  // Iterates thru the user input and separates prefix (the >s defining section/division) from the message
-  for (let i = 0; i < user_input.length; i++) {
-    const currChar = user_input.charAt(i);
-    // Currently the only prefix is single >, if/when more depth added, consider different prefixes
-    if (currChar == ">") {
-      if (prefix == "") {
-        prefix = ">";
+  let message = user_input;
+  const caratIndex = user_input.indexOf(">");
+  if (caratIndex != -1) {
+    prefix = user_input.substring(0, caratIndex + 1);
+    message = user_input.substring(caratIndex);
+    for (let i = caratIndex; i < user_input.length; i++) {
+      const currChar = user_input.charAt(i);
+      if (currChar != ">" && currChar != " ") {
+        message = user_input.substring(i);
+        prefix += " ";
+        break;
       }
-      // Prevents duplicate spaces between prefix and message
-    } else if (currChar != " ") {
-      message = user_input.substring(i);
-      break;
     }
   }
-  const parsedInput = `${prefix} ${message}`;
   setUnsaved();
-  return user_input == null ? null : entry.text(parsedInput);
+  return entry.text(prefix + message);
 }
 
 function loadTable() {
@@ -127,10 +132,11 @@ function loadTable() {
 
 // Change video
 function newYoutubeSelection() {
-  let newVideoId = prompt("Enter new Youtube ID", "");
-  newVideoId =
-    (newVideoId.split("?")?.[1] || newVideoId).split("v=")?.[1] || newVideoId;
-  player.cueVideoById(newVideoId);
+  let idInput = prompt("Enter new Youtube ID", "");
+  let parsedId = new URLSearchParams(idInput.split("?")?.[1] || idInput).get(
+    "v"
+  );
+  player.cueVideoById(parsedId || idInput);
   setUnsaved();
 }
 
@@ -362,23 +368,28 @@ function setSaved() {
   }
 }
 
-const theatreOffButton = "Enter theatre mode";
-const theatreOnButton = "Exit theatre mode";
+const theaterOffButton = "Enter theater mode";
+const theaterOnButton = "Exit theater mode";
 
-// Handles resizing of video player & hiding of buttons when entering/exiting theatre mode
-function theatreHandler() {
-  const newSize = theatreActive ? smallPlayerSize : largePlayerSize;
+// Handles resizing of video player & hiding of buttons when entering/exiting theater mode
+function theaterHandler() {
+  const currUrl = new URLSearchParams(window.location.search);
+  const newSize = theaterActive ? smallPlayerSize : largePlayerSize;
   $(player.h).css({
     height: newSize.height,
     width: newSize.width,
   });
-  if (theatreActive) {
+  if (theaterActive) {
     $("#form-column").show();
-    $("#theatre-button").text(theatreOffButton);
-    theatreActive = false;
+    $("#theater-button").text(theaterOffButton);
+    theaterActive = false;
+    currUrl.delete("theater");
   } else {
     $("#form-column").hide();
-    $("#theatre-button").text(theatreOnButton);
-    theatreActive = true;
+    $("#theater-button").text(theaterOnButton);
+    theaterActive = true;
+    currUrl.set("theater", "true");
   }
+  console.log(currUrl.toString());
+  window.history.replaceState("", "", "?" + currUrl.toString());
 }

@@ -70,7 +70,7 @@ function updateArrow(rowIndex = 0) {
     updateArrow(rowIndex);
   }, 500);
 }
-window.onload = () => {
+$(window).on("load", () => {
   renderSections();
   arrowUpdateInterval = setInterval(() => {
     const rowIndex = getCurrentSectionIndex(player.getCurrentTime());
@@ -82,7 +82,7 @@ window.onload = () => {
       .replace("section-row-", "");
     updateArrow(Number(clickedRowIndex));
   });
-};
+});
 
 function renderSections() {
   const sectionElement = $("#section-guide-list");
