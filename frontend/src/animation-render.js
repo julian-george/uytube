@@ -21,6 +21,7 @@ function renderSVG(newData) {
   svg.setCurrentTime(cue);
 }
 
+// TODO: change data structure to make this function less convoluted and prone to error
 function getCurrentSectionIndex(currentTime) {
   if (nestedData.content.length == 0) return;
   // These are the indexes of the current section within the data's three levels of depth
@@ -34,17 +35,17 @@ function getCurrentSectionIndex(currentTime) {
     nestedData.content[i + 1][0] <= currentTime;
     i++
   ) {
-    rowIndex += nestedData.content[i][1].content.length + 1;
+    rowIndex += nestedData.content[i][1].content.length;
+    if (nestedData.content[i][1].content[0][1].division != "") rowIndex += 1;
   }
   const currentDivision = nestedData.content[i][1];
-  if (currentDivision.content[0][0] <= currentTime) rowIndex += 1;
   for (
     j = 0;
-    j < currentDivision.content.length - 1 &&
-    currentDivision.content[j + 1][0] <= currentTime;
+    j < currentDivision.content.length &&
+    currentDivision.content[j][0] <= currentTime;
     j++
   ) {
-    rowIndex += 1;
+    if (currentDivision.content[j][1].division != "") rowIndex += 1;
   }
   return rowIndex;
 }
@@ -59,7 +60,7 @@ function updateArrow(rowIndex = 0) {
   const textHeight = parseFloat(currentRowElement.css("font-size"));
   const currentRowTop = parseFloat(currentRowElement.offset()?.top || 0);
   // This calculation ensures that the vertical center of the arrow points to the vertical center of the first line of text
-  const newTop = currentRowTop - arrowHeight / 2 + textHeight / 2;
+  const newTop = currentRowTop - arrowHeight / 2 + textHeight / 2 + 1;
   arrowElement.animate({ top: `${newTop}px` }, 150, () => {
     // Only show the arrow once everything has been rendered
     if (newTop) arrowElement.show();
