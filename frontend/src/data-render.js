@@ -142,7 +142,8 @@ function addEntry(
   scope = null,
   time = null,
   desc = null,
-  sectionIdx = nestedData.content.length,
+  // TODO: this is prone to errors. we need to stop storing data as HTML
+  sectionIdx = $(".section-color-picker").length,
   color = null
 ) {
   // TODO: sort table
