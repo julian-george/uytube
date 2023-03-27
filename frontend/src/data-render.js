@@ -390,9 +390,5 @@ function theaterHandler() {
     theaterActive = true;
     currUrl.set("theater", "true");
   }
-  window.history.replaceState(
-    "",
-    "",
-    (currUrl.toString().length > 0 ? "?" : "") + currUrl.toString()
-  );
+  window.history.replaceState("", "", "?" + currUrl.toString());
 }
