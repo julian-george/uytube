@@ -393,6 +393,6 @@ function theaterHandler() {
   window.history.replaceState(
     "",
     "",
-    (currUrl.length > 0 ? "?" : "") + currUrl.toString()
+    (currUrl.toString().length > 0 ? "?" : "") + currUrl.toString()
   );
 }
