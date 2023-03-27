@@ -315,7 +315,6 @@ function compileDataAndRender(download = false, upload = false) {
     videoId: videoId,
     "Youtube title": title,
     content: newData,
-    colors,
   };
   let json_pretty = JSON.stringify(returnObject);
   replaceData(returnObject);
