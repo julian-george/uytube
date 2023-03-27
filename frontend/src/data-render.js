@@ -57,8 +57,26 @@ function pushStamp(r, num = 0) {
 function redescribe(r) {
   entry = $(r.parentNode).siblings(".cell-description");
   let user_input = prompt("Describe", $(entry).text());
+  // TODO: we shouldn't be using the HTML to store titles
+  let prefix = "";
+  let message = "";
+  // Iterates thru the user input and separates prefix (the >s defining section/division) from the message
+  for (let i = 0; i < user_input.length; i++) {
+    const currChar = user_input.charAt(i);
+    // Currently the only prefix is single >, if/when more depth added, consider different prefixes
+    if (currChar == ">") {
+      if (prefix == "") {
+        prefix = ">";
+      }
+      // Prevents duplicate spaces between prefix and message
+    } else if (currChar != " ") {
+      message = user_input.substring(i);
+      break;
+    }
+  }
+  const parsedInput = `${prefix} ${message}`;
   setUnsaved();
-  return user_input == null ? null : entry.text(user_input);
+  return user_input == null ? null : entry.text(parsedInput);
 }
 
 function loadTable() {
