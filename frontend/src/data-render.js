@@ -390,6 +390,9 @@ function theaterHandler() {
     theaterActive = true;
     currUrl.set("theater", "true");
   }
-  console.log(currUrl.toString());
-  window.history.replaceState("", "", "?" + currUrl.toString());
+  window.history.replaceState(
+    "",
+    "",
+    (currUrl.length > 0 ? "?" : "") + currUrl.toString()
+  );
 }
