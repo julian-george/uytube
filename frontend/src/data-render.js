@@ -128,6 +128,7 @@ function loadTable() {
 // Change video
 function newYoutubeSelection() {
   let newVideoId = prompt("Enter new Youtube ID", "");
+  newVideoId = newVideoId.split("?")[1].split("v=")[1];
   player.cueVideoById(newVideoId);
   setUnsaved();
 }
