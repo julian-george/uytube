@@ -187,7 +187,8 @@ function addEntry(
   cellDesc.appendChild(descnode);
   row.appendChild(cellDesc);
 
-  const currentColor = color || defaultColors[sectionIdx % 2];
+  const currentColor =
+    color || defaultColors[sectionIdx % defaultColors.length];
 
   cellColor.innerHTML = `
   <div id="picker-${sectionIdx}">

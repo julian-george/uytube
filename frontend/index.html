@@ -309,7 +309,7 @@
                 / (nt.slice(-1)[0] - nt[0][0])
               );
 
-              colors = nestedData.content.map((section, n)=>section[1]?.color || defaultColors[n%2])
+              colors = nestedData.content.map((section, n)=>section[1]?.color || defaultColors[n%defaultColors.length])
               
 
               sec.setAttribute("d",
