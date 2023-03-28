@@ -28,6 +28,7 @@ function importJson() {
   fr.onload = function (e) {
     var result = JSON.parse(e.target.result);
     replaceData(result);
+    setUnsaved();
     loadTable();
     player.cueVideoById(result["videoId"]);
 

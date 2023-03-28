@@ -68,7 +68,7 @@ app.post("/add", (req, res, next) => {
     try {
       musObj = JSON.parse(data.toString());
     } catch (err) {
-      res.end(new Failure(err).message);
+      res.end(JSON.stringify(new Failure(err).message));
     }
     ID()
       .then((id) => {
@@ -88,7 +88,7 @@ app.post("/add", (req, res, next) => {
       .catch((error) => {
         const errorText = "Error: " + error;
         console.log(errorText);
-        res.end(new Failure(errorText).message);
+        res.end(JSON.stringify(new Failure(errorText).message));
       });
   });
 });
