@@ -36,6 +36,7 @@ function loadData(data) {
   replaceData(data);
   loadTable();
   renderSVG(data);
+  renderSections()
   player.cueVideoById(data.videoId);
 }
 
