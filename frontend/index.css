@@ -10,13 +10,21 @@ table button {
   font-size: 0.9em;
 }
 .row {
-  display: flex;
+  display: inline-flex;
+  width: 100vw;
 }
 .column {
   /*flex: 50%;*/
   margin-left: 25px;
   display: flex;
   flex-direction: column;
+}
+#animation-col {
+  width: 20vw;
+  min-width: 300px;
+}
+#animation-col > div {
+  width: 100%;
 }
 #video-controls-row {
   display: inline-flex;
@@ -51,6 +59,7 @@ table button {
   margin-bottom: 2px;
   font-size: 16px;
 }
+
 .division {
   font-size: 14px;
   margin-left: 40px;
