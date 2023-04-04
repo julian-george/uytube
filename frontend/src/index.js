@@ -14,3 +14,16 @@ var nestedData = { content: [] };
 function replaceData(newData) {
   nestedData = newData;
 }
+
+// The amount of seconds that the arrow keys change the player's time
+const SECONDS_TO_SEEK = 15;
+
+// Handles arrow shortcuts to seek when the player isn't focused
+document.onkeydown = (e) => {
+  if (!player) return;
+  if (e.key == "ArrowLeft") {
+    player.seekTo(Math.max(player.getCurrentTime() - SECONDS_TO_SEEK, 0));
+  } else if (e.key == "ArrowRight") {
+    player.seekTo(player.getCurrentTime() + SECONDS_TO_SEEK);
+  }
+};
