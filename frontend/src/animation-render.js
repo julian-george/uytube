@@ -103,6 +103,7 @@ function animateSections(rowIndex = 0) {
 
 $(window).on("load", () => {
   renderSections();
+  animateSections(getCurrentSectionIndex(player.getCurrentTime()));
   $(".section-nav").click((event) => {
     const clickedRowIndex = $(event.target)
       .attr("id")

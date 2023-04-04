@@ -14,6 +14,12 @@ function onYouTubeIframeAPIReady() {
       onReady: onPlayerReady,
       onStateChange: onPlayerStateChange,
     },
+    cc_load_policy: 0,
+    iv_load_policy: 3,
+    modestbranding: 1,
+    playsinline: 1,
+    rel: 0,
+    showinfo: 0,
   });
 }
 
