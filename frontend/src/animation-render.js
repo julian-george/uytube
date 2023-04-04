@@ -103,16 +103,16 @@ function animateSections(rowIndex = 0) {
 
 $(window).on("load", () => {
   renderSections();
-  arrowUpdateInterval = setInterval(() => {
-    const rowIndex = getCurrentSectionIndex(player.getCurrentTime());
-    animateSections(rowIndex);
-  }, 500);
   $(".section-nav").click((event) => {
     const clickedRowIndex = $(event.target)
       .attr("id")
       .replace("section-row-", "");
     animateSections(Number(clickedRowIndex));
   });
+});
+
+$(window).on("resize", () => {
+  animateSections(getCurrentSectionIndex(player.getCurrentTime()));
 });
 
 function renderSections() {
