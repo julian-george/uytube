@@ -51,36 +51,67 @@ function getCurrentSectionIndex(currentTime) {
 }
 let arrowUpdateInterval;
 
-function updateArrow(rowIndex = 0) {
+// Percentage of window height at which elements on list are considered to be off screen and moved up accordingly
+const LIST_MOVE_THRESHOLD = 0.75;
+
+function animateSections(rowIndex = 0) {
   // Clear the interval with each manual update so that the interval doesn't change the arrow right before/after the user does
   if (arrowUpdateInterval) clearInterval(arrowUpdateInterval);
+
   const arrowElement = $("#section-arrow");
   const arrowHeight = parseFloat(arrowElement.css("height") || 0);
   const currentRowElement = $(`#section-row-${rowIndex}`);
   const textHeight = parseFloat(currentRowElement.css("font-size"));
-  const currentRowTop = parseFloat(currentRowElement.offset()?.top || 0);
+  const currentRowTop = parseFloat(currentRowElement.position()?.top || 0);
+
+  const listContainerElement = $("div#section-guide");
+  const listElement = $("div#section-guide-list");
+  const initialListTop = parseFloat(listContainerElement.offset()?.top || 0);
+  const screenThreshold = LIST_MOVE_THRESHOLD * window.innerHeight;
+
+  let newListTop = 0;
+
+  const currentRowAbsoluteTop = currentRowTop + initialListTop;
+
+  // If the list starts before the threshold (ie it's on screen) and the current row is past the threshold (ie it'll otherwise be offscreen)
+  if (
+    screenThreshold > initialListTop &&
+    currentRowAbsoluteTop > screenThreshold
+  ) {
+    newListTop = -1 * (currentRowAbsoluteTop - screenThreshold);
+  }
+
+  listElement.animate({ top: `${newListTop}px` }, 150, () => {});
+
+  const currentRowMargin = parseFloat(currentRowElement.css("margin-top") || 0);
   // This calculation ensures that the vertical center of the arrow points to the vertical center of the first line of text
-  const newTop = currentRowTop - arrowHeight / 2 + textHeight / 2 + 1;
-  arrowElement.animate({ top: `${newTop}px` }, 150, () => {
+  const newArrowTop =
+    currentRowAbsoluteTop +
+    (arrowHeight - textHeight) / 2 +
+    currentRowMargin +
+    newListTop;
+
+  arrowElement.animate({ top: `${newArrowTop}px` }, 150, () => {
     // Only show the arrow once everything has been rendered
-    if (newTop) arrowElement.show();
+    if (newArrowTop) arrowElement.show();
   });
   arrowUpdateInterval = setInterval(() => {
     const rowIndex = getCurrentSectionIndex(player.getCurrentTime());
-    updateArrow(rowIndex);
+    animateSections(rowIndex);
   }, 500);
 }
+
 $(window).on("load", () => {
   renderSections();
   arrowUpdateInterval = setInterval(() => {
     const rowIndex = getCurrentSectionIndex(player.getCurrentTime());
-    updateArrow(rowIndex);
+    animateSections(rowIndex);
   }, 500);
   $(".section-nav").click((event) => {
     const clickedRowIndex = $(event.target)
       .attr("id")
       .replace("section-row-", "");
-    updateArrow(Number(clickedRowIndex));
+    animateSections(Number(clickedRowIndex));
   });
 });
 

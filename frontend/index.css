@@ -23,11 +23,15 @@ table button {
   justify-content: space-between;
   margin-top: 8px;
 }
+#section-guide {
+  overflow: hidden;
+}
 #section-guide-list {
   margin-top: 12px;
   display: flex;
   flex-direction: column;
   padding: 0px 12px;
+  position: relative;
 }
 #section-arrow {
   position: absolute;

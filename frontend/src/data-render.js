@@ -10,7 +10,6 @@ $(window).on("load", () => {
   // If there is a theater variable in the URL, call theaterHandler to resize player on load
   if (new URLSearchParams(window.location.search).get("theater") != null)
     theaterHandler();
-  console.log("E");
 });
 
 function importJson() {
