@@ -381,11 +381,13 @@ function theaterHandler() {
   });
   if (theaterActive) {
     $("#form-column").show();
+    $("#video-selection-button").show();
     $("#theater-button").text(theaterOffButton);
     theaterActive = false;
     currUrl.delete("theater");
   } else {
     $("#form-column").hide();
+    $("#video-selection-button").hide();
     $("#theater-button").text(theaterOnButton);
     theaterActive = true;
     currUrl.set("theater", "true");

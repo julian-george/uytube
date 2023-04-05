@@ -31,6 +31,9 @@ table button {
   justify-content: space-between;
   margin-top: 8px;
 }
+#theater-button {
+  margin-left: auto;
+}
 #section-guide {
   overflow: hidden;
 }
