@@ -52,7 +52,7 @@ function getCurrentSectionIndex(currentTime) {
 let arrowUpdateInterval;
 
 // Percentage of window height at which elements on list are considered to be off screen and moved up accordingly
-const LIST_MOVE_THRESHOLD = 0.75;
+const LIST_MOVE_THRESHOLD = 0.5;
 
 function animateSections(rowIndex = 0) {
   // Clear the interval with each manual update so that the interval doesn't change the arrow right before/after the user does
