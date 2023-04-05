@@ -416,6 +416,7 @@ function listenHandler() {
     $("#video-selection-button").show();
     $("#theater-button").show();
     $("#listen-button").text(listenOffButton);
+    $(".ui-row").css("justify-content", "flex-start");
     $("#video-column").css("order", "1");
     $("#animation-column").css("order", "0");
     listenActive = false;
@@ -425,6 +426,7 @@ function listenHandler() {
     $("#video-selection-button").hide();
     $("#theater-button").hide();
     $("#listen-button").text(listenOnButton);
+    $(".ui-row").css("justify-content", "space-between");
     $("#video-column").css("order", "0");
     $("#animation-column").css("order", "1");
     listenActive = true;

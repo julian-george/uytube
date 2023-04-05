@@ -12,9 +12,9 @@ table,
 table button {
   font-size: 0.9em;
 }
-.row {
+.ui-row {
   display: inline-flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
   max-width: 100vw;
 }
