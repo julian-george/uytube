@@ -35,7 +35,7 @@ function getCurrentSectionIndex(currentTime) {
     nestedData.content[i + 1][0] <= currentTime;
     i++
   ) {
-    rowIndex += nestedData.content[i][1].content.length + 1;
+    rowIndex += nestedData.content[i][1].content.length;
     if (nestedData.content[i][1].content[0][1].division != "") rowIndex += 1;
   }
   const currentDivision = nestedData.content[i][1];
@@ -140,12 +140,5 @@ function renderSections() {
         rowIndex++;
       }
     }
-    sectionElement.append(
-      // Adds the psuedo-section [END] which is the right before the end of next section or, if no next section, before the end of the video
-      `<div id="section-row-${rowIndex}" class="section-nav division" onclick="player.seekTo(${
-        (nestedData.content?.[i + 1]?.[0] || player.getDuration()) - 3
-      })"><i>[END]</i></div>`
-    );
-    rowIndex++;
   }
 }
