@@ -4,7 +4,7 @@
 let player;
 
 const smallPlayerSize = { width: "420", height: "250" };
-const largePlayerSize = { width: "72.5vw", height: "92.5vh" };
+const largePlayerSize = { width: "1080", height: "92.5vh" };
 
 // List of alernating colors that will be used before user inputs their own
 const defaultColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
