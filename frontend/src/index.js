@@ -3,7 +3,7 @@
 
 let player;
 
-const tinyPlayerSize = { width: "360", height: "180" };
+const tinyPlayerSize = { width: "240", height: "90" };
 const smallPlayerSize = { width: "420", height: "250" };
 const largePlayerSize = { width: "1080", height: "92.5vh" };
 
