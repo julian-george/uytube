@@ -133,12 +133,9 @@ function renderSections() {
     // Iterate thru each section's inner divisions and render them
     for (let j = 0; j < (contentI?.content || []).length; j++) {
       const [beginJ, contentJ] = contentI.content[j];
-
       if (contentJ.division != "") {
         sectionElement.append(
-          `<div id="section-row-${rowIndex}" class="section-nav division" onclick="player.seekTo(${
-            beginJ + 1
-          })"> ${contentJ.division}</div>`
+          `<div id="section-row-${rowIndex}" class="section-nav division" onclick="player.seekTo(${beginJ})"> ${contentJ.division}</div>`
         );
         rowIndex++;
       }
