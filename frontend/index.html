@@ -17,7 +17,7 @@
 <html>
 <body>
 <div class="row">
-  <div class="column" id="animation-col">
+  <div class="column" id="animation-column">
 
     <div>
       <button style="margin-top:0.5em;margin-bottom:0.5em;font-size:1em" onclick="player.playVideo();player.seekTo(0, true);playSVG(0)">
@@ -401,19 +401,23 @@
 
   </div>
 
-  <div class="column">
+  <div class="column" id="video-column">
 
     <!-- Youtube embed -->
     <div id="player"></div>
 
     <div id="video-controls-row">
       <button onclick="newYoutubeSelection()" id="video-selection-button">New Youtube selection</button>
-      <button onclick="theaterHandler()" id="theater-button"> Enter theater mode </button>
+      <div id="video-mode-col">
+        <button onclick="theaterHandler()" id="theater-button"> Enter theater mode </button>
+        <button onClick="listenHandler()" id="listen-button"> Enter listening mode </button>
+      </div>
+      
     </div>
 
   </div>
 
-  <div class="column" id="form-column">
+  <div class="column" id="form-column" style="order:2">
 
     <!-- Upload -->
     <div>

@@ -6,10 +6,14 @@ let formDirty = false;
 // Whether or not the page is currently in theater mode
 let theaterActive = false;
 
+// Whether or not the page is currently in listening mode
+let listenActive = false;
+
 $(window).on("load", () => {
+  const urlParams = new URLSearchParams(window.location.search);
   // If there is a theater variable in the URL, call theaterHandler to resize player on load
-  if (new URLSearchParams(window.location.search).get("theater") != null)
-    theaterHandler();
+  if (urlParams.get("theater") != null) theaterHandler();
+  else if (urlParams.get("listen") != null) listenHandler();
 });
 
 function importJson() {
@@ -382,15 +386,49 @@ function theaterHandler() {
   if (theaterActive) {
     $("#form-column").show();
     $("#video-selection-button").show();
+    $("#listen-button").show();
     $("#theater-button").text(theaterOffButton);
     theaterActive = false;
     currUrl.delete("theater");
   } else {
     $("#form-column").hide();
     $("#video-selection-button").hide();
+    $("#listen-button").hide();
     $("#theater-button").text(theaterOnButton);
     theaterActive = true;
     currUrl.set("theater", "true");
+  }
+  window.history.replaceState("", "", "?" + currUrl.toString());
+}
+
+const listenOffButton = "Enter listening mode";
+const listenOnButton = "Exit listening mode";
+
+function listenHandler() {
+  const currUrl = new URLSearchParams(window.location.search);
+  const newSize = listenActive ? smallPlayerSize : tinyPlayerSize;
+  $(player.h).css({
+    height: newSize.height,
+    width: newSize.width,
+  });
+  if (listenActive) {
+    $("#form-column > ").show();
+    $("#video-selection-button").show();
+    $("#theater-button").show();
+    $("#listen-button").text(listenOffButton);
+    $("#video-column").css("order", "1");
+    $("#animation-column").css("order", "0");
+    listenActive = false;
+    currUrl.delete("listen");
+  } else {
+    $("#form-column > ").hide();
+    $("#video-selection-button").hide();
+    $("#theater-button").hide();
+    $("#listen-button").text(listenOnButton);
+    $("#video-column").css("order", "0");
+    $("#animation-column").css("order", "1");
+    listenActive = true;
+    currUrl.set("listen", "true");
   }
   window.history.replaceState("", "", "?" + currUrl.toString());
 }
