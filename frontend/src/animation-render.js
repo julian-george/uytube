@@ -52,7 +52,7 @@ function getCurrentSectionIndex(currentTime) {
 let arrowUpdateInterval;
 
 // Percentage of window height at which elements on list are considered to be off screen and moved up accordingly
-const LIST_MOVE_THRESHOLD = 0.8;
+const LIST_MOVE_THRESHOLD = 0.98;
 
 // Where section text will be offset to once threshold is crossed
 const VERT_CENTER = window.innerHeight * 0.5;
