@@ -43,3 +43,8 @@ function onPlayerStateChange(event) {
     pauseSVG();
   }
 }
+
+function playFromFirstSection() {
+  player.playVideo();
+  player.seekTo(nestedData?.content?.[0]?.[0] || 0, true);
+}

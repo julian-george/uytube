@@ -55,7 +55,7 @@ let arrowUpdateInterval;
 const LIST_MOVE_THRESHOLD = 0.98;
 
 // Where section text will be offset to once threshold is crossed
-const VERT_CENTER = window.innerHeight * 0.5;
+const VERT_CENTER = window.innerHeight * 0.6;
 
 function animateSections(rowIndex = 0) {
   // Clear the interval with each manual update so that the interval doesn't change the arrow right before/after the user does
@@ -64,6 +64,9 @@ function animateSections(rowIndex = 0) {
   const arrowElement = $("#section-arrow");
   const arrowHeight = parseFloat(arrowElement.css("height") || 0);
   const currentRowElement = $(`#section-row-${rowIndex}`);
+  if (currentRowElement?.text()?.includes("[End]")) {
+    player.pauseVideo();
+  }
   const textHeight = parseFloat(currentRowElement.css("font-size"));
   const currentRowTop = parseFloat(currentRowElement.position()?.top || 0);
 

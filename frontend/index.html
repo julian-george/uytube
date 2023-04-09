@@ -20,7 +20,7 @@
   <div class="column" id="animation-column">
 
     <div>
-      <button style="margin-top:0.5em;margin-bottom:0.5em;font-size:1em" onclick="player.playVideo();player.seekTo(0, true);playSVG(0)">
+      <button style="margin-top:0.5em;margin-bottom:0.5em;font-size:1em" onclick="playFromFirstSection();playSVG(0)">
         <!-- To do: skip long lead-ins -->
         PLAY VIDEO AND SVG ANIMATION
       </button>
@@ -445,10 +445,10 @@
     <div>
       <table id="table" text-align="left">
         <tr>
-          <th style="text-align:left">Time | </th>
-          <th style="text-align:left">Edit</th>
+          <th style="text-align:left">Time</th>
+          <th style="text-align:left;min-width:230px"> | Edit</th>
           <th style="text-align:left"> | Description</th>
-          <th style="text-align:left"> | Color</th>
+          <th style="text-align:left;min-width:260px"> | Color</th>
         </tr>
       </table>
     </div>

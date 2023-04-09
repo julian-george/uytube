@@ -17,7 +17,7 @@ function replaceData(newData) {
 }
 
 // The amount of seconds that the arrow keys change the player's time
-const SECONDS_TO_SEEK = 15;
+const SECONDS_TO_SEEK = 5;
 
 // Handles arrow shortcuts to seek when the player isn't focused
 document.onkeydown = (e) => {
