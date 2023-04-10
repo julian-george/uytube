@@ -45,5 +45,6 @@ function onPlayerStateChange(event) {
 }
 
 function playFromFirstSection() {
+  player.playVideo();
   player.seekTo(nestedData?.content?.[0]?.[0] || 0, true);
 }
