@@ -46,6 +46,4 @@ function onPlayerStateChange(event) {
 
 function playFromFirstSection() {
   player.seekTo(nestedData?.content?.[0]?.[0] || 0, true);
-  setTimeout(player.playVideo, 500);
-  // player.playVideo();
 }
