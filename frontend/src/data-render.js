@@ -123,15 +123,6 @@ function loadTable() {
   if (scroll.length != nt_flat.length) {
     return;
   }
-  for (i = 0; i < scroll.length; i++) {
-    addEntry(
-      scroll[i].scope,
-      nt_flat[i],
-      scroll[i].element,
-      scroll[i].sectionIdx,
-      scroll[i].color
-    );
-  }
 }
 
 // Change video
@@ -144,89 +135,84 @@ function newYoutubeSelection() {
   setUnsaved();
 }
 
-function handleEntryInput(scope) {
-  addEntry(scope);
-  setUnsaved();
+function handleEntryInput(level) {
+  if (player.getCurrentTime() != undefined) {
+    const sectionTitle = prompt("Input section name");
+    addSection(
+      sectionTitle,
+      Math.floor(player.getCurrentTime() * 10) / 10,
+      level
+    );
+  }
 }
 
-// Create table
-function addEntry(
-  scope = null,
-  time = null,
-  desc = null,
-  // TODO: this is prone to errors. we need to stop storing data as HTML
-  sectionIdx = $(".section-color-picker").length,
-  color = null
-) {
-  // TODO: sort table
+const levelPrefixes = {
+  0: "",
+  1: "> ",
+  2: ">> ",
+};
 
-  let stamp =
-    time != null ? time : Math.round(fs * player.getCurrentTime()) / fs;
+function renderPanel() {
+  $("#table>tbody>tr").remove();
+  for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
+    const section = state.sections[sectionIdx];
+    const { time, level, title, color } = section;
+    const stamp =
+      time != null ? time : Math.round(fs * player.getCurrentTime()) / fs;
 
-  var row = document.createElement("TR");
-  var cellTime = document.createElement("TD");
-  var cellCtrl = document.createElement("TD");
-  var cellDesc = document.createElement("TD");
-  let cellColor = document.createElement("TD");
-  cellDesc.className = "cell-description clickable";
+    const row = document.createElement("TR");
+    const cellTime = document.createElement("TD");
+    const cellCtrl = document.createElement("TD");
+    const cellDesc = document.createElement("TD");
+    const cellColor = document.createElement("TD");
+    cellDesc.className = "cell-description clickable";
 
-  user_txt = desc != null ? desc : prompt("Describe", "");
-  if (!user_txt) {
-    user_txt = "";
+    const descNode = document.createTextNode(levelPrefixes[level] + title);
+
+    const timeNode = document.createTextNode(stamp.toString());
+
+    cellTime.appendChild(timeNode);
+    row.appendChild(cellTime);
+    cellCtrl.innerHTML =
+      `<button onclick="deleteSection(${sectionIdx})">Delete</button>` +
+      '<button onclick="cueVideo(this)">Cue video</button>' +
+      `<button onclick="pushSectionTime(${
+        -1 / fs
+      }, ${sectionIdx})">-</button>` +
+      `<button onclick="pushSectionTime(${1 / fs},${sectionIdx})">+</button>` +
+      '<button onclick="redescribe(this)">Redescribe</button>';
+    row.appendChild(cellCtrl);
+    cellDesc.appendChild(descNode);
+    row.appendChild(cellDesc);
+    if (level == 0) {
+      const currentColor =
+        color || defaultColors[sectionIdx % defaultColors.length];
+
+      cellColor.innerHTML = `
+    <div id="picker-${sectionIdx}">
+    <input type="text" class="section-color-picker" value="${currentColor}" style="border-color:${currentColor}"></input>
+    <button class="section-picker-close" style="display:none">Done Picking Color</button>
+    <div class="section-picker-container"></div></div>`;
+
+      row.appendChild(cellColor);
+    }
+    $("#table>tbody").append(row);
+
+    if (level == 0)
+      $(cellColor)
+        .find("input")
+        .iris({
+          width: 200,
+          hide: true,
+          target: $(cellColor).find(".section-picker-container"),
+          change: (event, ui) => {
+            const hsl = ui.color._hsl;
+            $(cellColor)
+              .find("input")
+              .css("border-color", `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`);
+          },
+        });
   }
-  var timenode = document.createTextNode(stamp.toString());
-  if (scope == "small") {
-    var descnode = document.createTextNode("> " + user_txt);
-  } else {
-    var descnode = document.createTextNode("" + user_txt);
-  }
-
-  cellTime.appendChild(timenode);
-  row.appendChild(cellTime);
-
-  cellCtrl.innerHTML =
-    "" +
-    '<button onclick="deleteRow(this)">Delete</button>' +
-    '<button onclick="cueVideo(this)">Cue video</button>' +
-    '<button onclick="pushStamp(this,' +
-    -1 / fs +
-    ')">-</button>' +
-    '<button onclick="pushStamp(this,' +
-    1 / fs +
-    ')">+</button>' +
-    '<button onclick="redescribe(this)">Redescribe</button>';
-  row.appendChild(cellCtrl);
-
-  cellDesc.appendChild(descnode);
-  row.appendChild(cellDesc);
-
-  const currentColor =
-    color || defaultColors[sectionIdx % defaultColors.length];
-
-  cellColor.innerHTML = `
-  <div id="picker-${sectionIdx}">
-  <input type="text" class="section-color-picker" value="${currentColor}" style="border-color:${currentColor}"></input>
-  <button class="section-picker-close" style="display:none">Done Picking Color</button>
-  <div class="section-picker-container"></div></div>`;
-
-  if (scope == "large") row.appendChild(cellColor);
-
-  document.getElementById("table").appendChild(row);
-
-  if (scope == "large")
-    $(cellColor)
-      .find("input")
-      .iris({
-        width: 200,
-        hide: true,
-        target: $(cellColor).find(".section-picker-container"),
-        change: (event, ui) => {
-          const hsl = ui.color._hsl;
-          $(cellColor)
-            .find("input")
-            .css("border-color", `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`);
-        },
-      });
 }
 
 $(document).on("focus", ".section-color-picker", (event) => {

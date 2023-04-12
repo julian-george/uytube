@@ -5,6 +5,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
   <script src="src/lib/iris.js"></script>
   <script src="src/index.js"></script>
+  <script src="src/state.js"></script>
   <script src="src/network.js"></script>
   <script src="src/video-player.js"></script>
   <script src="src/data-render.js"></script>
@@ -434,8 +435,9 @@
       <input type="text" placeholder="Type ID Here" id="idInput"> 
       <button onclick="openId()" style="margin-bottom:6px">Load from Cloud</button>
       <br>
-      <button onclick="handleEntryInput('large')" accesskey="l" style="margin-bottom:6px">Start large section</button>
-      <button onclick="handleEntryInput('small')" accesskey="s">Start small section</button>
+      <button onclick="handleEntryInput(0)" accesskey="s" style="margin-bottom:6px">Start section</button>
+      <button onclick="handleEntryInput(1)" accesskey="d">Start division</button>
+      <button onclick="handleEntryInput(2)" accesskey="m">Start moment</button>
       <br>
       <button onclick="compileDataAndRender()">Preview Animation</button>
     </div>
