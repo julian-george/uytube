@@ -22,7 +22,6 @@ function importJson() {
   // adapted
   var files = document.getElementById("selectFiles").files;
   if (files.length <= 0) {
-    loadTable();
     return false;
   }
 
@@ -32,20 +31,12 @@ function importJson() {
     var result = JSON.parse(e.target.result);
     replaceData(result);
     setUnsaved();
-    loadTable();
     player.cueVideoById(result["videoId"]);
 
     renderSVG(result);
   };
 
   fr.readAsText(files.item(0));
-}
-
-// https://stackoverflow.com/a/46325093
-function deleteRow(r) {
-  var i = r.parentNode.parentNode.rowIndex;
-  document.getElementById("table").deleteRow(i);
-  setUnsaved();
 }
 
 function cueVideo(r) {
@@ -55,95 +46,31 @@ function cueVideo(r) {
   player.seekTo(stamp);
 }
 
-function pushStamp(r, num = 0) {
-  if (isNaN(num)) {
-    return;
-  }
-  entry = r.parentNode.parentNode.firstChild;
-  setUnsaved();
-  return (entry.innerHTML =
-    Math.round(fs * (Number(entry.innerHTML) + Number(num))) / fs);
+function redescribe(sectionIdx) {
+  const oldTitle = state.sections[sectionIdx].title;
+  const newTitle = prompt("Describe", oldTitle);
+  if (!newTitle || newTitle == "") return;
+  retitleSection(newTitle, sectionIdx);
 }
 
-function redescribe(r) {
-  entry = $(r.parentNode).siblings(".cell-description");
-  let user_input = prompt("Describe", $(entry).text());
-  if (user_input == null) return null;
-  let prefix = "";
-  let message = user_input;
-  const caratIndex = user_input.indexOf(">");
-  if (caratIndex != -1) {
-    prefix = user_input.substring(0, caratIndex + 1);
-    message = user_input.substring(caratIndex);
-    for (let i = caratIndex; i < user_input.length; i++) {
-      const currChar = user_input.charAt(i);
-      if (currChar != ">" && currChar != " ") {
-        message = user_input.substring(i);
-        prefix += " ";
-        break;
-      }
-    }
-  }
-  setUnsaved();
-  return entry.text(prefix + message);
-}
-
-function loadTable() {
-  let row_count = document.getElementById("table").rows.length;
-  for (i = row_count - 1; i > 0; i--) {
-    document.getElementById("table").deleteRow(i);
-  }
-
-  let nt = nestedData["content"].map((sec) =>
-    sec[1]["content"].map((div) => div[0])
-  );
-  let nt_flat = nt.flat();
-  let scroll = [];
-  for (n = 0; n < nt.length; n++) {
-    for (i = 0; i < nt[n].length; i++) {
-      let cnode = nestedData["content"][n][1];
-      if (i == 0) {
-        const divisionText = cnode["content"][i][1]["division"];
-        scroll.push({
-          scope: "large",
-          element:
-            cnode["section"] + (divisionText != "" ? ` > ${divisionText}` : ""),
-          sectionIdx: n,
-          color: nestedData.content[n][1]?.color,
-        });
-      } else {
-        scroll.push({
-          scope: "small",
-          element: cnode["content"][i][1]["division"],
-          sectionIdx: n,
-        });
-      }
-    }
-  }
-  if (scroll.length != nt_flat.length) {
-    return;
-  }
-}
-
-// Change video
 function newYoutubeSelection() {
-  let idInput = prompt("Enter new Youtube ID", "");
-  let parsedId = new URLSearchParams(idInput.split("?")?.[1] || idInput).get(
+  const idInput = prompt("Enter new Youtube ID", state?.youtubeId || "");
+  if (!parsedId || parsedId == "") return;
+  const parsedId = new URLSearchParams(idInput.split("?")?.[1] || idInput).get(
     "v"
   );
+  setYoutubeId(parsedId);
   player.cueVideoById(parsedId || idInput);
-  setUnsaved();
 }
 
 function handleEntryInput(level) {
-  if (player.getCurrentTime() != undefined) {
-    const sectionTitle = prompt("Input section name");
-    addSection(
-      sectionTitle,
-      Math.floor(player.getCurrentTime() * 10) / 10,
-      level
-    );
-  }
+  if (!player?.getCurrentTime) return;
+  const sectionTitle = prompt("Input section name");
+  addSection(
+    sectionTitle,
+    Math.floor(player.getCurrentTime() * 10) / 10,
+    level
+  );
 }
 
 const levelPrefixes = {
@@ -157,8 +84,7 @@ function renderPanel() {
   for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
     const section = state.sections[sectionIdx];
     const { time, level, title, color } = section;
-    const stamp =
-      time != null ? time : Math.round(fs * player.getCurrentTime()) / fs;
+    const stamp = time;
 
     const row = document.createElement("TR");
     const cellTime = document.createElement("TD");
@@ -180,7 +106,7 @@ function renderPanel() {
         -1 / fs
       }, ${sectionIdx})">-</button>` +
       `<button onclick="pushSectionTime(${1 / fs},${sectionIdx})">+</button>` +
-      '<button onclick="redescribe(this)">Redescribe</button>';
+      `<button onclick="redescribe(${sectionIdx})">Redescribe</button>`;
     row.appendChild(cellCtrl);
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
@@ -190,7 +116,7 @@ function renderPanel() {
 
       cellColor.innerHTML = `
     <div id="picker-${sectionIdx}">
-    <input type="text" class="section-color-picker" value="${currentColor}" style="border-color:${currentColor}"></input>
+    <input type="text" class="section-color-picker" value="${currentColor}" style="border-color:${currentColor}" name="section-color-picker-${sectionIdx}"> </input>
     <button class="section-picker-close" style="display:none">Done Picking Color</button>
     <div class="section-picker-container"></div></div>`;
 
@@ -205,11 +131,13 @@ function renderPanel() {
           width: 200,
           hide: true,
           target: $(cellColor).find(".section-picker-container"),
+          palettes: ["#125", "#459", "#78b", "#ab0", "#de3", "#f0f"],
           change: (event, ui) => {
             const hsl = ui.color._hsl;
             $(cellColor)
               .find("input")
               .css("border-color", `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`);
+            $(event.target).val(ui.color.toString());
           },
         });
   }
@@ -224,111 +152,12 @@ $(document).on("focus", ".section-color-picker", (event) => {
   setUnsaved();
 });
 $(document).on("click", ".section-picker-close", (event) => {
-  $(event.target)
-    .siblings(".section-picker-container")
-    .find(".iris-picker")
-    .hide();
-  $(event.target).hide();
+  const inputEle = $(event.target).siblings("input.section-color-picker");
+  const sectionIdx = inputEle.attr("name").split("-").pop();
+  const newColor = inputEle.val();
+  // The re-render from this hides the color picker
+  recolorSection(newColor, sectionIdx);
 });
-
-// Compile data
-function compileDataAndRender(download = false, upload = false) {
-  // Get user entries
-  items = document.getElementById("table").rows;
-
-  if (items.length <= 1) {
-    alert("You must add a section before saving.");
-    return false;
-  }
-
-  let ta = [];
-  for (i = 1; i < items.length; i++) {
-    stamp = Number(
-      items[i].cells[0].innerText || items[i].cells[0].textContent
-    );
-    description = items[i].cells[2].innerText || items[i].cells[2].textContent;
-    ta.push([stamp, description]);
-  }
-  ta = ta.sort(function (a, b) {
-    return a[0] - b[0];
-  });
-
-  // Parse data
-  let newData = [];
-  const colorInputs = $(".section-color-picker").toArray();
-  let sectionIdx = 0;
-  for (i = 0; i < ta.length; i++) {
-    ds = ta[i][1].split(/ *> */);
-    if (ds.length == 1) {
-      // new large section
-      newData.push([
-        ta[i][0],
-        {
-          section: ds[0],
-          color: $(colorInputs[sectionIdx]).val(),
-          content: [[ta[i][0], { division: "" }]],
-        },
-      ]);
-      sectionIdx++;
-    } else if (ds.length == 2) {
-      if (ds[0] != "") {
-        // new large, small sections
-        newData.push([
-          ta[i][0],
-          {
-            section: ds[0],
-            color: $(colorInputs[sectionIdx]).val(),
-            content: [[ta[i][0], { division: ds[1] }]],
-          },
-        ]);
-        sectionIdx++;
-      } else if (ds[0] == "" && newData.length == 0) {
-        // new small section; no large section to contain it yet
-        newData.push([
-          ta[i][0],
-          { section: "", content: [[ta[i][0], { division: ds[1] }]] },
-        ]);
-      } else {
-        // new small section; will be nested under existing large section
-        newData[newData.length - 1][1]["content"].push([
-          ta[i][0],
-          { division: ds[1] },
-        ]);
-      }
-    }
-  }
-
-  // Provide data
-  let videoId = player.getVideoData()["video_id"];
-  let title = player.getVideoData()["title"];
-
-  // let json_pretty = '{\n  "videoId": "'
-  //   + videoId + '",\n  "Youtube title": "'
-  //   + title + '",\n  "content":'
-  //   + JSON.stringify(newData)
-  //   .replace(/(\[[0-9.]+,{"division")/g, '\n        $1')
-  //   .replace(/(\[[0-9.]+,{"section")/g, '\n    $1')
-  //   .replace(/(]}])/g, '\n      $1')
-  //   .replace(/(}])(])/g, '$1\n  $2')
-  //   + '\n}'
-  let returnObject = {
-    videoId: videoId,
-    "Youtube title": title,
-    content: newData,
-  };
-  let json_pretty = JSON.stringify(returnObject);
-  replaceData(returnObject);
-
-  renderSVG(returnObject);
-
-  loadTable();
-  renderSections();
-  if (download) {
-    downloadObjectAsJson(json_pretty, videoId);
-  } else if (upload) {
-    return json_pretty;
-  }
-}
 
 // Before the page is unloaded (exited), returns a warning messages that will pop up for the user
 // On most browsers, our custom string won't be in the popup

@@ -80,6 +80,11 @@ table button {
   margin-left: 40px;
 }
 
+.moment {
+  font-size: 12px;
+  margin-left: 56px;
+}
+
 .section-color-picker {
   border-width: 2.5px;
   border-style: solid;

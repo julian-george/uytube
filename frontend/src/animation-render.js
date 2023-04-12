@@ -1,3 +1,10 @@
+// Set as -1 so that when first entry is added to state.content, onSectionChange() is called
+let currentSectionIdx = -1;
+
+const onSectionChange = () => {
+  animateSections();
+};
+
 function playSVG(cue = null) {
   if (cue == null) {
     cue = Math.round(fs * player.getCurrentTime()) / fs;
@@ -21,49 +28,31 @@ function renderSVG(newData) {
   svg.setCurrentTime(cue);
 }
 
-// TODO: change data structure to make this function less convoluted and prone to error
-function getCurrentSectionIndex(currentTime) {
-  if (nestedData.content.length == 0) return;
-  // These are the indexes of the current section within the data's three levels of depth
-  let i, j;
-  // This is the index of the html row that corresponds to the current section
-  let rowIndex = 0;
-  // Using for loops to iterate thru the nested data, stopping when a section is found with a greater timestamp than the current time
-  for (
-    i = 0;
-    i < nestedData.content.length - 1 &&
-    nestedData.content[i + 1][0] <= currentTime;
-    i++
-  ) {
-    rowIndex += nestedData.content[i][1].content.length;
-    if (nestedData.content[i][1].content[0][1].division != "") rowIndex += 1;
-  }
-  const currentDivision = nestedData.content[i][1];
-  for (
-    j = 0;
-    j < currentDivision.content.length &&
-    currentDivision.content[j][0] <= currentTime;
-    j++
-  ) {
-    if (currentDivision.content[j][1].division != "") rowIndex += 1;
-  }
-  return rowIndex;
-}
-let arrowUpdateInterval;
-
 // Percentage of window height at which elements on list are considered to be off screen and moved up accordingly
 const LIST_MOVE_THRESHOLD = 0.98;
 
 // Where section text will be offset to once threshold is crossed
 const VERT_CENTER = window.innerHeight * 0.6;
 
-function animateSections(rowIndex = 0) {
-  // Clear the interval with each manual update so that the interval doesn't change the arrow right before/after the user does
-  if (arrowUpdateInterval) clearInterval(arrowUpdateInterval);
+setInterval(() => {
+  if (!player?.getCurrentTime) return;
+  const currTime = player?.getCurrentTime() || 0;
+  const newIndex = timeToIndex(currTime);
+  if (newIndex != currentSectionIdx) {
+    currentSectionIdx = newIndex;
+    onSectionChange();
+  }
+}, 100);
 
+function animateSections() {
   const arrowElement = $("#section-arrow");
+  if (currentSectionIdx == -1) {
+    arrowElement.hide();
+  } else {
+    arrowElement.show();
+  }
   const arrowHeight = parseFloat(arrowElement.css("height") || 0);
-  const currentRowElement = $(`#section-row-${rowIndex}`);
+  const currentRowElement = $(`#section-row-${currentSectionIdx}`);
   if (currentRowElement?.text()?.includes("[End]")) {
     player.pauseVideo();
   }
@@ -101,15 +90,11 @@ function animateSections(rowIndex = 0) {
     // Only show the arrow once everything has been rendered
     if (newArrowTop) arrowElement.show();
   });
-  arrowUpdateInterval = setInterval(() => {
-    const rowIndex = getCurrentSectionIndex(player.getCurrentTime());
-    animateSections(rowIndex);
-  }, 500);
 }
 
 $(window).on("load", () => {
   renderSections();
-  animateSections(getCurrentSectionIndex(player.getCurrentTime()));
+  animateSections();
   $(".section-nav").click((event) => {
     const clickedRowIndex = $(event.target)
       .attr("id")
@@ -119,32 +104,29 @@ $(window).on("load", () => {
 });
 
 $(window).on("resize", () => {
-  animateSections(getCurrentSectionIndex(player.getCurrentTime()));
+  animateSections();
 });
+
+const levelClasses = {
+  0: "section",
+  1: "division",
+  2: "moment",
+};
 
 function renderSections() {
   const sectionElement = $("#section-guide-list");
   sectionElement.html("");
-  let rowIndex = 0;
   // Iterate thru nestedData's outer sections and render them
-  for (let i = 0; i < nestedData.content.length; i++) {
-    const [beginI, contentI] = nestedData.content[i];
-    const firstDivision = contentI.content?.[0]?.[1]?.division;
+  for (let i = 0; i < state.sections.length; i++) {
+    const currSection = state.sections[i];
     sectionElement.append(
       `<div style="display:inline-flex">
-        <div id="section-row-${rowIndex}" class="section-nav" onclick="player.seekTo(${beginI});">${contentI.section}</div>
-        </div>`
+        <div id="section-row-${i}" class="section-nav ${
+        levelClasses[currSection.level]
+      }" onclick="player.seekTo(${currSection.time});">${
+        currSection.title
+      }</div>
+      </div>`
     );
-    rowIndex++;
-    // Iterate thru each section's inner divisions and render them
-    for (let j = 0; j < (contentI?.content || []).length; j++) {
-      const [beginJ, contentJ] = contentI.content[j];
-      if (contentJ.division != "") {
-        sectionElement.append(
-          `<div id="section-row-${rowIndex}" class="section-nav division" onclick="player.seekTo(${beginJ})"> ${contentJ.division}</div>`
-        );
-        rowIndex++;
-      }
-    }
   }
 }
