@@ -1,32 +1,6 @@
-// Set as -1 so that when first entry is added to state.content, onSectionChange() is called
-let currentSectionIdx = -1;
-
 const onSectionChange = () => {
   animateSections();
 };
-
-function playSVG(cue = null) {
-  if (cue == null) {
-    cue = Math.round(fs * player.getCurrentTime()) / fs;
-  }
-  let svg = document.getElementById("form_clock");
-  svg.setCurrentTime(cue);
-  if (![0, 2].includes(player.getPlayerState())) {
-    svg.unpauseAnimations();
-  }
-}
-function pauseSVG() {
-  let svg = document.getElementById("form_clock");
-  svg.pauseAnimations();
-}
-function renderSVG(newData) {
-  let svg = document.getElementById("form_clock");
-  svg.setCurrentTime(0);
-  replaceData(newData);
-  drawForm();
-  cue = Math.round(fs * player.getCurrentTime()) / fs;
-  svg.setCurrentTime(cue);
-}
 
 // Percentage of window height at which elements on list are considered to be off screen and moved up accordingly
 const LIST_MOVE_THRESHOLD = 0.98;

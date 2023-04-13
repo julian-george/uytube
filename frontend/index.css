@@ -93,3 +93,51 @@ table button {
 #player {
   max-width: 70vw;
 }
+
+#dial-0 {
+  border-radius: 50%;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background-image: conic-gradient(orange 50%, blue 50%);
+  align-items: center;
+}
+
+#dial-1 {
+  border-radius: 50%;
+  width: 80%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  background-image: conic-gradient(blue, red);
+  align-items: center;
+}
+
+.circle-mask {
+  width: 80%;
+  height: 80%;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#clock-container {
+  overflow: hidden;
+  aspect-ratio: 2/1;
+  position: relative;
+}
+
+#dial-indicator {
+  width: 28%;
+  height: 4px;
+  background-color: #222;
+  position: absolute;
+  left: 22%;
+  top: calc(100% - 4px);
+  transform-origin: 100% 100%;
+}

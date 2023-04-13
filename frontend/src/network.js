@@ -1,7 +1,7 @@
-let backendUrl = window.location.protocol + "//" + window.location.hostname;
+// let backendUrl = window.location.protocol + "//" + window.location.hostname;
 // when deploying locally, use this instead for backendUrl: (change 3000 to whatever port is in your env)
-// let backendUrl =
-//   window.location.protocol + "//" + window.location.hostname + ":3000";
+let backendUrl =
+  window.location.protocol + "//" + window.location.hostname + ":3000";
 let videoId;
 let initialData;
 
@@ -30,6 +30,7 @@ function fetchData(id) {
   });
 }
 
+// Converts data from old format into new format
 function convertData(data) {
   const newData = {};
   newData.youtubeId = data.videoId;
@@ -63,7 +64,7 @@ function loadData(data) {
     data = convertData(data);
   }
   setState(data);
-  renderSVG(data);
+  // renderSVG(data);
   renderSections();
   player.cueVideoById(data.videoId);
 }

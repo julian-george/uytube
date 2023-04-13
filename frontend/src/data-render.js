@@ -33,7 +33,7 @@ function importJson() {
     setUnsaved();
     player.cueVideoById(result["videoId"]);
 
-    renderSVG(result);
+    // renderSVG(result);
   };
 
   fr.readAsText(files.item(0));
@@ -55,7 +55,7 @@ function redescribe(sectionIdx) {
 
 function newYoutubeSelection() {
   const idInput = prompt("Enter new Youtube ID", state?.youtubeId || "");
-  if (!parsedId || parsedId == "") return;
+  if (!idInput || idInput == "") return;
   const parsedId = new URLSearchParams(idInput.split("?")?.[1] || idInput).get(
     "v"
   );

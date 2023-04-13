@@ -1,11 +1,19 @@
 const state = {
   youtubeId: null,
+  // 1-D array of sections ordered by time
   sections: [],
+  // Nested array of objects representing hierarchy of sections
+  hierarchy: [],
 };
 
 const setState = (newState) => {
   state.youtubeId = newState.youtubeId;
   state.sections = newState.sections;
+  onStateChange();
+};
+
+const setSections = (newSections) => {
+  state.sections = newSections;
   onStateChange();
 };
 
@@ -15,14 +23,42 @@ const onStateChange = () => {
   setUnsaved();
 };
 
-const sortState = () => {
-  state.sections = state.sections.sort((sectionA, sectionB) => {
+const updateHierarchy = () => {
+  const indices = [0];
+  for (let i = 0; i < state.sections.length; i++) {
+    const currSection = state.sections[i];
+  }
+};
+
+const sortSections = (newSections) => {
+  return newSections.sort((sectionA, sectionB) => {
     if (sectionA.time == sectionB.time) {
       return sectionA.level - sectionB.level;
     } else {
       return sectionA.time - sectionB.time;
     }
   });
+};
+
+// Upon user input (which affects state.sections) iterates thru the new sections array and throws error upon invalid hierarchy
+const validateSections = (newSections) => {
+  if (newSections.length == 0) return;
+  if (newSections[0].level != 0) {
+    throw new Error(
+      "You must add a section before adding any divisions or moments"
+    );
+  }
+  for (let i = 1; i < newSections.length; i++) {
+    const currSection = newSections[i];
+    const prevSection = newSections[i - 1];
+    if (prevSection.level < currSection.level - 1) {
+      if (currSection.level == 1)
+        throw new Error("Invalid hierarchy: divisions must belong to sections");
+      else if (currSection.level == 2)
+        throw new Error("Invalid hierarchy: moments must belong to divisions");
+    }
+  }
+  return newSections;
 };
 
 // Takes a time within the video and returns what section index that it falls under
@@ -34,11 +70,11 @@ const timeToIndex = (time, level = Infinity) => {
     const isFinalSection = i == state.sections.length - 1;
     const currSectionTime = state.sections[i].time;
     const nextSectionTime = state.sections?.[i + 1]?.time || null;
-    // If this is the last section and the current time is >= the current section and < the next section
+    // If this is the last section or the current time is >= the current section and < the next section
     if (
       isFinalSection ||
-      (level < state.sections[i + 1].level && currSectionTime == time) ||
-      (time >= currSectionTime && time < nextSectionTime)
+      (time >= currSectionTime && time < nextSectionTime) ||
+      (level < state.sections[i + 1].level && currSectionTime == time)
     ) {
       return i;
     }
@@ -53,12 +89,18 @@ const addSection = (title, time, level, color = null) => {
     level,
     color,
   };
-  state.sections.push(newSection);
-  sortState();
-  onStateChange();
+  let newSections = [...state.sections, newSection];
+  try {
+    newSections = validateSections(sortSections(newSections));
+    setSections(newSections);
+  } catch (e) {
+    alert(e.message);
+  }
 };
 
 const editSection = (index, newSection) => {
+  // Validation doesn't happen here because we currently don't use editSection to reorder stuff
+  //   if validation ever expands beyond hierarchy enforcement, validate here as well
   state.sections[index] = newSection;
   onStateChange();
 };
@@ -86,14 +128,26 @@ const pushSectionTime = (incrementAmount, sectionIndex) => {
     // Ensuring it stays below video length
     newTime = Math.min(newTime, player.getDuration());
   }
-  state.sections[sectionIndex].time = newTime;
-  sortState();
-  onStateChange();
+  const newSection = { ...state.sections[sectionIndex], time: newTime };
+  let newSections = state.sections.map((section, i) =>
+    i == sectionIndex ? newSection : section
+  );
+  try {
+    newSections = validateSections(sortSections(newSections));
+    setSections(newSections);
+  } catch (e) {
+    alert(e.message);
+  }
 };
 
 const deleteSection = (sectionIndex) => {
-  state.sections.splice(sectionIndex, 1);
-  onStateChange();
+  let newSections = state.sections.filter((_section, i) => i != sectionIndex);
+  try {
+    newSections = validateSections(sortSections(newSections));
+    setSections(newSections);
+  } catch (e) {
+    alert(e.message);
+  }
 };
 
 const setYoutubeId = (newId) => {
