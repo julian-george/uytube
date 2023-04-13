@@ -18,15 +18,54 @@ const setSections = (newSections) => {
 };
 
 const onStateChange = () => {
+  updateHierarchy();
   renderPanel();
   renderSections();
   setUnsaved();
 };
 
 const updateHierarchy = () => {
-  const indices = [0];
+  // Reset the old hierarchy first
+  state.hierarchy = [];
+
+  // Stores the current index within the hierarchy at each level
+  //   ie, if sections[i] is the first moment within division 2 of section 3,
+  //   indices = [2, 1, 0]
+  let indices = [];
+
   for (let i = 0; i < state.sections.length; i++) {
-    const currSection = state.sections[i];
+    // Giving sections a children property to store subsections
+    const currSection = { ...state.sections[i], children: [] };
+    // If entering a higher level (more nested), add a 0 to indices to represent the index at this new level
+    if (currSection.level >= indices.length) {
+      indices.push(0);
+      // If remaining at the same level, increment the index for that level
+    } else if (currSection.level == indices.length - 1) {
+      indices[currSection.level]++;
+      // If going to a lower level, remove indices until the number of indices is the same as the level
+    } else if (currSection.level < indices.length - 1) {
+      while (currSection.level < indices.length - 1) {
+        indices.pop();
+      }
+      // Then, increment that index
+      indices[currSection.level]++;
+    }
+
+    // Now that the indices array has been adjusted, based on the number of indices, push the section to the correct hierarchy level
+    switch (currSection.level) {
+      // Add cases here if more levels are added in the future
+      case 0:
+        state.hierarchy.push(currSection);
+        break;
+      case 1:
+        state.hierarchy[indices[0]].children.push(currSection);
+        break;
+      case 2:
+        state.hierarchy[indices[0]].children[indices[1]].children.push(
+          currSection
+        );
+        break;
+    }
   }
 };
 

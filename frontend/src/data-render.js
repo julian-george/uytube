@@ -64,7 +64,7 @@ function newYoutubeSelection() {
 }
 
 function handleEntryInput(level) {
-  if (!player?.getCurrentTime) return;
+  if (!player?.getCurrentTime || !player.getCurrentTime()) return;
   const sectionTitle = prompt("Input section name");
   addSection(
     sectionTitle,
