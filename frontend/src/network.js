@@ -1,7 +1,7 @@
-// let backendUrl = window.location.protocol + "//" + window.location.hostname;
+let backendUrl = window.location.protocol + "//" + window.location.hostname;
 // when deploying locally, use this instead for backendUrl: (change 3000 to whatever port is in your env)
-let backendUrl =
-  window.location.protocol + "//" + window.location.hostname + ":3000";
+// let backendUrl =
+//   window.location.protocol + "//" + window.location.hostname + ":3000";
 let videoId;
 let initialData;
 
@@ -30,15 +30,43 @@ function fetchData(id) {
   });
 }
 
+function convertData(data) {
+  const newData = {};
+  newData.youtubeId = data.videoId;
+  newData.sections = [];
+  for (let i = 0; i < data.content.length; i++) {
+    const currSection = data.content[i];
+    newData.sections.push({
+      title: currSection[1].section,
+      time: currSection[0],
+      level: 0,
+    });
+    for (let j = 0; j < currSection[1].content.length; j++) {
+      const currDivision = currSection[1].content[j];
+      const divisionTitle = currDivision[1].division;
+      if (divisionTitle != "") {
+        newData.sections.push({
+          title: divisionTitle,
+          time: currDivision[0],
+          level: 1,
+        });
+      }
+    }
+  }
+  return newData;
+}
+
 // Fully loads the data into the UI
 function loadData(data) {
-  initialData = data;
-  replaceData(data);
+  // If this data is in the old format
+  if (Object.keys(data).includes("Youtube title")) {
+    data = convertData(data);
+  }
+  setState(data);
   renderSVG(data);
   renderSections();
   player.cueVideoById(data.videoId);
 }
-
 // Uploads the data
 function uploadData() {
   let data = compileDataAndRender(false, true);

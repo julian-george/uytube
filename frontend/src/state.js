@@ -3,6 +3,12 @@ const state = {
   sections: [],
 };
 
+const setState = (newState) => {
+  state.youtubeId = newState.youtubeId;
+  state.sections = newState.sections;
+  onStateChange();
+};
+
 const onStateChange = () => {
   renderPanel();
   renderSections();
