@@ -1,31 +1,13 @@
-const onSectionChange = () => {
-  animateSections();
-};
-
 // Percentage of window height at which elements on list are considered to be off screen and moved up accordingly
 const LIST_MOVE_THRESHOLD = 0.98;
 
 // Where section text will be offset to once threshold is crossed
 const VERT_CENTER = window.innerHeight * 0.6;
 
-setInterval(() => {
-  if (!player?.getCurrentTime) return;
-  const currTime = player?.getCurrentTime() || 0;
-  const newSectionIndex = timeToSectionIdx(currTime);
-  const newHierarchyIndices = timeToHierarchyIdx(currTime);
-  if (newSectionIndex != currentSectionIdx) {
-    currentSectionIdx = newSectionIndex;
-    currentHierachyIndexes = newHierarchyIndices;
-    onSectionChange();
-  }
-}, 100);
-
 function animateSections() {
   const arrowElement = $("#section-arrow");
   if (currentSectionIdx == -1) {
     arrowElement.hide();
-  } else {
-    arrowElement.show();
   }
   const arrowHeight = parseFloat(arrowElement.css("height") || 0);
   const currentRowElement = $(`#section-row-${currentSectionIdx}`);

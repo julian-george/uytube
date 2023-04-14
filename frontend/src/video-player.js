@@ -10,6 +10,7 @@ function onYouTubeIframeAPIReady() {
     videoId: null,
     events: {
       onReady: onPlayerReady,
+      onStateChange: onSectionChange,
     },
     cc_load_policy: 0,
     iv_load_policy: 3,
@@ -20,7 +21,16 @@ function onYouTubeIframeAPIReady() {
   });
 }
 
+function onPlayerReady() {
+  // when the page & player loads, fetch the id from the URL
+  const urlId = new URLSearchParams(window.location.search).get("id");
+  if (urlId != null) {
+    $("#idInput").attr("value", urlId);
+    fetchData(urlId);
+  }
+}
+
 function playFromFirstSection() {
   player.playVideo();
-  player.seekTo(nestedData?.content?.[0]?.[0] || 0, true);
+  player.seekTo(state.sections[0].time);
 }

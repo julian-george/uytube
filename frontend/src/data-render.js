@@ -60,7 +60,6 @@ function newYoutubeSelection() {
     "v"
   );
   setYoutubeId(parsedId);
-  player.cueVideoById(parsedId || idInput);
 }
 
 function handleEntryInput(level) {
@@ -111,8 +110,17 @@ function renderPanel() {
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
     if (level == 0) {
-      const currentColor =
-        color || defaultColors[sectionIdx % defaultColors.length];
+      if (!color) {
+        // TODO: should this affect the data?
+        recolorSection(
+          defaultSectionColors[sectionIdx % defaultSectionColors.length],
+          sectionIdx
+        );
+        // After recoloring, return early to prevent duplicate render
+        return;
+      }
+
+      const currentColor = color;
 
       cellColor.innerHTML = `
     <div id="picker-${sectionIdx}">
@@ -131,7 +139,6 @@ function renderPanel() {
           width: 200,
           hide: true,
           target: $(cellColor).find(".section-picker-container"),
-          palettes: ["#125", "#459", "#78b", "#ab0", "#de3", "#f0f"],
           change: (event, ui) => {
             const hsl = ui.color._hsl;
             $(cellColor)

@@ -94,26 +94,27 @@ table button {
   max-width: 70vw;
 }
 
-#dial-0 {
+.dial-0 {
   border-radius: 50%;
   width: 100%;
   aspect-ratio: 1 / 1;
-  position: relative;
+  position: absolute;
+
   display: flex;
   justify-content: center;
-  background-image: conic-gradient(orange 50%, blue 50%);
   align-items: center;
 }
 
-#dial-1 {
+.dial-1 {
   border-radius: 50%;
-  width: 80%;
+  width: 75%;
   aspect-ratio: 1 / 1;
-  position: relative;
+  position: absolute;
   display: flex;
   justify-content: center;
-  background-image: conic-gradient(blue, red);
   align-items: center;
+  top: 25%;
+  left: 12.5%;
 }
 
 .circle-mask {
@@ -126,7 +127,7 @@ table button {
   align-items: center;
 }
 
-#clock-container {
+#dial-container {
   overflow: hidden;
   aspect-ratio: 2/1;
   position: relative;
@@ -140,4 +141,6 @@ table button {
   left: 22%;
   top: calc(100% - 4px);
   transform-origin: 100% 100%;
+  z-index: 1;
+  transition: transform 40ms;
 }

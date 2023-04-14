@@ -8,7 +8,8 @@ const smallPlayerSize = { width: "420", height: "250" };
 const largePlayerSize = { width: "1080", height: "92.5vh" };
 
 // List of alernating colors that will be used before user inputs their own
-const defaultColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
+const defaultSectionColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
+const defaultDivisionColors = ["#555", "#BBB"];
 
 const numLevels = 3;
 
@@ -18,7 +19,25 @@ let currentSectionIdx = -1;
 
 // Current indices within state.hierarchy
 //   if the current time isn't within one of the sublevels, the index for that level will be -1
-let currentHierachyIndexes = [];
+let currentHierarchyIndexes = [];
+
+const onSectionChange = () => {
+  animateSections();
+  renderDials();
+};
+
+setInterval(() => {
+  if (!player?.getCurrentTime) return;
+  const currTime = player?.getCurrentTime() || 0;
+  const newSectionIndex = timeToSectionIdx(currTime);
+  const newHierarchyIndices = timeToHierarchyIdx(currTime);
+  if (newSectionIndex != currentSectionIdx) {
+    currentSectionIdx = newSectionIndex;
+    currentHierarchyIndexes = newHierarchyIndices;
+    onSectionChange();
+  }
+  animateIndicator(currTime);
+}, 50);
 
 // The amount of seconds that the arrow keys change the player's time
 const SECONDS_TO_SEEK = 5;

@@ -5,15 +5,6 @@ let backendUrl =
 let videoId;
 let initialData;
 
-function onPlayerReady() {
-  // when the page & player loads, fetch the id from the URL
-  const urlId = new URLSearchParams(window.location.search).get("id");
-  if (urlId != null) {
-    $("#idInput").attr("value", urlId);
-    fetchData(urlId);
-  }
-}
-
 // Redirects page to new url with desired ID
 function openId(id = document.getElementById("idInput").value) {
   let newUrl = window.location.origin + "/?id=" + id;

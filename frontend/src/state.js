@@ -19,9 +19,10 @@ const setSections = (newSections) => {
 
 const onStateChange = () => {
   updateHierarchy();
+  setUnsaved();
+  renderDials();
   renderPanel();
   renderSections();
-  setUnsaved();
 };
 
 const updateHierarchy = () => {
@@ -123,7 +124,8 @@ const timeToHierarchyIdx = (time) => {
   const indices = [];
   let sectionList = state.hierarchy;
   for (let levelIdx = 0; levelIdx < numLevels; levelIdx++) {
-    if (sectionList.length == 0) {
+    if (sectionList.length == 0 || time < sectionList?.[0]?.time) {
+      // Push a -1 index if the time doesn't belong to a section of the current level
       indices.push(-1);
       continue;
     }
