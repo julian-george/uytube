@@ -14,7 +14,7 @@ function renderDials() {
   let sectionStarts = [];
   // Array of each section's duration in seconds
   let sectionRanges = [];
-  for (let i = 0; i < state.hierarchy.length; i++) {
+  for (let i = 0; i < state.hierarchy.length - 1; i++) {
     // Length of section in seconds
     let sectionRange =
       (state.hierarchy?.[i + 1]?.time || videoRange) - state.hierarchy[i].time;
