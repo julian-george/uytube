@@ -32,7 +32,7 @@ function onPlayerReady() {
 
 function playFromFirstSection() {
   player.playVideo();
-  player.seekTo(state.sections[0].time);
+  player.seekTo(state.sections[0].time - 2.5);
 }
 
 function onPlayButtonClick() {

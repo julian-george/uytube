@@ -11,9 +11,6 @@ function animateSections() {
   }
   const arrowHeight = parseFloat(arrowElement.css("height") || 0);
   const currentRowElement = $(`#section-row-${currentSectionIdx}`);
-  if (currentRowElement?.text()?.includes("[End]")) {
-    player.pauseVideo();
-  }
   const textHeight = parseFloat(currentRowElement.css("font-size"));
   const currentRowTop = parseFloat(currentRowElement.position()?.top || 0);
 

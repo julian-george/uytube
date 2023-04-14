@@ -166,7 +166,7 @@ const editSection = (index, newSection) => {
 };
 
 const retitleSection = (newTitle, sectionIndex) => {
-  const oldSection = state.sections[i];
+  const oldSection = state.sections[sectionIndex];
   editSection(sectionIndex, {
     ...oldSection,
     title: newTitle,

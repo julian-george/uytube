@@ -60,12 +60,12 @@ function renderDials() {
         180
     );
   }
-  // If this section has no divisions under it, render default inner dial with one section
-  if (currSection.children.length == 0) {
-    dialContainerEle.append(
-      `<div class="dial-1" style="background-image:conic-gradient(from -90deg, ${defaultDivisionColors[0]} 50%, transparent 50%)"><div class="circle-mask"></div></div>`
-    );
-  }
+
+  dialContainerEle.append(
+    `<div class="dial-1" style="background-image:conic-gradient(from -90deg, ${
+      defaultDivisionColors[defaultDivisionColors.length - 1]
+    } 50%, transparent 50%)"><div class="circle-mask"></div></div>`
+  );
   for (let j = 0; j < currSection.children.length; j++) {
     dialContainerEle.append(
       `<div class="dial-1" style="background-image:conic-gradient(from ${
