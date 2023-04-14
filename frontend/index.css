@@ -51,6 +51,7 @@ table button {
 }
 #section-guide-list {
   margin-top: 12px;
+  margin-left: 16px;
   display: flex;
   flex-direction: column;
   padding: 0px 12px;
@@ -64,25 +65,53 @@ table button {
   top: 0;
   animation: top 500ms;
 }
+
+.tree-container {
+  width: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 1.5em;
+}
+
+.top-tree {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  height: 50%;
+}
+.bottom-tree {
+  border-left: 1px solid black;
+  height: 50%;
+}
+
+.section-row {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+.top-level {
+  padding: 2px 0;
+}
 .section-nav {
   cursor: pointer;
-  margin-left: 16px;
   display: inline-block;
   word-break: break-word;
   max-width: 280px;
-  margin-top: 2px;
-  margin-bottom: 2px;
+
   font-size: 16px;
+  height: 100%;
 }
 
 .division {
   font-size: 14px;
-  margin-left: 40px;
+  /* margin-left: 40px; */
 }
 
 .moment {
-  font-size: 12px;
-  margin-left: 56px;
+  font-size: 14px;
+  /* margin-left: 56px; */
 }
 
 .section-color-picker {

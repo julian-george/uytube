@@ -51,6 +51,12 @@ function onPlayButtonClick() {
 function updatePlayButton(currTime) {
   const playButtonEle = $("#play-button > img");
   const playerState = player.getPlayerState();
+  if (!state?.youtubeId || playerState == -1) {
+    $("#play-button").hide();
+  } else {
+    $("#play-button").show();
+  }
+
   let imagePath;
   if (currTime < state?.sections[0]?.time) {
     imagePath = "static/next.png";
@@ -59,5 +65,7 @@ function updatePlayButton(currTime) {
   } else if (playerState == 2) {
     imagePath = "static/play.png";
   }
-  playButtonEle.attr("src", imagePath);
+  if (imagePath != playButtonEle.attr("src")) {
+    playButtonEle.attr("src", imagePath);
+  }
 }

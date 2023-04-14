@@ -32,14 +32,9 @@ function animateSections() {
   }
 
   listElement.animate({ top: `${newListTop}px` }, 150, () => {});
-
-  const currentRowMargin = parseFloat(currentRowElement.css("margin-top") || 0);
   // This calculation ensures that the vertical center of the arrow points to the vertical center of the first line of text
   const newArrowTop =
-    currentRowAbsoluteTop +
-    (arrowHeight - textHeight) / 2 +
-    currentRowMargin +
-    newListTop;
+    currentRowAbsoluteTop + (arrowHeight - textHeight) / 2 + newListTop - 2;
 
   arrowElement.animate({ top: `${newArrowTop}px` }, 150, () => {
     // Only show the arrow once everything has been rendered
@@ -74,8 +69,19 @@ function renderSections() {
   // Iterate thru nestedData's outer sections and render them
   for (let i = 0; i < state.sections.length; i++) {
     const currSection = state.sections[i];
+    // If there isn't a section of the same level after this one
+    const lastOfLevel = state.sections?.[i + 1]?.level == currSection.level;
+    // The tree-element, consisting of a top and bottom half, with bottom half only rendered if curr row isn't last of level
+    const treeElement = `<div class="tree-container">
+    <div class="top-tree"></div>
+    ${lastOfLevel ? `<div class="bottom-tree"></div>` : ""}
+    </div>`;
+
     sectionElement.append(
-      `<div style="display:inline-flex">
+      `<div style="margin-left:${
+        currSection.level * 16
+      }px;" class="section-row ${currSection.level == 0 ? "top-level" : ""}">
+        ${currSection.level != 0 ? treeElement : ""}
         <div id="section-row-${i}" class="section-nav ${
         levelClasses[currSection.level]
       }" onclick="player.seekTo(${currSection.time});">${

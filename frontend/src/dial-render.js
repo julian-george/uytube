@@ -36,7 +36,8 @@ function renderDials() {
   }
 
   // If we are not currently in a section, don't proceed
-  if (currentHierarchyIndexes[0] == -1) return;
+  if (currentHierarchyIndexes.length == 0 || currentHierarchyIndexes[0] == -1)
+    return;
 
   const currSection = state.hierarchy[currentHierarchyIndexes[0]];
 
@@ -60,6 +61,7 @@ function renderDials() {
         180
     );
   }
+  console.log("push");
 
   dialContainerEle.append(
     `<div class="dial-1" style="background-image:conic-gradient(from -90deg, ${

@@ -83,6 +83,14 @@ function renderPanel() {
   for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
     const section = state.sections[sectionIdx];
     const { time, level, title, color } = section;
+    if (level == 0 && !color) {
+      recolorSection(
+        defaultSectionColors[sectionIdx % defaultSectionColors.length],
+        sectionIdx
+      );
+      // After recoloring, return early to prevent duplicate render
+      return;
+    }
     const stamp = time;
 
     const row = document.createElement("TR");
@@ -110,18 +118,7 @@ function renderPanel() {
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
     if (level == 0) {
-      // if (!color) {
-      //   // TODO: should this affect the data?
-      //   recolorSection(
-      //     defaultSectionColors[sectionIdx % defaultSectionColors.length],
-      //     sectionIdx
-      //   );
-      //   // After recoloring, return early to prevent duplicate render
-      //   return;
-      // }
-
-      const currentColor =
-        color || defaultSectionColors[sectionIdx % defaultSectionColors.length];
+      const currentColor = color;
 
       cellColor.innerHTML = `
     <div id="picker-${sectionIdx}">
