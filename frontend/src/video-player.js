@@ -30,17 +30,22 @@ function onPlayerReady() {
   }
 }
 
-function playFromFirstSection() {
+function playFromFirstSection(timeBefore = 0) {
   player.playVideo();
-  player.seekTo(state.sections[0].time - 2.5);
+  player.seekTo(Math.max(state.sections[0].time - timeBefore, 0));
 }
 
 function onPlayButtonClick() {
   if (!player.getPlayerState || !player.getCurrentTime) return;
   const playerState = player.getPlayerState();
   const currTime = player.getCurrentTime();
+  const timeBefore = 2.5;
   if (currTime < state?.sections[0]?.time) {
-    playFromFirstSection();
+    if (currTime < state?.sections[0]?.time - timeBefore) {
+      playFromFirstSection(timeBefore);
+    } else {
+      playFromFirstSection();
+    }
   } else if (playerState == 1) {
     player.pauseVideo();
   } else if (playerState == 2) {
