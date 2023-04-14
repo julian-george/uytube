@@ -70,7 +70,6 @@ table button {
   width: 12px;
   display: flex;
   flex-direction: column;
-  height: 1.5em;
 }
 
 .top-tree {
@@ -85,21 +84,18 @@ table button {
 
 .section-row {
   display: inline-flex;
-  align-items: center;
+  align-items: stretch;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
 
-.top-level {
-  padding: 2px 0;
-}
 .section-nav {
   cursor: pointer;
   display: inline-block;
   word-break: break-word;
   max-width: 280px;
-
+  padding: 2px 0;
   font-size: 16px;
   height: 100%;
 }
