@@ -22,23 +22,13 @@
 <div class="ui-row">
   <div class="column" id="animation-column">
     <div id="dial-container"> 
-      <!-- We hard-code dials within the html instead of rendering them dynamically to give more control over styling/position -->
-      <!-- <div class="dial-0" style="background-color: grey;">
-        <div class="circle-mask">
-          <div class="dial-1" style="background-color: darkgray;">
-            <div class="circle-mask">
-
-            </div>
-          </div>
-        </div>
-      </div> -->
       <div id ="dial-indicator"></div>
+      <div id ="play-button" onclick="onPlayButtonClick()"><img src="static/next.png"/></div>
     </div>
     <div>
-      <button style="margin-top:0.5em;margin-bottom:0.5em;font-size:1em" onclick="playFromFirstSection();playSVG(0)">
-        <!-- To do: skip long lead-ins -->
+      <!-- <button style="margin-top:0.5em;margin-bottom:0.5em;font-size:1em" onclick="playFromFirstSection();playSVG(0)">
         PLAY VIDEO AND SVG ANIMATION
-      </button>
+      </button> -->
     </div>
 
     
@@ -71,14 +61,14 @@
 
     <!-- Upload -->
     <div>
-      <button onclick="importJson()" accesskey="u" style="margin-bottom:6px">Import</button>
+      <button onclick="importData()" accesskey="u" style="margin-bottom:6px">Import</button>
       <input style="margin-bottom:6px" type="file" id="selectFiles" value="Import" text="Select"/>
     </div>
 
     <!-- Buttons -->
     <div>
       
-      <button onclick="compileDataAndRender(true)">Download</button>
+      <button onclick="downloadData()">Download</button>
       <button id="save-button" onclick="uploadData()" style="margin-bottom:6px" disabled >Save to Cloud</button>
       <br>
       <input type="text" placeholder="Type ID Here" id="idInput"> 
@@ -88,7 +78,6 @@
       <button onclick="handleEntryInput(1)" accesskey="d">Add division</button>
       <button onclick="handleEntryInput(2)" accesskey="m">Add moment</button>
       <br>
-      <button onclick="compileDataAndRender()">Preview Animation</button>
     </div>
 
 

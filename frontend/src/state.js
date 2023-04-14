@@ -215,3 +215,8 @@ const setYoutubeId = (newId) => {
   player.cueVideoById(state.youtubeId);
   onStateChange();
 };
+
+// TODO: build!
+const downloadData = () => {};
+
+const importData = () => {};

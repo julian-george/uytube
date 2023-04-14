@@ -34,3 +34,30 @@ function playFromFirstSection() {
   player.playVideo();
   player.seekTo(state.sections[0].time);
 }
+
+function onPlayButtonClick() {
+  if (!player.getPlayerState || !player.getCurrentTime) return;
+  const playerState = player.getPlayerState();
+  const currTime = player.getCurrentTime();
+  if (currTime < state?.sections[0]?.time) {
+    playFromFirstSection();
+  } else if (playerState == 1) {
+    player.pauseVideo();
+  } else if (playerState == 2) {
+    player.playVideo();
+  }
+}
+
+function updatePlayButton(currTime) {
+  const playButtonEle = $("#play-button > img");
+  const playerState = player.getPlayerState();
+  let imagePath;
+  if (currTime < state?.sections[0]?.time) {
+    imagePath = "static/next.png";
+  } else if (playerState == 1) {
+    imagePath = "static/pause.png";
+  } else if (playerState == 2) {
+    imagePath = "static/play.png";
+  }
+  playButtonEle.attr("src", imagePath);
+}
