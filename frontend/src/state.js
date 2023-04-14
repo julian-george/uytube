@@ -216,7 +216,15 @@ const setYoutubeId = (newId) => {
   onStateChange();
 };
 
-// TODO: build!
-const downloadData = () => {};
+const downloadData = () => {
+  const dataStr =
+    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+  const downloadAnchorNode = document.createElement("a");
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "uytube-export.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+};
 
 const importData = () => {};
