@@ -35,7 +35,11 @@ setInterval(() => {
     currentSectionIdx = newSectionIndex;
     currentHierarchyIndexes = newHierarchyIndices;
     onSectionChange();
-    if (state.sections?.[currentSectionIdx]?.title?.includes("[END]")) {
+    if (
+      state.sections?.[currentSectionIdx]?.title
+        ?.toLowerCase()
+        ?.includes("[end]")
+    ) {
       player.pauseVideo();
     }
   }
