@@ -227,4 +227,18 @@ const downloadData = () => {
   downloadAnchorNode.remove();
 };
 
-const importData = () => {};
+const importData = () => {
+  // https://stackoverflow.com/questions/36127648/uploading-a-json-file-and-using-it
+  // adapted
+  const files = document.getElementById("selectFiles").files;
+  if (files.length <= 0) return;
+
+  const fr = new FileReader();
+
+  fr.onload = function (e) {
+    const result = JSON.parse(e.target.result);
+    loadData(result);
+  };
+
+  fr.readAsText(files.item(0));
+};
