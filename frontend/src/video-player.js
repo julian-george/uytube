@@ -64,7 +64,7 @@ function updatePlayButton(currTime) {
 
   let imagePath;
   if (currTime < state?.sections[0]?.time) {
-    imagePath = "static/next.png";
+    imagePath = "static/play.png";
   } else if (playerState == 1) {
     imagePath = "static/pause.png";
   } else if (playerState == 2) {
