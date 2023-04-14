@@ -66,11 +66,11 @@ function loadData(data) {
   setState(data);
   // renderSVG(data);
   renderSections();
-  player.cueVideoById(data.videoId);
+  player.cueVideoById(data.youtubeId);
 }
 // Uploads the data
 function uploadData() {
-  let data = compileDataAndRender(false, true);
+  let data = JSON.stringify(state);
   if (initialData && data == JSON.stringify(initialData)) {
     alert("Error: No Changes Made");
   } else if (data) {

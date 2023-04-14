@@ -11,9 +11,11 @@ const VERT_CENTER = window.innerHeight * 0.6;
 setInterval(() => {
   if (!player?.getCurrentTime) return;
   const currTime = player?.getCurrentTime() || 0;
-  const newIndex = timeToIndex(currTime);
-  if (newIndex != currentSectionIdx) {
-    currentSectionIdx = newIndex;
+  const newSectionIndex = timeToSectionIdx(currTime);
+  const newHierarchyIndices = timeToHierarchyIdx(currTime);
+  if (newSectionIndex != currentSectionIdx) {
+    currentSectionIdx = newSectionIndex;
+    currentHierachyIndexes = newHierarchyIndices;
     onSectionChange();
   }
 }, 100);

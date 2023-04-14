@@ -10,8 +10,15 @@ const largePlayerSize = { width: "1080", height: "92.5vh" };
 // List of alernating colors that will be used before user inputs their own
 const defaultColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
 
+const numLevels = 3;
+
+// Current index within state.sections
 // Set as -1 so that when first entry is added to state.content, onSectionChange() is called
 let currentSectionIdx = -1;
+
+// Current indices within state.hierarchy
+//   if the current time isn't within one of the sublevels, the index for that level will be -1
+let currentHierachyIndexes = [];
 
 // The amount of seconds that the arrow keys change the player's time
 const SECONDS_TO_SEEK = 5;

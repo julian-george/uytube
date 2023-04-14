@@ -28,9 +28,8 @@ const updateHierarchy = () => {
   // Reset the old hierarchy first
   state.hierarchy = [];
 
-  // Stores the current index within the hierarchy at each level
-  //   ie, if sections[i] is the first moment within division 2 of section 3,
-  //   indices = [2, 1, 0]
+  // Stores the current index within the hierarchy at each level, so we know where to add each section
+  //   ie, if sections[i] is the first moment within division 2 of section 3, indices = [2, 1, 0]
   let indices = [];
 
   for (let i = 0; i < state.sections.length; i++) {
@@ -101,7 +100,7 @@ const validateSections = (newSections) => {
 };
 
 // Takes a time within the video and returns what section index that it falls under
-const timeToIndex = (time, level = Infinity) => {
+const timeToSectionIdx = (time, level = Infinity) => {
   if (state.sections.length > 0 && time < state.sections[0].time) {
     return -1;
   }
@@ -118,6 +117,26 @@ const timeToIndex = (time, level = Infinity) => {
       return i;
     }
   }
+};
+
+const timeToHierarchyIdx = (time) => {
+  const indices = [];
+  let sectionList = state.hierarchy;
+  for (let levelIdx = 0; levelIdx < numLevels; levelIdx++) {
+    if (sectionList.length == 0) {
+      indices.push(-1);
+      continue;
+    }
+    let sectionIdx = 0;
+    while (
+      time >= (sectionList?.[sectionIdx + 1]?.time || player.getDuration())
+    ) {
+      sectionIdx++;
+    }
+    indices.push(sectionIdx);
+    sectionList = sectionList?.[sectionIdx]?.children || [];
+  }
+  return indices;
 };
 
 const addSection = (title, time, level, color = null) => {
@@ -191,5 +210,6 @@ const deleteSection = (sectionIndex) => {
 
 const setYoutubeId = (newId) => {
   state.youtubeId = newId;
+  player.cueVideoById(state.youtubeId);
   onStateChange();
 };
