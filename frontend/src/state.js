@@ -19,7 +19,6 @@ const setSections = (newSections) => {
 
 const onStateChange = () => {
   updateHierarchy();
-  setUnsaved();
   renderDials();
   renderPanel();
   renderSections();
@@ -156,12 +155,14 @@ const addSection = (title, time, level, color = null) => {
   } catch (e) {
     alert(e.message);
   }
+  setUnsaved();
 };
 
 const editSection = (index, newSection) => {
   // Validation doesn't happen here because we currently don't use editSection to reorder stuff
   //   if validation ever expands beyond hierarchy enforcement, validate here as well
   state.sections[index] = newSection;
+
   onStateChange();
 };
 
@@ -171,11 +172,13 @@ const retitleSection = (newTitle, sectionIndex) => {
     ...oldSection,
     title: newTitle,
   });
+  setUnsaved();
 };
 
 const recolorSection = (newColor, sectionIndex) => {
   const oldSection = state.sections[sectionIndex];
   editSection(sectionIndex, { ...oldSection, color: newColor });
+  setUnsaved();
 };
 
 const pushSectionTime = (incrementAmount, sectionIndex) => {
@@ -198,6 +201,7 @@ const pushSectionTime = (incrementAmount, sectionIndex) => {
   } catch (e) {
     alert(e.message);
   }
+  setUnsaved();
 };
 
 const deleteSection = (sectionIndex) => {
@@ -208,37 +212,12 @@ const deleteSection = (sectionIndex) => {
   } catch (e) {
     alert(e.message);
   }
+  setUnsaved();
 };
 
 const setYoutubeId = (newId) => {
   state.youtubeId = newId;
   player.cueVideoById(state.youtubeId);
   onStateChange();
-};
-
-const downloadData = () => {
-  const dataStr =
-    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-  const downloadAnchorNode = document.createElement("a");
-  downloadAnchorNode.setAttribute("href", dataStr);
-  downloadAnchorNode.setAttribute("download", "uytube-export.json");
-  document.body.appendChild(downloadAnchorNode);
-  downloadAnchorNode.click();
-  downloadAnchorNode.remove();
-};
-
-const importData = () => {
-  // https://stackoverflow.com/questions/36127648/uploading-a-json-file-and-using-it
-  // adapted
-  const files = document.getElementById("selectFiles").files;
-  if (files.length <= 0) return;
-
-  const fr = new FileReader();
-
-  fr.onload = function (e) {
-    const result = JSON.parse(e.target.result);
-    loadData(result);
-  };
-
-  fr.readAsText(files.item(0));
+  setUnsaved();
 };

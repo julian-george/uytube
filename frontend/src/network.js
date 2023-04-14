@@ -75,3 +75,28 @@ function uploadData() {
     });
   }
 }
+
+const downloadData = () => {
+  const dataStr =
+    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
+  const downloadAnchorNode = document.createElement("a");
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "uytube-export.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+};
+
+const importData = () => {
+  const files = document.getElementById("selectFiles").files;
+  if (files.length <= 0) return;
+
+  const fr = new FileReader();
+
+  fr.onload = function (e) {
+    const result = JSON.parse(e.target.result);
+    loadData(result);
+  };
+
+  fr.readAsText(files.item(0));
+};

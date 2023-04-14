@@ -110,17 +110,18 @@ function renderPanel() {
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
     if (level == 0) {
-      if (!color) {
-        // TODO: should this affect the data?
-        recolorSection(
-          defaultSectionColors[sectionIdx % defaultSectionColors.length],
-          sectionIdx
-        );
-        // After recoloring, return early to prevent duplicate render
-        return;
-      }
+      // if (!color) {
+      //   // TODO: should this affect the data?
+      //   recolorSection(
+      //     defaultSectionColors[sectionIdx % defaultSectionColors.length],
+      //     sectionIdx
+      //   );
+      //   // After recoloring, return early to prevent duplicate render
+      //   return;
+      // }
 
-      const currentColor = color;
+      const currentColor =
+        color || defaultSectionColors[sectionIdx % defaultSectionColors.length];
 
       cellColor.innerHTML = `
     <div id="picker-${sectionIdx}">

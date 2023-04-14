@@ -5,7 +5,7 @@ let player;
 
 const tinyPlayerSize = { width: "240", height: "120" };
 const smallPlayerSize = { width: "420", height: "250" };
-const largePlayerSize = { width: "1080", height: "92.5vh" };
+const largePlayerSize = { width: "80vw", height: "92.5vh" };
 
 // List of alernating colors that will be used before user inputs their own
 const defaultSectionColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
@@ -46,12 +46,15 @@ setInterval(() => {
 // The amount of seconds that the arrow keys change the player's time
 const SECONDS_TO_SEEK = 5;
 
+const SECONDS_TO_SKIP = 15;
+
 // Handles arrow shortcuts to seek when the player isn't focused
 document.onkeydown = (e) => {
+  const nudgeAmount = e.shiftKey ? SECONDS_TO_SKIP : SECONDS_TO_SEEK;
   if (!player) return;
   if (e.key == "ArrowLeft") {
-    player.seekTo(Math.max(player.getCurrentTime() - SECONDS_TO_SEEK, 0));
+    player.seekTo(Math.max(player.getCurrentTime() - nudgeAmount, 0));
   } else if (e.key == "ArrowRight") {
-    player.seekTo(player.getCurrentTime() + SECONDS_TO_SEEK);
+    player.seekTo(player.getCurrentTime() + nudgeAmount);
   }
 };

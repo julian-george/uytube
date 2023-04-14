@@ -146,8 +146,8 @@ table button {
 }
 
 #play-button {
-  width: 36px;
-  height: 36px;
+  width: 10%;
+  aspect-ratio: 1/1;
   border-radius: 50%;
   z-index: 2;
   background-color: wheat;

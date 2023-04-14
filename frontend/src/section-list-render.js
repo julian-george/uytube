@@ -1,5 +1,5 @@
 // Percentage of window height at which elements on list are considered to be off screen and moved up accordingly
-const LIST_MOVE_THRESHOLD = 0.98;
+const LIST_MOVE_THRESHOLD = 0.85;
 
 // Where section text will be offset to once threshold is crossed
 const VERT_CENTER = window.innerHeight * 0.6;
