@@ -22,6 +22,7 @@ const onStateChange = () => {
   renderDials();
   renderPanel();
   renderSections();
+  drawForm();
 };
 
 const updateHierarchy = () => {
@@ -158,11 +159,24 @@ const addSection = (title, time, level, color = null) => {
   setUnsaved();
 };
 
-const editSection = (index, newSection) => {
-  // Validation doesn't happen here because we currently don't use editSection to reorder stuff
-  //   if validation ever expands beyond hierarchy enforcement, validate here as well
-  state.sections[index] = newSection;
-
+const editSection = (index, newSection, reorder = false) => {
+  // If we mark this operation as one that will change the order, call sorting functions
+  if (reorder) {
+    // copy of state.sections with newSection replacing the section at given index
+    let newSections = state.sections.map((section, i) =>
+      i == index ? newSection : section
+    );
+    try {
+      newSections = validateSections(sortSections(newSections));
+      setSections(newSections);
+      // TODO: it may not be best to put this here, in case this is called upon initial render
+      setUnsaved();
+    } catch (e) {
+      alert(e.message);
+    }
+  } else {
+    state.sections[index] = newSection;
+  }
   onStateChange();
 };
 

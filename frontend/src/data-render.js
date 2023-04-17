@@ -46,11 +46,40 @@ function cueVideo(r) {
   player.seekTo(stamp);
 }
 
+const levelPrefixes = {
+  0: "",
+  1: ">",
+  2: ">>",
+};
+
 function redescribe(sectionIdx) {
-  const oldTitle = state.sections[sectionIdx].title;
-  const newTitle = prompt("Describe", oldTitle);
+  const currSection = state.sections[sectionIdx];
+  let newTitle = prompt(
+    "Describe",
+    levelPrefixes[currSection.level] + " " + currSection.title
+  )?.trim();
   if (!newTitle || newTitle == "") return;
-  retitleSection(newTitle, sectionIdx);
+  let newLevel = 0;
+  // iterate thru the prefixes until a prefix is found at the beginning of the inputted title
+  //   iterate from the last prefix because earlier prefixes are substrings of later prefixes (ie > is a substring of >>)
+  for (let level = Object.keys(levelPrefixes).length - 1; level >= 1; level--) {
+    if (newTitle.indexOf(levelPrefixes[level]) == 0) {
+      newLevel = level;
+      break;
+    }
+  }
+  // based on the parsed level, cut out the respective prefix before saving
+  //   if level is 0, length - 1 will be -1, so ignore in that case
+  // .trim() removes white space between prefix and and title
+  if (newLevel != 0)
+    newTitle = newTitle.substring(levelPrefixes[newLevel].length).trim();
+  if (newLevel != currSection.level)
+    editSection(
+      sectionIdx,
+      { ...currSection, title: newTitle, level: newLevel },
+      true
+    );
+  else retitleSection(newTitle, sectionIdx);
 }
 
 function newYoutubeSelection() {
@@ -71,12 +100,6 @@ function handleEntryInput(level) {
     level
   );
 }
-
-const levelPrefixes = {
-  0: "",
-  1: "> ",
-  2: ">> ",
-};
 
 function renderPanel() {
   $("#table>tbody>tr").remove();
@@ -100,7 +123,9 @@ function renderPanel() {
     const cellColor = document.createElement("TD");
     cellDesc.className = "cell-description clickable";
 
-    const descNode = document.createTextNode(levelPrefixes[level] + title);
+    const descNode = document.createTextNode(
+      levelPrefixes[level] + " " + title
+    );
 
     const timeNode = document.createTextNode(stamp.toString());
 
