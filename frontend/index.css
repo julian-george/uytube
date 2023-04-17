@@ -75,6 +75,8 @@ table button {
 .tree-container-row {
   display: flex;
   flex-direction: row;
+  /* TODO: make only on subsecitons */
+  margin-left: 0.6em;
 }
 
 .top-tree {
@@ -89,10 +91,14 @@ table button {
 }
 
 .dashed > div {
-  border-left-style: dashed;
+  border-left-style: dotted;
+  border-color: black;
 }
 .dashed > .top-tree {
-  border-bottom-style: dashed;
+  /* border-bottom-style: dashed; */
+  border-bottom-style: none;
+  border-left-style: dotted;
+  border-color: black;
 }
 
 .section-row {

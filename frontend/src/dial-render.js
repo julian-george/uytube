@@ -61,7 +61,6 @@ function renderDials() {
         180
     );
   }
-  console.log("push");
 
   dialContainerEle.append(
     `<div class="dial-1" style="background-image:conic-gradient(from -90deg, ${
