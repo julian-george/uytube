@@ -102,7 +102,7 @@ function handleEntryInput(level) {
 }
 
 function renderPanel() {
-  $("#table>tbody>tr").remove();
+  $("#table>tbody>.panel-row").remove();
   for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
     const section = state.sections[sectionIdx];
     const { time, level, title, color } = section;
@@ -117,6 +117,7 @@ function renderPanel() {
     const stamp = time;
 
     const row = document.createElement("TR");
+    row.className = "panel-row";
     const cellTime = document.createElement("TD");
     const cellCtrl = document.createElement("TD");
     const cellDesc = document.createElement("TD");

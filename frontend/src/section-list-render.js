@@ -60,7 +60,7 @@ $(window).on("resize", () => {
 const levelClasses = {
   0: "section",
   1: "division",
-  2: "moment",
+  2: "subdivision",
 };
 
 function renderSections() {
@@ -69,19 +69,28 @@ function renderSections() {
   // Iterate thru nestedData's outer sections and render them
   for (let i = 0; i < state.sections.length; i++) {
     const currSection = state.sections[i];
-    // If there isn't a section of the same level after this one
-    const lastOfLevel = state.sections?.[i + 1]?.level == currSection.level;
-    // The tree-element, consisting of a top and bottom half, with bottom half only rendered if curr row isn't last of level
-    const treeElement = `<div class="tree-container">
-    <div class="top-tree"></div>
-    ${lastOfLevel ? `<div class="bottom-tree"></div>` : ""}
-    </div>`;
 
+    // The tree-element, consisting of a top and bottom half, with bottom half only rendered if curr row isn't last of level
+    const treeContainer = document.createElement("DIV");
+    treeContainer.className = "tree-container-row";
+    for (let l = 0; l < currSection.level; l++) {
+      const dashedTree = l < currSection.level - 1;
+      // If there isn't a section of the same level after this one
+      let levelEnd = false;
+      if (dashedTree) {
+        levelEnd = state.sections?.[i + 1]?.level <= l;
+      } else {
+        levelEnd = state.sections?.[i + 1]?.level < l + 1;
+      }
+      const levelTree = $(`<div class="tree-container ${
+        dashedTree ? "dashed" : ""
+      }"><div class="top-tree"></div>
+      ${!levelEnd ? `<div class="bottom-tree"></div>` : ""}</div>`)[0];
+      treeContainer.appendChild(levelTree);
+    }
     sectionElement.append(
-      `<div style="margin-left:${
-        currSection.level * 16
-      }px;" class="section-row">
-        ${currSection.level != 0 ? treeElement : ""}
+      `<div class="section-row">
+       ${treeContainer.outerHTML}
         <div id="section-row-${i}" class="section-nav ${
         levelClasses[currSection.level]
       }" onclick="player.seekTo(${currSection.time});">${

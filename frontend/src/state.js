@@ -30,7 +30,7 @@ const updateHierarchy = () => {
   state.hierarchy = [];
 
   // Stores the current index within the hierarchy at each level, so we know where to add each section
-  //   ie, if sections[i] is the first moment within division 2 of section 3, indices = [2, 1, 0]
+  //   ie, if sections[i] is the first subdivision within division 2 of section 3, indices = [2, 1, 0]
   let indices = [];
 
   for (let i = 0; i < state.sections.length; i++) {
@@ -84,7 +84,7 @@ const validateSections = (newSections) => {
   if (newSections.length == 0) return;
   if (newSections[0].level != 0) {
     throw new Error(
-      "You must add a section before adding any divisions or moments"
+      "You must add a section before adding any divisions or subdivisions"
     );
   }
   for (let i = 1; i < newSections.length; i++) {
@@ -94,7 +94,9 @@ const validateSections = (newSections) => {
       if (currSection.level == 1)
         throw new Error("Invalid hierarchy: divisions must belong to sections");
       else if (currSection.level == 2)
-        throw new Error("Invalid hierarchy: moments must belong to divisions");
+        throw new Error(
+          "Invalid hierarchy: subdivisions must belong to divisions"
+        );
     }
   }
   return newSections;

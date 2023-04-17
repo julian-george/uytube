@@ -72,14 +72,27 @@ table button {
   flex-direction: column;
 }
 
+.tree-container-row {
+  display: flex;
+  flex-direction: row;
+}
+
 .top-tree {
   border-bottom: 1px solid black;
   border-left: 1px solid black;
   height: 50%;
+  box-sizing: border-box;
 }
 .bottom-tree {
   border-left: 1px solid black;
   height: 50%;
+}
+
+.dashed > div {
+  border-left-style: dashed;
+}
+.dashed > .top-tree {
+  border-bottom-style: dashed;
 }
 
 .section-row {
@@ -105,7 +118,7 @@ table button {
   /* margin-left: 40px; */
 }
 
-.moment {
+.subdivision {
   font-size: 14px;
   /* margin-left: 56px; */
 }
