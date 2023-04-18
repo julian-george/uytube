@@ -22,9 +22,11 @@
 <div class="ui-row">
   <div class="column" id="animation-column">
      <!-- Co-ordinate SVG -->
-     <script>
-      function playSVG(cue) {
-        if (!cue) return;
+    <script>
+      function playSVG(cue=null) {
+        if (cue == null) {
+          cue = Math.round(fs * player.getCurrentTime()) / fs;
+        }
         let svg = document.getElementById('form_clock');
         svg.setCurrentTime(cue);
         if ( ![0,2].includes(player.getPlayerState()) ) {
@@ -38,8 +40,7 @@
       function renderSVG(newData) {
         let svg = document.getElementById('form_clock');
         svg.setCurrentTime(0);
-        replaceData(newData)
-        drawForm();
+        drawForm(newData);
         cue = Math.round(fs * player.getCurrentTime()) / fs;
         svg.setCurrentTime(cue);
       }
@@ -59,7 +60,7 @@
     <svg id="form_clock" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     width="300px" height="150px" viewBox="0 0 300 150" 
-    onload="drawForm();pauseSVG()">
+    onload="pauseSVG()">
     <!-- width="304px" height="540px" viewBox="0 0 304 540"  -->
 
       <rect height="100%" width="100%" fill="#FAFAFA"></rect>
@@ -74,43 +75,38 @@
 
         <!-- preplay -->
         <g transform="rotate(270)" id="preplaywrapper" opacity="0">
-          <line stroke-width="2" y1="-15" y2="40" stroke-linecap="round" stroke="black" opacity=".9"/>
+          <line stroke-width="3" y1="-15" y2="40" stroke-linecap="round" stroke="black" opacity="0.9"/>
             <animateTransform id="preplay" attributeName="transform" type="rotate"
-              repeatCount="1" fill="freeze" dur="1h" by="-180" begin="0s"/>
-          <circle r="4" fill="black" opacity=".9"/>
+              repeatCount="1" fill="freeze" dur="3600" by="-180" begin="0"/>
+          <circle r="4" fill="black" opacity="0.9"/>
           <!-- following dur value is hardcoded!! -->
-          <animate id="showpreplay" attributeName="opacity" to="1"
-            dur=".1s" fill="freeze" begin="1h"/>
-          <animate id="hidepreplay" attributeName="opacity" to="0"
-            dur=".4s" fill="freeze" begin="1h"/>
+          <animate id="showpreplay" attributeName="opacity" to="1" dur="0.1" fill="freeze" begin="3600"/>
+          <animate id="hidepreplay" attributeName="opacity" to="0" dur="0.4" fill="freeze" begin="3600"/>
         </g>
 
         <!-- countdown -->
         <g transform="rotate(90)" id="readywrapper" opacity="0">
-          <line stroke-width="2" y1="-15" y2="40" stroke-linecap="round" stroke="black" opacity=".9"/>
+          <line stroke-width="3" y1="-15" y2="40" stroke-linecap="round" stroke="black" opacity="0.9"/>
             <animateTransform id="ready" attributeName="transform" type="rotate"
-              repeatCount="1" fill="freeze" dur="1h" by="180" begin="1h"/>
-          <circle r="4" fill="black" opacity=".9"/>
+              repeatCount="1" fill="freeze" dur="3600" by="180" begin="3600"/>
+          <circle r="4" fill="black" opacity="0.9"/>
           <!-- following dur value is hardcoded!! -->
-          <animate id="showready" attributeName="opacity" to="1"
-            dur="1s" fill="freeze" begin="1h"/>
-          <animate id="hideready" attributeName="opacity" to="0"
-            dur=".1s" fill="freeze" begin="1h"/>
+          <animate id="showready" attributeName="opacity" to="1" dur="1" fill="freeze" begin="3600"/>
+          <animate id="hideready" attributeName="opacity" to="0" dur="0.1" fill="freeze" begin="3600"/>
         </g>
 
         <!-- main sections -->
-        <g stroke-width="20" fill="none" opacity="0">
-          <animate id="show" attributeName="opacity" to="1" fill="freeze"
-            dur=".1s" begin="1h"/>
+        <g stroke-width="20" fill="none" opacity="0.4">
+          <animate id="show" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
 
           <g id="macro"></g>
 
-          <g id="cursor-macro" transform="rotate(90)">
-            <line stroke-width="4" stroke-linecap="round" stroke="black"
-              opacity=".9" y1="85" y2="115"/>
+          <g id="cursor-macro" transform="rotate(90)" opacity="0">
+            <animate id="show-cursor" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
+            <line stroke-width="4" stroke-linecap="round" stroke="black" opacity="0.9" y1="85" y2="115"/>
               <animateTransform attributeName="transform" type="rotate"
-                repeatCount="1" by="180" fill="freeze" id="macro-animation" begin="1h"/>
-            <circle r="10" fill="black" opacity=".9" display="none"/>
+                repeatCount="1" by="180" fill="freeze" id="macro-animation" begin="3600"/>
+            <circle r="10" fill="black" opacity="0.9" display="none"/>
           </g>
         </g>
 
@@ -118,7 +114,6 @@
         <g id="micro"></g>
 
         <g stroke="none" id="scroll"></g>
-
       </g>
 
       <!-- Analysis data and SVG scripts -->
@@ -126,8 +121,6 @@
         <![CDATA[
 
           var svg_template = document.getElementById('svg_template').innerHTML;
-
-          var nestedData = {};
 
 
           // DOWNLOAD DATA
@@ -145,13 +138,6 @@
             downloadAnchorNode.remove();
           }
 
-          // COMPUTATION
-
-          function replaceData(newData) {
-            console.log("newdata", newData)
-            nestedData = [...newData];
-            console.log("nestedData in replaceData",nestedData)
-          }
 
           const preplay = 0; // seconds
 
@@ -191,14 +177,12 @@
             return num < 0 ? 0 : num;
           }
 
-          function drawForm() {
+          function drawForm(nt) {
 
-
-            //const nt = new Object([[[1.9,5],12.5,23.7,34.5,45.4,56.2,67,78.3],[90,[101,105,110]],[112,123.1,134.1,145.1],[160]]); 
-            const nt = nestedData
-            console.log("nestedData at beginning of drawForm",nt)
-
-
+            // reload virgin template
+            document.getElementById('svg_template').innerHTML = svg_template;
+            // get data // does not get subdivisions yet // but this code is being retired
+            console.log(nt)
             if (!is_chronological(nt.flat().flat())) {
               console.log('Data error: timestamps are out of order');
               console.log(nt);
@@ -225,11 +209,9 @@
             let micro_html = "";
             for (ma = 1; ma <= nt.length; ma++) { // each macro section
               micro_html += `
-        <g id="grp-macro-` + ma.toString() + `" stroke-width="20" fill="none" opacity="0">
-          <animate id="show-macro-` + ma.toString() + `" attributeName="opacity" to=".9" fill="freeze"
-            dur=".1s" begin="1h"/>
-          <animate id="hide-macro-` + ma.toString() + `" attributeName="opacity" to="0" fill="freeze"
-            dur=".4s" begin="1h"/>
+        <g id="grp-macro-` + ma.toString() + `" stroke-width="20" fill="none" fill="none" opacity="0">
+          <animate id="show-macro-` + ma.toString() + `" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
+          <animate id="hide-macro-` + ma.toString() + `" attributeName="opacity" to="0" fill="freeze" dur="0.4" begin="3600"/>
 `;
 
               for (me = 1; me <= nt[ma-1].length; me++) { // each meso section
@@ -244,10 +226,8 @@
 
                 micro_html += `
           <g id="grp-meso-` + ma.toString() + `-` + me.toString() + `" stroke-width="20" fill="none" opacity="0">
-            <animate id="show-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to=".9" fill="freeze"
-              dur=".1s" begin="1h"/>
-            <animate id="hide-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to="0" fill="freeze"
-              dur=".4s" begin="1h"/>
+            <animate id="show-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
+            <animate id="hide-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to="0" fill="freeze" dur="0.4" begin="3600"/>
 `;
                 if (has_children) {
                   for (mi = 1; mi <= nt[ma-1][me-1].length; mi++) { // each micro section
@@ -257,22 +237,20 @@
                   }
                   micro_html += `
             <g id="cursor-micro-` + ma.toString() + `-` + me.toString() + `" transform="rotate(90)" display="none">
-              <line stroke-width="3" stroke-linecap="round" stroke="black"
-                opacity="0.9" y1="-10" y2="40"/>
+              <line stroke-width="3" stroke-linecap="round" stroke="black" opacity="0.9" y1="-10" y2="40"/>
                 <animateTransform attributeName="transform" type="rotate"
-                  repeatCount="1" by="180" fill="freeze" begin="1h" dur="1s"
+                  repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
                   id="micro-animation-` + ma.toString() + `-` + me.toString() + `"/>
-              <circle r="6" fill="black" opacity="1"/>
+              <circle r="6" fill="black" opacity="0.9"/>
             </g>`;
                 } else {
                   micro_html += `
             <g id="cursor-inner-partial-meso-` + ma.toString() + `-` + me.toString() + `" transform="rotate(90)" display="none">
-              <line stroke-width="4" stroke-linecap="round" stroke="red"
-                opacity="1" y1="-10" y2="45"/>
+              <line stroke-width="4" stroke-linecap="round" stroke="red" opacity="0.9" y1="-10" y2="45"/>
                 <animateTransform attributeName="transform" type="rotate"
-                  repeatCount="1" by="180" fill="freeze" begin="1h" dur="1s"
+                  repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
                   id="inner-partial-meso-animation-` + ma.toString() + `-` + me.toString() + `"/>
-              <circle r="6" fill="black" opacity="1"/>
+              <circle r="6" fill="red" opacity="0.9"/>
             </g>`;
                 }
 
@@ -283,22 +261,20 @@
               micro_html += `
 
           <g id="cursor-meso-` + ma.toString() + `" transform="rotate(90)" display="none">
-            <line stroke-width="4" stroke-linecap="round" stroke="black"
-              opacity="1" y1="50" y2="80"/>
+            <line stroke-width="4" stroke-linecap="round" stroke="black" opacity="0.9" y1="50" y2="80"/>
               <animateTransform attributeName="transform" type="rotate"
-                repeatCount="1" by="180" fill="freeze" id="meso-animation-` + ma.toString() + `" begin="1h"/>
-            <circle r="8" fill="black" opacity=".9" display="none"/>
+                repeatCount="1" by="180" fill="freeze" id="meso-animation-` + ma.toString() + `" begin="3600"/>
+            <circle r="8" fill="black" opacity="0.9" display="none"/>
           </g>
 `;
               if (true) { // doesn't have children
                 micro_html += `
           <g id="cursor-inner-meso-` + ma.toString() + `" transform="rotate(90)" display="none">
-            <line stroke-width="4" stroke-linecap="round" stroke="black"
-              opacity="1" y1="-10" y2="50"/>
+            <line stroke-width="4" stroke-linecap="round" stroke="black" opacity="0.9" y1="-10" y2="50"/>
               <animateTransform attributeName="transform" type="rotate"
-                repeatCount="1" by="180" fill="freeze" begin="1h" dur="1s"
+                repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
                 id="inner-meso-animation-` + ma.toString() + `"/>
-            <circle r="6" fill="black" opacity="1"/>
+            <circle r="6" fill="black" opacity="0.9"/>
           </g>
         </g>
 `;
@@ -306,22 +282,24 @@
             }
             micro_div.innerHTML = micro_html;
 
-           
+            
 
-            if (nt.slice(-1).length > 1) {
+            if (nt[nt.length-1].length > 1) {
               // user has neglected to add a final macro onset for the ending
               // add one
-              let last_subarray = nt.slice(-1).slice(-1)
-              let stop = 1 + last_subarray[last_subarray.length-1];
+              let timestamps = Object.assign([], nt.flat().flat());
+              let stop = 2 + timestamps[timestamps.length-1];
               nt.push([stop]);
             }
             for (ma = 0; ma < nt.length-1; ma++) {
               // copy start time of next sibling into array
-              nt[ma].push(findNumber(nt[ma+1]));
+              if (nt[ma] instanceof Array) {
+                nt[ma].push(findNumber(nt[ma+1]));
+              }
               for (me = 0; me < nt[ma].length-1; me++) {
-                try {
+                if (nt[ma][me] instanceof Array) {
                   nt[ma][me].push(findNumber(nt[ma][me+1]));
-                } catch {}
+                }
               }
             }
 
@@ -444,6 +422,14 @@
                     sec.setAttribute("stroke",
                       greys[(mi % greys.length) % greys.length]);
 
+                    // cue video
+                    // problem with overlapping divs
+                    sec.setAttribute("onclick",
+                      "player.seekTo(" + micro_origin + ")"
+                      + ";"
+                      + "playSVG(" + micro_origin + ")"
+                    );
+
                   }
 
                   var show = document.getElementById("show-meso-" + (ma+1).toString() + "-" + (me+1).toString());
@@ -466,9 +452,9 @@
                 // cue video
                 // problem with overlapping divs
                 sec.setAttribute("onclick",
-                  "player.seekTo(" + nt[ma][me] + ")"
+                  "player.seekTo(" + meso_origin + ")"
                   + ";"
-                  + "playSVG(" + nt[ma][me] + ")"
+                  + "playSVG(" + meso_origin + ")"
                 );
 
                 try {
@@ -514,8 +500,7 @@
             spin.setAttribute("dur", form_terminus - form_origin);
             spin.setAttribute("begin", preplay+form_origin);
 
-            var show = document.getElementById("show");
-            show.setAttribute("begin", nonNeg(preplay+form_origin-0.1));
+           
 
           }
 
