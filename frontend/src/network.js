@@ -57,7 +57,7 @@ function loadData(data) {
   setState(data);
   // renderSVG(data);
   renderSections();
-  renderSVG(generateSVGData());
+  renderSVG(generateSVGData(), generateColorList());
   player.cueVideoById(data.youtubeId);
 }
 // Uploads the data

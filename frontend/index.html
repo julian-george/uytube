@@ -37,10 +37,10 @@
         let svg = document.getElementById('form_clock');
         svg.pauseAnimations();
       }
-      function renderSVG(newData) {
+      function renderSVG(newData, newColors) {
         let svg = document.getElementById('form_clock');
         svg.setCurrentTime(0);
-        drawForm(newData);
+        drawForm(newData, newColors);
         cue = Math.round(fs * player.getCurrentTime()) / fs;
         svg.setCurrentTime(cue);
       }
@@ -151,7 +151,7 @@
           const scope = 180;
           const origin = -90;
 
-          var colors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
+          var defaultColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
 
           var greys = ["#c0c2ce", "#e5e6eb", "#afafaf", "#e5e6eb"];
 
@@ -183,7 +183,7 @@
             return num < 0 ? 0 : num;
           }
 
-          function drawForm(nt) {
+          function drawForm(nt, colors) {
             
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
