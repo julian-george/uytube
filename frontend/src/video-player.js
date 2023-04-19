@@ -53,24 +53,11 @@ function onPlayButtonClick() {
   }
 }
 
-function updateSVGPlaying(currTime) {
-  const playButtonEle = $("#play-button > img");
+function updateSVGPlaying() {
   const playerState = player.getPlayerState();
   if (!state?.youtubeId || playerState != 1) {
     pauseSVG();
   } else {
     if (player.getCurrentTime) playSVG(player?.getCurrentTime());
   }
-
-  // let imagePath;
-  // if (currTime < state?.sections[0]?.time) {
-  //   imagePath = "static/play.png";
-  // } else if (playerState == 1) {
-  //   imagePath = "static/pause.png";
-  // } else if (playerState == 2) {
-  //   imagePath = "static/play.png";
-  // }
-  // if (imagePath != playButtonEle.attr("src")) {
-  //   playButtonEle.attr("src", imagePath);
-  // }
 }

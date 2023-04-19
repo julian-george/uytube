@@ -154,10 +154,12 @@ const timeToHierarchyIdx = (time) => {
       continue;
     }
     let sectionIdx = 0;
+    let currTime = sectionList[sectionIdx].time;
     while (
-      time >= (sectionList?.[sectionIdx + 1]?.time || player.getDuration())
+      currTime >= (sectionList?.[sectionIdx + 1]?.time || player.getDuration())
     ) {
       sectionIdx++;
+      currTime = sectionList[sectionIdx].time;
     }
     indices.push(sectionIdx);
     sectionList = sectionList?.[sectionIdx]?.children || [];
@@ -191,6 +193,8 @@ const editSection = (index, newSection, reorder = false) => {
     // copy of state.sections with newSection replacing the section at given index
     let newSections = state.sections
       .map((section, i) => (i == index ? newSection : section))
+      // this .filtering (here and elsewhere) leads to the invisible sections being deleted and re-generated upon each edit
+      //   possibly unnecessary time complexity could result, but this is a clean, concise, robust solution
       .filter((section) => !section?.invisible);
     try {
       newSections = validateSections(sortSections(newSections));
