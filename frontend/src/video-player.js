@@ -36,7 +36,11 @@ function playFromFirstSection(timeBefore = 0) {
 }
 
 function onPlayButtonClick() {
-  if (!player.getPlayerState || !player.getCurrentTime) return;
+  if (!player.getPlayerState || !player.getCurrentTime) {
+    // This exists for when we are hardcoding the nestedData within index.html
+    animateSVG();
+    return;
+  }
   const playerState = player.getPlayerState();
   const currTime = player.getCurrentTime();
   const timeBefore = 2.5;

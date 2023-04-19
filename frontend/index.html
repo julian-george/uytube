@@ -184,6 +184,8 @@
           }
 
           function drawForm(nt, colors) {
+
+            console.log(nt)
             
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
@@ -362,7 +364,7 @@
                 describeArc(0, 0, 100, start_arc, end_arc+1));
               sec.removeAttribute("display");
               sec.setAttribute("stroke",
-                colors[ma % colors.length]);
+                colors?.[ma % colors?.length] || defaultSectionColors[ma % colors.length]);
 
               // cue video
               sec.setAttribute("onclick",
