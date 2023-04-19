@@ -180,11 +180,10 @@
           }
 
           function drawForm(nt) {
-
+            
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
-            // get data // does not get subdivisions yet // but this code is being retired
-            console.log(nt)
+
             if (!is_chronological(nt.flat().flat())) {
               console.log('Data error: timestamps are out of order');
               console.log(nt);

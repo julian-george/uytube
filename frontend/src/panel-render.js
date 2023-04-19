@@ -104,6 +104,7 @@ function renderPanel() {
   $("#table>tbody>.panel-row").remove();
   for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
     const section = state.sections[sectionIdx];
+    if (section?.invisible) continue;
     const { time, level, title, color } = section;
     if (level == 0 && !color) {
       recolorSection(

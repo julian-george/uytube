@@ -66,15 +66,15 @@ table button {
   animation: top 500ms;
 }
 
+.tree-container-row {
+  display: flex;
+  flex-direction: row;
+}
+
 .tree-container {
   width: 12px;
   display: flex;
   flex-direction: column;
-}
-
-.tree-container-row {
-  display: flex;
-  flex-direction: row;
   /* TODO: make only on subsecitons */
   margin-left: 0.6em;
 }
@@ -107,6 +107,7 @@ table button {
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
+  min-height: 1em;
 }
 
 .section-nav {

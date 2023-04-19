@@ -45,7 +45,7 @@ const onStateChange = () => {
 
 const updateHierarchy = () => {
   // Reset the old hierarchy first
-  state.hierarchy = [];
+  const newHierarchy = [];
 
   // Stores the current index within the hierarchy at each level, so we know where to add each section
   //   ie, if sections[i] is the first subdivision within division 2 of section 3, indices = [2, 1, 0]
@@ -73,18 +73,19 @@ const updateHierarchy = () => {
     switch (currSection.level) {
       // Add cases here if more levels are added in the future
       case 0:
-        state.hierarchy.push(currSection);
+        newHierarchy.push(currSection);
         break;
       case 1:
-        state.hierarchy[indices[0]].children.push(currSection);
+        newHierarchy[indices[0]].children.push(currSection);
         break;
       case 2:
-        state.hierarchy[indices[0]].children[indices[1]].children.push(
+        newHierarchy[indices[0]].children[indices[1]].children.push(
           currSection
         );
         break;
     }
   }
+  state.hierarchy = newHierarchy;
 };
 
 const sortSections = (newSections) => {
@@ -100,21 +101,24 @@ const sortSections = (newSections) => {
 // Upon user input (which affects state.sections) iterates thru the new sections array and throws error upon invalid hierarchy
 const validateSections = (newSections) => {
   if (newSections.length == 0) return;
-  if (newSections[0].level != 0) {
-    throw new Error(
-      "You must add a section before adding any divisions or subdivisions"
-    );
-  }
-  for (let i = 1; i < newSections.length; i++) {
+  for (let i = 0; i < newSections.length; i++) {
     const currSection = newSections[i];
-    const prevSection = newSections[i - 1];
+    // this fallback value helps enforce the first section's level as 0
+    const prevSection = newSections?.[i - 1] || { level: -1 };
     if (prevSection.level < currSection.level - 1) {
-      if (currSection.level == 1)
-        throw new Error("Invalid hierarchy: divisions must belong to sections");
-      else if (currSection.level == 2)
-        throw new Error(
-          "Invalid hierarchy: subdivisions must belong to divisions"
-        );
+      const addedSection = {
+        time: currSection.time,
+        invisible: true,
+        title: " ",
+        level: currSection.level - 1,
+      };
+      return validateSections(sortSections([...newSections, addedSection]));
+      // if (currSection.level == 1)
+      //   throw new Error("Invalid hierarchy: divisions must belong to sections");
+      // else if (currSection.level == 2)
+      //   throw new Error(
+      //     "Invalid hierarchy: subdivisions must belong to divisions"
+      //   );
     }
   }
   return newSections;
@@ -169,7 +173,9 @@ const addSection = (title, time, level, color = null) => {
     level,
     color,
   };
-  let newSections = [...state.sections, newSection];
+  let newSections = [...state.sections, newSection].filter(
+    (section) => !section?.invisible
+  );
   try {
     newSections = validateSections(sortSections(newSections));
     setSections(newSections);
@@ -183,9 +189,9 @@ const editSection = (index, newSection, reorder = false) => {
   // If we mark this operation as one that will change the order, call sorting functions
   if (reorder) {
     // copy of state.sections with newSection replacing the section at given index
-    let newSections = state.sections.map((section, i) =>
-      i == index ? newSection : section
-    );
+    let newSections = state.sections
+      .map((section, i) => (i == index ? newSection : section))
+      .filter((section) => !section?.invisible);
     try {
       newSections = validateSections(sortSections(newSections));
       setSections(newSections);
@@ -226,9 +232,9 @@ const pushSectionTime = (incrementAmount, sectionIndex) => {
     newTime = Math.min(newTime, player.getDuration());
   }
   const newSection = { ...state.sections[sectionIndex], time: newTime };
-  let newSections = state.sections.map((section, i) =>
-    i == sectionIndex ? newSection : section
-  );
+  let newSections = state.sections
+    .map((section, i) => (i == sectionIndex ? newSection : section))
+    .filter((section) => !section?.invisible);
   try {
     newSections = validateSections(sortSections(newSections));
     setSections(newSections);
@@ -239,7 +245,9 @@ const pushSectionTime = (incrementAmount, sectionIndex) => {
 };
 
 const deleteSection = (sectionIndex) => {
-  let newSections = state.sections.filter((_section, i) => i != sectionIndex);
+  let newSections = state.sections
+    .filter((_section, i) => i != sectionIndex)
+    .filter((section) => !section?.invisible);
   try {
     newSections = validateSections(sortSections(newSections));
     setSections(newSections);
