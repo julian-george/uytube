@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="./index.css" />
 </head>
 <html>
-<body>
+<body style="background-color:#FAFAFA">
 <div class="ui-row">
   <div class="column" id="animation-column">
      <!-- Co-ordinate SVG -->
@@ -27,18 +27,18 @@
         if (cue == null) {
           cue = Math.round(fs * player.getCurrentTime()) / fs;
         }
-        let svg = document.getElementById('form_clock');
+        let svg = document.getElementById('form_animation');
         svg.setCurrentTime(cue);
         if ( ![0,2].includes(player.getPlayerState()) ) {
           svg.unpauseAnimations();
         }
       }
       function pauseSVG() {
-        let svg = document.getElementById('form_clock');
+        let svg = document.getElementById('form_animation');
         svg.pauseAnimations();
       }
       function renderSVG(newData) {
-        let svg = document.getElementById('form_clock');
+        let svg = document.getElementById('form_animation');
         svg.setCurrentTime(0);
         drawForm(newData);
         cue = Math.round(fs * player.getCurrentTime()) / fs;
@@ -57,10 +57,10 @@
     </script>
 
     <!-- SVG -->
-    <svg id="form_clock" xmlns="http://www.w3.org/2000/svg"
+    <svg id="form_animation" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     width="300px" height="150px" viewBox="0 0 300 150" 
-    onload="pauseSVG()">
+    onload="pauseSVG();renderSVG()">
     <!-- width="304px" height="540px" viewBox="0 0 304 540"  -->
 
       <rect height="100%" width="100%" fill="#FAFAFA"></rect>
@@ -105,8 +105,8 @@
 
           <g id="macro"></g>
 
-          <g id="cursor-macro" transform="rotate(90)" opacity="0">
-            <animate id="show-cursor" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
+          <g id="cursor-form" transform="rotate(90)" opacity="0">
+            <animate id="show-cursor-form" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
             <line stroke-width="4" stroke-linecap="round" stroke="black" opacity="0.9" y1="85" y2="115"/>
               <animateTransform attributeName="transform" type="rotate"
                 repeatCount="1" by="180" fill="freeze" id="macro-animation" begin="3600"/>
@@ -127,7 +127,6 @@
         <![CDATA[
 
           var svg_template = document.getElementById('svg_template').innerHTML;
-
 
           // DOWNLOAD DATA
 
@@ -183,10 +182,51 @@
             return num < 0 ? 0 : num;
           }
 
-          function drawForm(nt) {
-            
+          const demo_data = { // Purcell Fairy Queen chaconne // demo
+            "videoId":"Ct0GJqRRo_8",
+            "hierarchy":[
+              {"time":1.9,"title":"","color":"","children":[
+                  {"time":1.9,"title":"Variation 1","children":[
+                      {"time":1.9,"title":"basic idea"},
+                      {"time":4.5,"title":"repetition of basic idea (sequential)"},
+                      {"time":7.2,"title":"cadential progression (HC)"}
+                    ]},
+                  {"time":12.5,"title":"Variation 2"},
+                  {"time":23.7,"title":"Variation 3"},
+                  {"time":34.5,"title":"Variation 4"},
+                  {"time":45.4,"title":"Variation 5"},
+                  {"time":56.2,"title":"Variation 6"},
+                  {"time":67,"title":"Variation 7"},
+                  {"time":78.3,"title":"Variation 8"}
+                ]},
+              {"time":90,"title":"Minore","color":"","children":[
+                  {"time":90,"title":"Variation 9"},
+                  {"time":101,"title":"Variation 10","children":[
+                      {"time":101,"title":"basic idea"},
+                      {"time":103.2,"title":"repetition of basic idea (sequential)"},
+                      {"time":106.5,"title":"cadential progression (PAC in major)"}
+                    ]}
+                ]},
+              {"time":112,"title":"Majore","color":"","children":[
+                  {"time":112,"title":"Variation 11"},
+                  {"time":123.1,"title":"Variation 12"},
+                  {"time":134.1,"title":"Variation 13"},
+                  {"time":145.1,"title":"Variation 14"}
+                ]},
+              {"time":160,"title":"","color":""}
+            ]
+          };
+
+          function drawForm(newData = demo_data) {
+
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
+
+            let nt = Object.assign([], newData.hierarchy)
+              .map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
+
+            // console.log(nt, JSON.stringify(nt));
+            // [[[1.9,4.5,7.2],12.5,23.7,34.5,45.4,56.2,67,78.3],[90,[101,103.2,106.5]],[112,123.1,134.1,145.1],160]
 
             if (!is_chronological(nt.flat().flat())) {
               console.log('Data error: timestamps are out of order');
@@ -219,62 +259,60 @@
           <animate id="hide-macro-` + ma.toString() + `" attributeName="opacity" to="0" fill="freeze" dur="0.4" begin="3600"/>
 `;
 
-              for (me = 1; me <= nt[ma-1].length; me++) { // each meso section
-                let has_children = true;
-                if (typeof nt[ma-1][me-1] === 'number') {
-                  has_children = false;
-                }
+              if (Array.isArray(nt[ma-1])) {
+                for (me = 1; me <= nt[ma-1].length; me++) { // each meso section
+                  let temp_color = ["yellow", "red"][me % 2];
+                  micro_html += `
+              }
+            <path id="arc-meso-` + ma.toString() + `-` + me.toString() + `" stroke="` + temp_color + `" display="none"/>`;
 
-                let temp_color = ["yellow", "red"][me % 2];
-                micro_html += `
-          <path id="arc-meso-` + ma.toString() + `-` + me.toString() + `" stroke="` + temp_color + `" display="none"/>`;
-
-                micro_html += `
-          <g id="grp-meso-` + ma.toString() + `-` + me.toString() + `" stroke-width="20" fill="none" opacity="0">
-            <animate id="show-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
-            <animate id="hide-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to="0" fill="freeze" dur="0.4" begin="3600"/>
-`;
-                if (has_children) {
-                  for (mi = 1; mi <= nt[ma-1][me-1].length; mi++) { // each micro section
-                    let temp_color = ["yellow", "red"][mi % 2];
+                  micro_html += `
+            <g id="grp-meso-` + ma.toString() + `-` + me.toString() + `" stroke-width="20" fill="none" opacity="0">
+              <animate id="show-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to="1" fill="freeze" dur="0.1" begin="3600"/>
+              <animate id="hide-meso-` + ma.toString() + `-` + me.toString() + `" attributeName="opacity" to="0" fill="freeze" dur="0.4" begin="3600"/>
+  `;
+                  if (Array.isArray(nt[ma-1][me-1])) {
+                    for (mi = 1; mi <= nt[ma-1][me-1].length; mi++) { // each micro section
+                      let temp_color = ["yellow", "red"][mi % 2];
+                      micro_html += `
+              <path id="arc-micro-` + ma.toString() + `-` + me.toString() + `-` + mi.toString() + `" stroke="` + temp_color + `" display="none"/>`;
+                    }
                     micro_html += `
-            <path id="arc-micro-` + ma.toString() + `-` + me.toString() + `-` + mi.toString() + `" stroke="` + temp_color + `" display="none"/>`;
+              <g id="cursor-meso-` + ma.toString() + `-` + me.toString() + `" transform="rotate(90)" display="none">
+                <line stroke-width="3" stroke-linecap="round" stroke="black" opacity="0.9" y1="-10" y2="40"/>
+                  <animateTransform attributeName="transform" type="rotate"
+                    repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
+                    id="micro-animation-` + ma.toString() + `-` + me.toString() + `"/>
+                <circle r="6" fill="black" opacity="0.9"/>
+              </g>`;
+              //     } else { // this would provide an inner arm
+              //       micro_html += `
+              // <g id="cursor-inner-partial-macro-` + ma.toString() + `-` + me.toString() + `" transform="rotate(90)" display="none">
+              //   <line stroke-width="4" stroke-linecap="round" stroke="red" opacity="0.9" y1="-10" y2="45"/>
+              //     <animateTransform attributeName="transform" type="rotate"
+              //       repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
+              //       id="inner-partial-meso-animation-` + ma.toString() + `-` + me.toString() + `"/>
+              //   <circle r="6" fill="red" opacity="0.9"/>
+              // </g>`;
                   }
+
                   micro_html += `
-            <g id="cursor-micro-` + ma.toString() + `-` + me.toString() + `" transform="rotate(90)" display="none">
-              <line stroke-width="3" stroke-linecap="round" stroke="black" opacity="0.9" y1="-10" y2="40"/>
-                <animateTransform attributeName="transform" type="rotate"
-                  repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
-                  id="micro-animation-` + ma.toString() + `-` + me.toString() + `"/>
-              <circle r="6" fill="black" opacity="0.9"/>
             </g>`;
-                } else {
-                  micro_html += `
-            <g id="cursor-inner-partial-meso-` + ma.toString() + `-` + me.toString() + `" transform="rotate(90)" display="none">
-              <line stroke-width="4" stroke-linecap="round" stroke="red" opacity="0.9" y1="-10" y2="45"/>
-                <animateTransform attributeName="transform" type="rotate"
-                  repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
-                  id="inner-partial-meso-animation-` + ma.toString() + `-` + me.toString() + `"/>
-              <circle r="6" fill="red" opacity="0.9"/>
-            </g>`;
+
                 }
-
-                micro_html += `
-          </g>`;
-
               }
               micro_html += `
 
-          <g id="cursor-meso-` + ma.toString() + `" transform="rotate(90)" display="none">
+          <g id="cursor-macro-` + ma.toString() + `" transform="rotate(90)" display="none">
             <line stroke-width="4" stroke-linecap="round" stroke="black" opacity="0.9" y1="50" y2="80"/>
               <animateTransform attributeName="transform" type="rotate"
                 repeatCount="1" by="180" fill="freeze" id="meso-animation-` + ma.toString() + `" begin="3600"/>
             <circle r="8" fill="black" opacity="0.9" display="none"/>
           </g>
 `;
-              if (true) { // doesn't have children
+              if (true) { // provide macro cursor regardless of meso cursor appearing
                 micro_html += `
-          <g id="cursor-inner-meso-` + ma.toString() + `" transform="rotate(90)" display="none">
+          <g id="cursor-inner-macro-` + ma.toString() + `" transform="rotate(90)" display="none">
             <line stroke-width="4" stroke-linecap="round" stroke="black" opacity="0.9" y1="-10" y2="50"/>
               <animateTransform attributeName="transform" type="rotate"
                 repeatCount="1" by="180" fill="freeze" begin="3600" dur="1"
@@ -287,26 +325,25 @@
             }
             micro_div.innerHTML = micro_html;
 
-          
-
-            if (nt[nt.length-1].length > 1) {
+            if (Array.isArray(nt[nt.length-1]) && nt[nt.length-1].length > 1) {
               // user has neglected to add a final macro onset for the ending
               // add one
               let timestamps = Object.assign([], nt.flat().flat());
               let stop = 2 + timestamps[timestamps.length-1];
-              nt.push([stop]);
+              nt.push(stop);
             }
             for (ma = 0; ma < nt.length-1; ma++) {
               // copy start time of next sibling into array
               if (nt[ma] instanceof Array) {
                 nt[ma].push(findNumber(nt[ma+1]));
-              }
-              for (me = 0; me < nt[ma].length-1; me++) {
-                if (nt[ma][me] instanceof Array) {
-                  nt[ma][me].push(findNumber(nt[ma][me+1]));
+                for (me = 0; me < nt[ma].length-1; me++) {
+                  if (nt[ma][me] instanceof Array) {
+                    nt[ma][me].push(findNumber(nt[ma][me+1]));
+                  }
                 }
               }
             }
+            // console.log(nt, JSON.stringify(nt));
 
             if (preplay < 0.8 && document.getElementById("preplaywrapper")) { // 0.4 plus time for the script to run
               document.getElementById("preplaywrapper").remove();
@@ -336,16 +373,15 @@
                 .setAttribute("begin", nonNeg(preplay+form_origin-0.1));
             }
 
-
-
-            for (var ma = 0; ma < nt.length - 1; ma++) {
+            for (var ma = 0; ma < nt?.length - 1; ma++) {
+              if (!Array.isArray(nt[ma])) { continue; }
 
               // draw macro arc segments
 
               var sec = document.getElementById("arc-macro-" + (ma+1).toString());
 
-              const macro_origin = findNumber(nt[ma][0]);
-              const macro_terminus = findNumber(nt[ma+1][0]);
+              const macro_origin = findNumber(nt[ma]);
+              const macro_terminus = findNumber(nt[ma+1]);
               // const macro_terminus = findNumber(nt[ma].slice(-1));
               let show_cursor_pseudo_micro = true;
 
@@ -371,115 +407,112 @@
                 + "playSVG(" + (preplay + macro_origin) + ")"
               );
 
-              for (var me = 0; me < nt[ma].length - 1; me++) {
+              if (Array.isArray(nt[ma])) {
+                for (var me = 0; me < nt[ma].length - 1; me++) {
 
-                // draw meso arc segments
+                  // draw meso arc segments
 
-                const meso_origin = findNumber(nt[ma][me]);
-                const meso_terminus = findNumber(nt[ma][me+1]);
+                  const meso_origin = findNumber(nt[ma][me]);
+                  const meso_terminus = findNumber(nt[ma][me+1]);
 
-                var start_arc = Math.round(
-                  origin + scope
-                  * (meso_origin - macro_origin) / (macro_terminus - macro_origin)
-                );
-                var end_arc = Math.round(
-                  origin + scope
-                  * (meso_terminus - macro_origin) / (macro_terminus - macro_origin)
-                );
-                var sec = document.getElementById("arc-meso-" + (ma+1).toString()
-                  + "-" + (me+1).toString());
+                  var start_arc = Math.round(
+                    origin + scope
+                    * (meso_origin - macro_origin) / (macro_terminus - macro_origin)
+                  );
+                  var end_arc = Math.round(
+                    origin + scope
+                    * (meso_terminus - macro_origin) / (macro_terminus - macro_origin)
+                  );
+                  var sec = document.getElementById("arc-meso-" + (ma+1).toString()
+                    + "-" + (me+1).toString());
 
-                sec.setAttribute("d",
-                  describeArc(0, 0, 65, start_arc, end_arc+1));
-                sec.removeAttribute("display");
-                sec.setAttribute("stroke",
-                  greys[(me % greys.length) % greys.length]);
+                  sec.setAttribute("d",
+                    describeArc(0, 0, 65, start_arc, end_arc+1));
+                  sec.removeAttribute("display");
+                  sec.setAttribute("stroke",
+                    greys[(me % greys.length) % greys.length]);
 
-                let has_children = true;
-                if (typeof nt[ma][me] === 'number') {
-                  has_children = false;
-                }
+                  if (Array.isArray(nt[ma][me])) {
+                    for (var mi = 0; mi < nt[ma][me].length - 1; mi++) {
+                    
+                      // draw micro arc segments
 
-                if (has_children) {
-                  for (var mi = 0; mi < nt[ma][me].length - 1; mi++) {
-                  
-                    // draw micro arc segments
+                      const micro_origin = findNumber(nt[ma][me][mi]);
+                      const micro_terminus = findNumber(nt[ma][me][mi+1]);
 
-                    const micro_origin = findNumber(nt[ma][me][mi]);
-                    const micro_terminus = findNumber(nt[ma][me][mi+1]);
+                      let start_arc = Math.round(
+                        origin + scope
+                        * (micro_origin - meso_origin) / (meso_terminus - meso_origin)
+                      );
+                      let end_arc = Math.round(
+                        origin + scope
+                        * (micro_terminus - meso_origin) / (meso_terminus - meso_origin)
+                      );
 
-                    let start_arc = Math.round(
-                      origin + scope
-                      * (micro_origin - meso_origin) / (meso_terminus - meso_origin)
-                    );
-                    let end_arc = Math.round(
-                      origin + scope
-                      * (micro_terminus - meso_origin) / (meso_terminus - meso_origin)
-                    );
+                      let sec = document.getElementById("arc-micro-" + (ma+1).toString()
+                        + "-" + (me+1).toString()
+                        + "-" + (mi+1).toString());
 
-                    let sec = document.getElementById("arc-micro-" + (ma+1).toString()
-                      + "-" + (me+1).toString()
-                      + "-" + (mi+1).toString());
+                      sec.setAttribute("d",
+                        describeArc(0, 0, 20, start_arc, end_arc+1));
+                      sec.removeAttribute("display");
+                      sec.setAttribute("stroke-width", 30);
+                      sec.setAttribute("stroke",
+                        greys[(mi % greys.length) % greys.length]);
 
-                    sec.setAttribute("d",
-                      describeArc(0, 0, 20, start_arc, end_arc+1));
-                    sec.removeAttribute("display");
-                    sec.setAttribute("stroke-width", 30);
-                    sec.setAttribute("stroke",
-                      greys[(mi % greys.length) % greys.length]);
+                      // cue video
+                      // problem with overlapping divs
+                      sec.setAttribute("onclick",
+                        "player.seekTo(" + micro_origin + ")"
+                        + ";"
+                        + "playSVG(" + micro_origin + ")"
+                      );
 
-                    // cue video
-                    // problem with overlapping divs
-                    sec.setAttribute("onclick",
-                      "player.seekTo(" + micro_origin + ")"
-                      + ";"
-                      + "playSVG(" + micro_origin + ")"
-                    );
+                    }
 
+                    var show = document.getElementById("show-meso-" + (ma+1).toString() + "-" + (me+1).toString());
+                    show.setAttribute("begin", nonNeg(preplay+meso_origin-0.1));
+                    var hide = document.getElementById("hide-meso-" + (ma+1).toString() + "-" + (me+1).toString());
+                    hide.setAttribute("begin", nonNeg(preplay+meso_terminus-0.4));
+
+                    var spin = document.getElementById("micro-animation-" + (ma+1).toString() + "-" + (me+1).toString());
+                    spin.setAttribute("dur", meso_terminus - meso_origin);
+                    spin.setAttribute("begin", preplay + meso_origin);
+
+                    show_cursor_pseudo_micro = false;
+
+                  // } else {
+                  //   var spin = document.getElementById("inner-partial-meso-animation-" + (ma+1).toString() + "-" + (me+1).toString());
+                  //   spin.setAttribute("dur", meso_terminus - meso_origin);
+                  //   spin.setAttribute("begin", preplay + meso_origin);
                   }
 
-                  var show = document.getElementById("show-meso-" + (ma+1).toString() + "-" + (me+1).toString());
-                  show.setAttribute("begin", nonNeg(preplay+meso_origin-0.1));
-                  var hide = document.getElementById("hide-meso-" + (ma+1).toString() + "-" + (me+1).toString());
-                  hide.setAttribute("begin", nonNeg(preplay+meso_terminus-0.4));
+                  // cue video
+                  // problem with overlapping divs
+                  sec.setAttribute("onclick",
+                    "player.seekTo(" + meso_origin + ")"
+                    + ";"
+                    + "playSVG(" + meso_origin + ")"
+                  );
 
-                  var spin = document.getElementById("micro-animation-" + (ma+1).toString() + "-" + (me+1).toString());
-                  spin.setAttribute("dur", meso_terminus - meso_origin);
-                  spin.setAttribute("begin", preplay + meso_origin);
+                  try {
+                    var cur = document.getElementById("cursor-meso-" + (ma+1).toString() + "-" + (me+1).toString());
+                    cur.removeAttribute("display");
+                  } catch {}
+                  try {
+                    var cur = document.getElementById("cursor-inner-partial-macro-" + (ma+1).toString() + "-" + (me+1).toString());
+                    cur.removeAttribute("display");
+                  } catch {}
 
-                  show_cursor_pseudo_micro = false;
-
-                } else {
-                  var spin = document.getElementById("inner-partial-meso-animation-" + (ma+1).toString() + "-" + (me+1).toString());
-                  spin.setAttribute("dur", meso_terminus - meso_origin);
-                  spin.setAttribute("begin", preplay + meso_origin);
                 }
-
-                // cue video
-                // problem with overlapping divs
-                sec.setAttribute("onclick",
-                  "player.seekTo(" + meso_origin + ")"
-                  + ";"
-                  + "playSVG(" + meso_origin + ")"
-                );
-
-                try {
-                  var cur = document.getElementById("cursor-micro-" + (ma+1).toString() + "-" + (me+1).toString());
-                  cur.removeAttribute("display");
-                } catch {}
-                try {
-                  var cur = document.getElementById("cursor-inner-partial-meso-" + (ma+1).toString() + "-" + (me+1).toString());
-                  cur.removeAttribute("display");
-                } catch {}
-
               }
 
               // draw micro cursors and handle fades
 
-              var cur = document.getElementById("cursor-meso-" + (ma+1).toString());
+              var cur = document.getElementById("cursor-macro-" + (ma+1).toString());
               cur.removeAttribute("display");
 
-              var cur = document.getElementById("cursor-inner-meso-" + (ma+1).toString());
+              var cur = document.getElementById("cursor-inner-macro-" + (ma+1).toString());
               if (true || show_cursor_pseudo_micro) {
                 cur.removeAttribute("display");
               }
@@ -507,7 +540,7 @@
             spin.setAttribute("begin", preplay+form_origin);
 
             document.getElementById("show").setAttribute("begin", nonNeg(preplay+form_origin-0.1));
-            document.getElementById("show-cursor").setAttribute("begin", nonNeg(preplay+form_origin-0.1));
+            document.getElementById("show-cursor-form").setAttribute("begin", nonNeg(preplay+form_origin-0.1));
 
           }
 
@@ -565,7 +598,7 @@
       <br>
       <button onclick="handleEntryInput(0)" accesskey="s" style="margin-bottom:6px">Add section</button>
       <button onclick="handleEntryInput(1)" accesskey="d">Add division</button>
-      <button onclick="handleEntryInput(2)" accesskey="m">Add subdivision</button>
+      <button onclick="handleEntryInput(2)" accesskey="f">Add subdivision</button>
       <br>
     </div>
 
