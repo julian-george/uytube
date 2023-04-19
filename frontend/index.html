@@ -25,7 +25,7 @@
     <script>
       function playSVG(cue=null) {
         if (cue == null) {
-          cue = Math.round(fs * player.getCurrentTime()) / fs;
+          cue = Math.round(fs * (player.getCurrentTime() || 0)) / fs;
         }
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(cue);
@@ -225,13 +225,13 @@
             let nt = Object.assign([], newData.hierarchy)
               .map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
 
-            // console.log(nt, JSON.stringify(nt));
+            // console.log("nt", JSON.stringify(nt));
             // [[[1.9,4.5,7.2],12.5,23.7,34.5,45.4,56.2,67,78.3],[90,[101,103.2,106.5]],[112,123.1,134.1,145.1],160]
 
             if (!is_chronological(nt.flat().flat())) {
               console.log('Data error: timestamps are out of order');
-              console.log(nt);
-              console.log(nt.flat().flat());
+              console.log(JSON.stringify(nt));
+              console.log(JSON.stringify(nt.flat().flat()));
             }
 
             // render clock segments, macro
@@ -343,7 +343,7 @@
                 }
               }
             }
-            // console.log(nt, JSON.stringify(nt));
+            // console.log("nt", JSON.stringify(nt));
 
             if (preplay < 0.8 && document.getElementById("preplaywrapper")) { // 0.4 plus time for the script to run
               document.getElementById("preplaywrapper").remove();

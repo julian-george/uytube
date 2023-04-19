@@ -55,9 +55,8 @@ function loadData(data) {
     data = convertData(data);
   }
   setState(data);
-  // renderSVG(data);
   renderSections();
-  renderSVG(generateSVGData());
+  renderSVG(state);
   player.cueVideoById(data.youtubeId);
 }
 // Uploads the data
