@@ -30,19 +30,27 @@ function onPlayerReady() {
   }
 }
 
-function playFromFirstSection(timeBefore = 0) {
+function playFromFirstSection(leadTime = 0) {
   player.playVideo();
-  player.seekTo(Math.max(state.sections[0].time - timeBefore, 0));
+  player.seekTo(Math.max(state.sections[0].time - leadTime, 0));
 }
 
 function onPlayButtonClick() {
-  if (!player.getPlayerState || !player.getCurrentTime) return;
+  const opaque = document.getElementById('svg-play-button').getAttribute("opacity") == 1;
+  if (opaque) {
+    document.getElementById('svg-play-button').setAttribute("opacity", 0.5);
+    // svg.pauseAnimations(); // wire this up
+  } else {
+    document.getElementById('svg-play-button').setAttribute("opacity", 1);
+    // svg.unpauseAnimations(); // wire this up
+  }
+  if (!player.getPlayerState || !player.getCurrentTime) { return; }
   const playerState = player.getPlayerState();
   const currTime = player.getCurrentTime();
-  const timeBefore = 2.5;
+  const leadTime = 2.5;
   if (currTime < state?.sections[0]?.time) {
-    if (currTime < state?.sections[0]?.time - timeBefore) {
-      playFromFirstSection(timeBefore);
+    if (currTime < state?.sections[0]?.time - leadTime) {
+      playFromFirstSection(leadTime);
     } else {
       playFromFirstSection();
     }
@@ -56,7 +64,8 @@ function onPlayButtonClick() {
 function updateSVGPlaying() {
   const playerState = player.getPlayerState();
   if (!state?.youtubeId || playerState != 1) {
-    pauseSVG();
+    // pauseSVG();
+    // raise a visual alert that the SVG is running independently
   } else {
     if (player.getCurrentTime) playSVG(player?.getCurrentTime());
   }
