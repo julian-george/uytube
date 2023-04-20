@@ -44,7 +44,7 @@ setInterval(() => {
     }
   }
   animateIndicator(currTime);
-  updateSVGPlaying();
+  // updateSVGPlaying(); // unnecessary to call this constantly
 }, 50);
 
 // The amount of seconds that the arrow keys change the player's time

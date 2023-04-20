@@ -18,41 +18,12 @@ const setSections = (newSections) => {
   onStateChange();
 };
 
-// If no hierarchy given, pull from top-level of state hierarchy with ending section sliced off
-const generateSVGData = (hierarchy = state.hierarchy) => {
-  const svgData = [];
-  for (let i = 0; i < hierarchy.length; i++) {
-    const currSection = hierarchy[i];
-    if (
-      currSection.children.length == 0 ||
-      currSection.children[0].time != currSection.time
-    ) {
-      // SVG rendering code expects an array for each macro-section, even if it is chidless
-      svgData.push(currSection.time);
-    }
-
-    if (currSection?.children?.length > 0)
-      svgData.push(generateSVGData(currSection.children));
-  }
-  return svgData;
-};
-
-const generateColorList = () => {
-  const colorList = [];
-  for (let i = 0; i < state.hierarchy.length; i++) {
-    const currSection = state.hierarchy[i];
-    colorList.push(currSection.color);
-  }
-  return colorList;
-};
-
 const onStateChange = () => {
   updateHierarchy();
   // renderDials();
   renderPanel();
   renderSections();
-  console.log(generateSVGData());
-  renderSVG(generateSVGData(), generateColorList());
+  renderSVG(state);
 };
 
 const updateHierarchy = () => {
