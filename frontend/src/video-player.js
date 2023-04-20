@@ -36,23 +36,18 @@ function playFromFirstSection(leadTime = 0) {
 }
 
 function onPlayButtonClick() {
-<<<<<<< HEAD
-  if (!player.getPlayerState || !player.getCurrentTime) {
-    // This exists for when we are hardcoding the nestedData within index.html
-    animateSVG();
-    return;
-  }
-=======
-  const opaque = document.getElementById('svg-play-button').getAttribute("opacity") == 1;
+  const opaque =
+    document.getElementById("svg-play-button").getAttribute("opacity") == 1;
   if (opaque) {
-    document.getElementById('svg-play-button').setAttribute("opacity", 0.5);
+    document.getElementById("svg-play-button").setAttribute("opacity", 0.5);
     // svg.pauseAnimations(); // wire this up
   } else {
-    document.getElementById('svg-play-button').setAttribute("opacity", 1);
+    document.getElementById("svg-play-button").setAttribute("opacity", 1);
     // svg.unpauseAnimations(); // wire this up
   }
-  if (!player.getPlayerState || !player.getCurrentTime) { return; }
->>>>>>> origin/spring-23-updates
+  if (!player.getPlayerState || !player.getCurrentTime) {
+    return;
+  }
   const playerState = player.getPlayerState();
   const currTime = player.getCurrentTime();
   const leadTime = 2.5;

@@ -56,11 +56,7 @@ function loadData(data) {
   }
   setState(data);
   renderSections();
-<<<<<<< HEAD
   renderSVG(generateSVGData(), generateColorList());
-=======
-  renderSVG(state);
->>>>>>> origin/spring-23-updates
   player.cueVideoById(data.youtubeId);
 }
 // Uploads the data
