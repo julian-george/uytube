@@ -23,20 +23,16 @@ const generateSVGData = (hierarchy = state.hierarchy) => {
   const svgData = [];
   for (let i = 0; i < hierarchy.length; i++) {
     const currSection = hierarchy[i];
-    // if (
-    //   currSection.children.length > 0 &&
-    //   currSection.children[0].time != currSection.time
-    // ) {
-    // SVG rendering code expects an array for each macro-section, even if it is chidless
-    svgData.push(
-      currSection.level == 0 ? [currSection.time] : currSection.time
-    );
-    // }
+    if (
+      currSection.children.length == 0 ||
+      currSection.children[0].time != currSection.time
+    ) {
+      // SVG rendering code expects an array for each macro-section, even if it is chidless
+      svgData.push(currSection.time);
+    }
 
     if (currSection?.children?.length > 0)
-      (currSection.level == 0 ? svgData[i] : svgData).push(
-        generateSVGData(currSection.children)
-      );
+      svgData.push(generateSVGData(currSection.children));
   }
   return svgData;
 };
@@ -55,6 +51,7 @@ const onStateChange = () => {
   // renderDials();
   renderPanel();
   renderSections();
+  console.log(generateSVGData());
   renderSVG(generateSVGData(), generateColorList());
 };
 
