@@ -39,8 +39,8 @@
         svg.pauseAnimations();
         document.getElementById('svg-play-button').setAttribute("opacity", 0.5);
       }
-
-      // If no hierarchy given, pull from top-level of state hierarchy with ending section sliced off
+      // Old data conversion method to SVG data format. remove if new code has no issues
+      // // If no hierarchy given, pull from top-level of state hierarchy with ending section sliced off
       // const generateSVGData = (hierarchy = state.hierarchy) => {
       //   const svgData = [];
       //   for (let i = 0; i < hierarchy.length; i++) {
