@@ -39,11 +39,9 @@ function onPlayButtonClick() {
   const opaque =
     document.getElementById("svg-play-button").getAttribute("opacity") == 1;
   if (opaque) {
-    document.getElementById("svg-play-button").setAttribute("opacity", 0.5);
-    // svg.pauseAnimations(); // wire this up
+    pauseSVG();
   } else {
-    document.getElementById("svg-play-button").setAttribute("opacity", 1);
-    // svg.unpauseAnimations(); // wire this up
+    playSVG();
   }
   if (!player.getPlayerState || !player.getCurrentTime) {
     return;

@@ -39,7 +39,26 @@
         svg.pauseAnimations();
         document.getElementById('svg-play-button').setAttribute("opacity", 0.5);
       }
-      function renderSVG(newData) {
+
+      // If no hierarchy given, pull from top-level of state hierarchy with ending section sliced off
+      // const generateSVGData = (hierarchy = state.hierarchy) => {
+      //   const svgData = [];
+      //   for (let i = 0; i < hierarchy.length; i++) {
+      //     const currSection = hierarchy[i];
+      //     if (
+      //       currSection.children.length == 0 ||
+      //       currSection.children[0].time != currSection.time
+      //     ) {
+      //       // SVG rendering code expects an array for each macro-section, even if it is chidless
+      //       svgData.push(currSection.time);
+      //     }
+
+      //   if (currSection?.children?.length > 0)
+      //     svgData.push(generateSVGData(currSection.children));
+      //   }
+      //   return svgData;
+      // };
+      function renderSVG(newData, newColors) {
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(0);
         drawForm(newData, newColors);
@@ -62,7 +81,7 @@
     <svg id="form_animation" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     width="300px" height="150px" viewBox="0 0 300 150" 
-    onload="pauseSVG();renderSVG()">
+    onload="pauseSVG();renderSVG(state?.hierarchy,generateColorList())">
     <!-- width="304px" height="540px" viewBox="0 0 304 540"  -->
 
       <rect height="100%" width="100%" fill="#FAFAFA"></rect>
@@ -179,7 +198,7 @@
           function nonNeg(num) {
             return num < 0 ? 0 : num;
           }
-            
+          // example of what may be stored in the global state variable (minus the sections array)
           const demo_data = { // Purcell Fairy Queen chaconne // demo
             "videoId":"Ct0GJqRRo_8",
             "hierarchy":[
@@ -215,13 +234,11 @@
             ]
           };
 
-          function drawForm(newData = demo_data) {
+          function drawForm(newData = demo_data.hierarchy, colors = defaultColors) {
 
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
-
-            let nt = Object.assign([], newData.hierarchy)
-              .map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
+            let nt = Object.assign([], newData).map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
 
             // console.log("nt", JSON.stringify(nt));
             // [[[1.9,4.5,7.2],12.5,23.7,34.5,45.4,56.2,67,78.3],[90,[101,103.2,106.5]],[112,123.1,134.1,145.1],160]
@@ -372,7 +389,7 @@
             }
 
             for (var ma = 0; ma < nt?.length - 1; ma++) {
-              if (!Array.isArray(nt[ma])) { continue; }
+              //if (!Array.isArray(nt[ma])) { continue; }
 
               // draw macro arc segments
 

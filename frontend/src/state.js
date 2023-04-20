@@ -18,12 +18,14 @@ const setSections = (newSections) => {
   onStateChange();
 };
 
+const generateColorList = () => state.hierarchy.map((section) => section.color);
+
 const onStateChange = () => {
   updateHierarchy();
   // renderDials();
   renderPanel();
   renderSections();
-  renderSVG(state);
+  renderSVG(state.hierarchy, generateColorList());
 };
 
 const updateHierarchy = () => {
