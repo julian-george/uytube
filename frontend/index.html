@@ -40,28 +40,29 @@
         document.getElementById('svg-play-button').setAttribute("opacity", 0.5);
       }
       // Old data conversion method to SVG data format. remove if new code has no issues
-      // // If no hierarchy given, pull from top-level of state hierarchy with ending section sliced off
-      // const generateSVGData = (hierarchy = state.hierarchy) => {
-      //   const svgData = [];
-      //   for (let i = 0; i < hierarchy.length; i++) {
-      //     const currSection = hierarchy[i];
-      //     if (
-      //       currSection.children.length == 0 ||
-      //       currSection.children[0].time != currSection.time
-      //     ) {
-      //       // SVG rendering code expects an array for each macro-section, even if it is chidless
-      //       svgData.push(currSection.time);
-      //     }
-
-      //   if (currSection?.children?.length > 0)
-      //     svgData.push(generateSVGData(currSection.children));
-      //   }
-      //   return svgData;
-      // };
+      // If no hierarchy given, pull from top-level of state hierarchy with ending section sliced off
+      const generateSVGData = (hierarchy = state.hierarchy) => {
+        const svgData = [];
+        for (let i = 0; i < hierarchy.length; i++) {
+          const currSection = hierarchy[i];
+          
+        if (currSection?.children?.length > 0){
+          svgData.push([currSection.time, ...generateSVGData(currSection.children)]);
+        }
+        else if (
+            currSection.children.length == 0 ||
+            currSection.children[0].time != currSection.time
+          ) {
+            // SVG rendering code expects an array for each macro-section, even if it is chidless
+            svgData.push(currSection.time);
+          }
+        }
+        return svgData;
+      };
       function renderSVG(newData, newColors) {
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(0);
-        drawForm(newData, newColors);
+        drawForm(generateSVGData(newData), newColors);
         cue = Math.round(fs * player.getCurrentTime()) / fs;
         svg.setCurrentTime(cue);
       }
@@ -238,7 +239,8 @@
 
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
-            let nt = Object.assign([], newData).map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
+            let nt = newData
+            //let nt = Object.assign([], newData).map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
 
             // console.log("nt", JSON.stringify(nt));
             // [[[1.9,4.5,7.2],12.5,23.7,34.5,45.4,56.2,67,78.3],[90,[101,103.2,106.5]],[112,123.1,134.1,145.1],160]
