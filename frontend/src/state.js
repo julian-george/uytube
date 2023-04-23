@@ -4,7 +4,6 @@ const state = {
   sections: [],
   // Nested array of objects representing hierarchy of sections
   hierarchy: [],
-  svgData: [],
 };
 
 const setState = (newState) => {
@@ -28,6 +27,7 @@ const onStateChange = () => {
   renderSVG(state.hierarchy, generateColorList());
 };
 
+// state.hierarchy is generated from state.sections
 const updateHierarchy = () => {
   // Reset the old hierarchy first
   const newHierarchy = [];
@@ -39,14 +39,14 @@ const updateHierarchy = () => {
   for (let i = 0; i < state.sections.length; i++) {
     // Giving sections a children property to store subsections
     const currSection = { ...state.sections[i], children: [] };
-    // If entering a higher level (more nested), add a 0 to indices to represent the index at this new level
     if (currSection.level >= indices.length) {
+      // If entering a higher level (more nested), add a 0 to indices to represent the index at this new level
       indices.push(0);
-      // If remaining at the same level, increment the index for that level
     } else if (currSection.level == indices.length - 1) {
+      // If remaining at the same level, increment the index for that level
       indices[currSection.level]++;
-      // If going to a lower level, remove indices until the number of indices is the same as the level
     } else if (currSection.level < indices.length - 1) {
+      // If going to a lower level, remove indices until the number of indices is the same as the level
       while (currSection.level < indices.length - 1) {
         indices.pop();
       }
@@ -91,19 +91,28 @@ const validateSections = (newSections) => {
     // this fallback value helps enforce the first section's level as 0
     const prevSection = newSections?.[i - 1] || { level: -1 };
     if (prevSection.level < currSection.level - 1) {
-      const addedSection = {
+      const missingParent = {
         time: currSection.time,
-        invisible: true,
-        title: " ",
+        invisible: false,
+        title: "   ",
         level: currSection.level - 1,
       };
-      return validateSections(sortSections([...newSections, addedSection]));
+      return validateSections(sortSections([...newSections, missingParent]));
       // if (currSection.level == 1)
       //   throw new Error("Invalid hierarchy: divisions must belong to sections");
       // else if (currSection.level == 2)
       //   throw new Error(
       //     "Invalid hierarchy: subdivisions must belong to divisions"
       //   );
+    }
+    if (prevSection.time != undefined && prevSection.level == currSection.level - 1 && prevSection.time != currSection.time) {
+      const missingFirstChild = {
+        time: prevSection.time,
+        invisible: false,
+        title: "   ",
+        level: currSection.level,
+      };
+      return validateSections(sortSections([...newSections, missingFirstChild]));
     }
   }
   return newSections;
