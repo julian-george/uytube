@@ -23,6 +23,42 @@
   <div class="column" id="animation-column">
      <!-- Co-ordinate SVG -->
     <script>
+      const defaultColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
+      // example of what may be stored in the global state variable (minus the sections array)
+      const demo_data = { // Purcell Fairy Queen chaconne // demo
+        "videoId":"Ct0GJqRRo_8",
+        "hierarchy":[
+          {"time":1.9,"title":"","color":"","children":[
+              {"time":1.9,"title":"Variation 1","children":[
+                  {"time":1.9,"title":"basic idea"},
+                  {"time":4.5,"title":"repetition of basic idea (sequential)"},
+                  {"time":7.2,"title":"cadential progression (HC)"}
+                ]},
+              {"time":12.5,"title":"Variation 2"},
+              {"time":23.7,"title":"Variation 3"},
+              {"time":34.5,"title":"Variation 4"},
+              {"time":45.4,"title":"Variation 5"},
+              {"time":56.2,"title":"Variation 6"},
+              {"time":67,"title":"Variation 7"},
+              {"time":78.3,"title":"Variation 8"}
+            ]},
+          {"time":90,"title":"Minore","color":"","children":[
+              {"time":90,"title":"Variation 9"},
+              {"time":101,"title":"Variation 10","children":[
+                  {"time":101,"title":"basic idea"},
+                  {"time":103.2,"title":"repetition of basic idea (sequential)"},
+                  {"time":106.5,"title":"cadential progression (PAC in major)"}
+                ]}
+            ]},
+          {"time":112,"title":"Majore","color":"","children":[
+              {"time":112,"title":"Variation 11"},
+              {"time":123.1,"title":"Variation 12"},
+              {"time":134.1,"title":"Variation 13"},
+              {"time":145.1,"title":"Variation 14"}
+            ]},
+          {"time":160,"title":"","color":""}
+        ]
+      };
       function playSVG(cue=null) {
         if (cue == null) {
           cue = Math.round(fs * (player.getCurrentTime() || 0)) / fs;
@@ -39,30 +75,20 @@
         svg.pauseAnimations();
         document.getElementById('svg-play-button').setAttribute("opacity", 0.5);
       }
-      // Old data conversion method to SVG data format. remove if new code has no issues
-      // If no hierarchy given, pull from top-level of state hierarchy with ending section sliced off
-      const generateSVGData = (hierarchy = state.hierarchy) => {
-        const svgData = [];
-        for (let i = 0; i < hierarchy.length; i++) {
-          const currSection = hierarchy[i];
-          
-        if (currSection?.children?.length > 0){
-          svgData.push([currSection.time, ...generateSVGData(currSection.children)]);
+      function extractTimestamps(analysis) {
+        // state e.g. demo_data => timestamps
+        let nt = Object.assign([], analysis).map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
+        return nt;
+      }
+      function renderSVG(hierarchy = state.hierarchy, colors = defaultColors) {
+        // for frontend development, uncomment following line
+        // hierarchy = demo_data.hierarchy;
+        if (colors.length != hierarchy.length) {
+          colors = defaultColors;
         }
-        else if (
-            currSection.children.length == 0 ||
-            currSection.children[0].time != currSection.time
-          ) {
-            // SVG rendering code expects an array for each macro-section, even if it is chidless
-            svgData.push(currSection.time);
-          }
-        }
-        return svgData;
-      };
-      function renderSVG(newData, newColors) {
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(0);
-        drawForm(generateSVGData(newData), newColors);
+        drawForm(extractTimestamps(hierarchy), colors);
         cue = Math.round(fs * player.getCurrentTime()) / fs;
         svg.setCurrentTime(cue);
       }
@@ -81,9 +107,8 @@
     <!-- SVG -->
     <svg id="form_animation" xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="300px" height="150px" viewBox="0 0 300 150" 
-    onload="pauseSVG();renderSVG(state?.hierarchy,generateColorList())">
-    <!-- width="304px" height="540px" viewBox="0 0 304 540"  -->
+    width="304px" height="150px" viewBox="0 0 304 150"
+    onload="pauseSVG();renderSVG()">
 
       <rect height="100%" width="100%" fill="#FAFAFA"></rect>
 
@@ -168,8 +193,6 @@
           const scope = 180;
           const origin = -90;
 
-          var defaultColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
-
           var greys = ["#c0c2ce", "#e5e6eb", "#afafaf", "#e5e6eb"];
 
           function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -199,48 +222,11 @@
           function nonNeg(num) {
             return num < 0 ? 0 : num;
           }
-          // example of what may be stored in the global state variable (minus the sections array)
-          const demo_data = { // Purcell Fairy Queen chaconne // demo
-            "videoId":"Ct0GJqRRo_8",
-            "hierarchy":[
-              {"time":1.9,"title":"","color":"","children":[
-                  {"time":1.9,"title":"Variation 1","children":[
-                      {"time":1.9,"title":"basic idea"},
-                      {"time":4.5,"title":"repetition of basic idea (sequential)"},
-                      {"time":7.2,"title":"cadential progression (HC)"}
-                    ]},
-                  {"time":12.5,"title":"Variation 2"},
-                  {"time":23.7,"title":"Variation 3"},
-                  {"time":34.5,"title":"Variation 4"},
-                  {"time":45.4,"title":"Variation 5"},
-                  {"time":56.2,"title":"Variation 6"},
-                  {"time":67,"title":"Variation 7"},
-                  {"time":78.3,"title":"Variation 8"}
-                ]},
-              {"time":90,"title":"Minore","color":"","children":[
-                  {"time":90,"title":"Variation 9"},
-                  {"time":101,"title":"Variation 10","children":[
-                      {"time":101,"title":"basic idea"},
-                      {"time":103.2,"title":"repetition of basic idea (sequential)"},
-                      {"time":106.5,"title":"cadential progression (PAC in major)"}
-                    ]}
-                ]},
-              {"time":112,"title":"Majore","color":"","children":[
-                  {"time":112,"title":"Variation 11"},
-                  {"time":123.1,"title":"Variation 12"},
-                  {"time":134.1,"title":"Variation 13"},
-                  {"time":145.1,"title":"Variation 14"}
-                ]},
-              {"time":160,"title":"","color":""}
-            ]
-          };
 
-          function drawForm(newData = demo_data.hierarchy, colors = defaultColors) {
+          function drawForm(nt, colors) {
 
             // reload virgin template
             document.getElementById('svg_template').innerHTML = svg_template;
-            let nt = newData
-            //let nt = Object.assign([], newData).map(ma => ma?.children?.length > 0 ? ma.children.map(me => me?.children?.length > 0 ? me.children.map(mi => mi.time) : me.time) : ma.time);
 
             // console.log("nt", JSON.stringify(nt));
             // [[[1.9,4.5,7.2],12.5,23.7,34.5,45.4,56.2,67,78.3],[90,[101,103.2,106.5]],[112,123.1,134.1,145.1],160]
@@ -343,11 +329,12 @@
             micro_div.innerHTML = micro_html;
 
             if (Array.isArray(nt[nt.length-1]) && nt[nt.length-1].length > 1) {
-              // user has neglected to add a final macro onset for the ending
-              // add one
-              let timestamps = Object.assign([], nt.flat().flat());
-              let stop = 2 + timestamps[timestamps.length-1];
-              nt.push(stop);
+              // User has neglected to add a final macro onset for the ending!
+              // Add one.
+              nt.push(Math.floor(player.getDuration()*10)/10);
+              // let timestamps = Object.assign([], nt.flat().flat());
+              // let last_timestamp = timestamps[timestamps.length-1];
+              // nt.push(2 + last_timestamp);
             }
             for (ma = 0; ma < nt.length-1; ma++) {
               // copy start time of next sibling into array
