@@ -401,7 +401,7 @@
                 describeArc(0, 0, 100, start_arc, end_arc+1));
               sec.removeAttribute("display");
               sec.setAttribute("stroke",
-                colors?.[ma % colors?.length] || defaultSectionColors[ma % colors.length]);
+                colors?.[ma % colors?.length] || defaultMacroColors[ma % colors.length]);
 
               // cue video
               sec.setAttribute("onclick",
@@ -606,9 +606,10 @@
       <input type="text" placeholder="Type ID Here" id="idInput"> 
       <button onclick="openId()" style="margin-bottom:6px">Load from Cloud</button>
       <br>
-      <button onclick="handleEntryInput(0)" accesskey="s" style="margin-bottom:6px">Add section</button>
-      <button onclick="handleEntryInput(1)" accesskey="d">Add division</button>
-      <button onclick="handleEntryInput(2)" accesskey="f">Add subdivision</button>
+      <button onclick="handleEntryInput(0)" accesskey="a" style="margin-bottom:6px">Add macro</button>
+      <button onclick="handleEntryInput(1)" accesskey="e">Add meso</button>
+      <button onclick="handleEntryInput(2)" accesskey="i">Add micro</button>
+      <button onclick="redescribeCurrent()" accesskey="r">Rename current section</button>
       <br>
     </div>
 
@@ -617,10 +618,10 @@
     <div>
       <table id="table" text-align="left">
         <tr>
-          <th style="text-align:left">Time</th>
-          <th style="text-align:left;min-width:230px"> | Edit</th>
-          <th style="text-align:left"> | Description</th>
-          <th style="text-align:left;min-width:185px"> | Color</th>
+          <th style="text-align:left;padding-right:10px">Time</th>
+          <th style="text-align:left;padding-right:10px">Edit</th>
+          <th style="text-align:left;padding-right:10px">Description</th>
+          <th style="text-align:left;min-width:185px;display:none">Color</th>
         </tr>
       </table>
     </div>

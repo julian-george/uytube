@@ -34,7 +34,7 @@ function animateSections() {
   listElement.animate({ top: `${newListTop}px` }, 150, () => {});
   // This calculation ensures that the vertical center of the arrow points to the vertical center of the first line of text
   const newArrowTop =
-    currentRowAbsoluteTop + (arrowHeight - textHeight) / 2 + newListTop;
+    currentRowAbsoluteTop + textHeight / 2 - arrowHeight / 8 + newListTop;
 
   arrowElement.animate({ top: `${newArrowTop}px` }, 150, () => {
     // Only show the arrow once everything has been rendered

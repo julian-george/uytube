@@ -45,11 +45,11 @@ function cueVideo(r) {
   player.seekTo(stamp);
 }
 
-const levelPrefixes = {
-  0: "",
-  1: ">",
-  2: ">>",
-};
+// const levelPrefixes = {
+//   0: "",
+//   1: ">",
+//   2: ">>",
+// };
 
 function redescribe(sectionIdx) {
   const currSection = Object.assign({}, state.sections[sectionIdx]);
@@ -90,6 +90,18 @@ function newYoutubeSelection() {
   setYoutubeId(parsedId);
 }
 
+function redescribeCurrent() {
+  // compare timeToSectionIdx ?
+  if (!player?.getCurrentTime || !player.getCurrentTime()) return;
+  const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
+  const currentIdx = state.sections.length - 1
+    - state.sections.toReversed().findIndex(section => (section.time < timestamp))
+    || -1;
+  if (currentIdx != -1) {
+    redescribe(currentIdx);
+  }
+}
+
 function handleEntryInput(level) {
   if (!player?.getCurrentTime || !player.getCurrentTime()) return;
   const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
@@ -107,6 +119,25 @@ function handleEntryInput(level) {
   }
 }
 
+function displayTime(time) {
+  // floating point errors not an issue since
+  // time is received accurate to one decimal place
+  const hrs = Math.floor(time / 3600);
+  const mins = Math.floor((time % 3600) / 60);
+  const secs = Math.round((time % 60) * 10) / 10;
+
+  let ret = "";
+  if (hrs > 0) {
+    ret += "" + hrs + ":" + (mins < 10 ? "0" : "");
+  }
+  if (mins > 0) {
+    ret += "" + mins;
+  }
+  ret += ":" + (secs < 10 ? "0" : "") + secs;
+
+  return ret;
+}
+
 function renderPanel() {
   $("#table>tbody>.panel-row").remove();
   for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
@@ -115,13 +146,13 @@ function renderPanel() {
     const { time, level, title, color } = section;
     if (level == 0 && !color) {
       recolorSection(
-        defaultSectionColors[sectionIdx % defaultSectionColors.length],
+        defaultMacroColors[sectionIdx % defaultMacroColors.length],
         sectionIdx
       );
       // After recoloring, return early to prevent duplicate render
       return;
     }
-    const stamp = time;
+    const stamp = displayTime(time);
 
     const row = document.createElement("TR");
     row.className = "panel-row";
@@ -132,25 +163,28 @@ function renderPanel() {
     cellDesc.className = "cell-description clickable";
 
     const descNode = document.createTextNode(
-      levelPrefixes[level] + " " + title
+      ">".repeat(level) + " " + title
     );
 
     const timeNode = document.createTextNode(stamp.toString());
 
     cellTime.appendChild(timeNode);
     row.appendChild(cellTime);
+    // TO DO: use ctrl+click https://stackoverflow.com/a/16190994
     cellCtrl.innerHTML =
-      `<button onclick="deleteSection(${sectionIdx})">Delete</button>` +
-      '<button onclick="cueVideo(this)">Cue video</button>' +
-      `<button onclick="pushSectionTime(${
-        -1 / fs
-      }, ${sectionIdx})">-</button>` +
+      `<nobr style="padding-right:5px">` +
+      `<button onclick="deleteSection(${sectionIdx})">DEL</button>` +
+      `<button onclick="cueVideo(this)">Cue</button>` +
+      `<button onclick="pushSectionTime(${-10 / fs}, ${sectionIdx})">--</button>` +
+      `<button onclick="pushSectionTime(${-1 / fs}, ${sectionIdx})">-</button>` +
       `<button onclick="pushSectionTime(${1 / fs},${sectionIdx})">+</button>` +
-      `<button onclick="redescribe(${sectionIdx})">Redescribe</button>`;
+      `<button onclick="pushSectionTime(${10 / fs},${sectionIdx})">++</button>` +
+      `<button onclick="redescribe(${sectionIdx})">Edit</button>` +
+      `</nobr>`;
     row.appendChild(cellCtrl);
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
-    if (level == 0) {
+    if (level == 0 && false) { // hide for now
       const currentColor = color;
 
       cellColor.innerHTML = `

@@ -8,8 +8,8 @@ const smallPlayerSize = { width: "420", height: "250" };
 const largePlayerSize = { width: "80vw", height: "92.5vh" };
 
 // List of alernating colors that will be used before user inputs their own
-const defaultSectionColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
-const defaultDivisionColors = ["#555", "#BBB"];
+const defaultMacroColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
+const defaultMesoColors = ["#555", "#BBB"];
 
 const numLevels = 3;
 

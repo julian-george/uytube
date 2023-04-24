@@ -122,11 +122,13 @@ table button {
 
 .division {
   font-size: 14px;
+  padding-left: 2px;
   /* margin-left: 40px; */
 }
 
 .subdivision {
-  font-size: 14px;
+  font-size: 12px;
+  padding-left: 2px;
   /* margin-left: 56px; */
 }
 

@@ -8,7 +8,7 @@ function renderDials() {
   const videoRange = player.getDuration() || 1;
   const sectionColors = state.hierarchy.map(
     (section, i) =>
-      section?.color || defaultSectionColors[i % defaultSectionColors.length]
+      section?.color || defaultMacroColors[i % defaultMacroColors.length]
   );
   // Array of each sections relative beginning in degrees
   let sectionStarts = [];
@@ -43,7 +43,7 @@ function renderDials() {
 
   const divisionColors = currSection.children.map(
     (division, j) =>
-      division?.color || defaultDivisionColors[j % defaultDivisionColors.length]
+      division?.color || defaultMesoColors[j % defaultMesoColors.length]
   );
 
   let divisionStarts = [];
@@ -64,7 +64,7 @@ function renderDials() {
 
   dialContainerEle.append(
     `<div class="dial-1" style="background-image:conic-gradient(from -90deg, ${
-      defaultDivisionColors[defaultDivisionColors.length - 1]
+      defaultMesoColors[defaultMesoColors.length - 1]
     } 50%, transparent 50%)"><div class="circle-mask"></div></div>`
   );
   for (let j = 0; j < currSection.children.length; j++) {
