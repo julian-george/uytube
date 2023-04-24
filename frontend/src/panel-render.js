@@ -52,33 +52,33 @@ const levelPrefixes = {
 };
 
 function redescribe(sectionIdx) {
-  const currSection = state.sections[sectionIdx];
-  let newTitle = prompt(
+  const currSection = Object.assign({}, state.sections[sectionIdx]);
+  const timestamp = currSection.time;
+  const level = currSection.level;
+
+  let sectionTitle = prompt(
     "Describe",
-    levelPrefixes[currSection.level] + " " + currSection.title
+    ">".repeat(currSection.level) + " " + currSection.title
   )?.trim();
-  if (!newTitle || newTitle == "") return;
-  let newLevel = 0;
-  // iterate thru the prefixes until a prefix is found at the beginning of the inputted title
-  //   iterate from the last prefix because earlier prefixes are substrings of later prefixes (ie > is a substring of >>)
-  for (let level = Object.keys(levelPrefixes).length - 1; level >= 1; level--) {
-    if (newTitle.indexOf(levelPrefixes[level]) == 0) {
-      newLevel = level;
-      break;
+  if (!sectionTitle) return; // previously forebade a blank title
+  const split_input = sectionTitle.split(">").map(title => title.trim());
+
+  // apply a new title to the timestamp at the existing hierarchical level
+  retitleSection(split_input[level] == undefined ? "[delete me]" : split_input[level], sectionIdx);
+
+  // apply edits at the other hierarchical levels
+  for (let m of [2, 1, 0]) {
+    if (m == level) continue;
+    const title = split_input[m] || false;
+    if (title && title != "") {
+      const extantSectionIdx = state.sections.findIndex(section => section.time == timestamp && section.level == m);
+      if (extantSectionIdx != -1) {
+        retitleSection(title, extantSectionIdx);
+      } else {
+        addSection(title, timestamp, m);
+      }
     }
   }
-  // based on the parsed level, cut out the respective prefix before saving
-  //   if level is 0, length - 1 will be -1, so ignore in that case
-  // .trim() removes white space between prefix and and title
-  if (newLevel != 0)
-    newTitle = newTitle.substring(levelPrefixes[newLevel].length).trim();
-  if (newLevel != currSection.level)
-    editSection(
-      sectionIdx,
-      { ...currSection, title: newTitle, level: newLevel },
-      true
-    );
-  else retitleSection(newTitle, sectionIdx);
 }
 
 function newYoutubeSelection() {
