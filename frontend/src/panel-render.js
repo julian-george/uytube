@@ -58,7 +58,7 @@ function redescribe(sectionIdx) {
 
   let sectionTitle = prompt(
     "Describe",
-    ">".repeat(currSection.level) + " " + currSection.title
+    "> ".repeat(currSection.level) + currSection.title
   )?.trim();
   if (!sectionTitle) return; // previously forebade a blank title
   const split_input = sectionTitle.split(">").map(title => title.trim());
@@ -163,7 +163,7 @@ function renderPanel() {
     cellDesc.className = "cell-description clickable";
 
     const descNode = document.createTextNode(
-      ">".repeat(level) + " " + title
+      "> ".repeat(level) + title
     );
 
     const timeNode = document.createTextNode(stamp.toString());

@@ -1,11 +1,12 @@
 body,
 .font_a,
 button,
-input,
+input::file-selector-button,
 input {
   font-family: "Roboto Condensed";
 }
-button {
+button,
+input::file-selector-button {
   height: 1.75em;
 }
 table,
