@@ -65,7 +65,7 @@ function onPlayButtonClick() {
 function updateSVGPlaying() {
   const playerState = player.getPlayerState();
   if (!state?.youtubeId || playerState != 1) {
-    // pauseSVG();
+    pauseSVG();
     // raise a visual alert that the SVG is running independently
   } else {
     if (player.getCurrentTime) playSVG(player?.getCurrentTime());
