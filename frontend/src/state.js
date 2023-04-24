@@ -18,7 +18,17 @@ const setSections = (newSections) => {
   onStateChange();
 };
 
-const generateColorList = () => state.hierarchy.map((section) => section.color);
+const generateColorList = () => {
+  const section_colors = state.hierarchy.map((section) => section.color);
+  let faulty = false;
+  for (let idx = 1; idx < section_colors.length; idx++) {
+    if (section_colors[idx] == section_colors[idx-1] ) {
+      faulty = true;
+    }
+  }
+  console.log("Falling back on default colors because two contiguous sections used the same color");
+  return faulty ? [] : section_colors;
+}
 
 const onStateChange = () => {
   updateHierarchy();
