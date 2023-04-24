@@ -89,7 +89,7 @@
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(0);
         drawForm(extractTimestamps(hierarchy), colors);
-        cue = Math.round(fs * player.getCurrentTime()) / fs;
+        cue = Math.round(fs * (player.getCurrentTime() || 0)) / fs;
         svg.setCurrentTime(cue);
       }
       function findNumber(i) {

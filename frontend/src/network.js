@@ -18,7 +18,7 @@ function fetchData(id) {
     if (result.status) {
       loadData(result.message.data.data);
     } else if (!result.status) alert("Error: " + result.message);
-  });
+  }, "json");
 }
 
 // Converts data from old format into new format
@@ -61,10 +61,13 @@ function loadData(data) {
 }
 // Uploads the data
 function uploadData() {
-  let data = JSON.stringify(state);
+  const data = JSON.stringify(state);
   if (initialData && data == JSON.stringify(initialData)) {
-    alert("Error: No Changes Made");
-  } else if (data) {
+    if (!confirm("No changes were detected. Proceed?")) {
+      return;
+    }
+  }
+  if (data) {
     $.post(backendUrl + "/add", data, function (result) {
       result = JSON.parse(result);
       if (!result.status) {
@@ -75,7 +78,7 @@ function uploadData() {
         setSaved();
         openId(result.message.id);
       }
-    });
+    }, "json");
   }
 }
 
