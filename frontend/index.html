@@ -245,7 +245,8 @@
             for (ma = 1; ma <= nt.length; ma++) { // each large section
               let temp_color = ["yellow", "red"][me % 2];
               macro_html += `
-            <path id="arc-macro-` + ma.toString() + `" stroke="` + temp_color + `" display="none"/>`
+            <path id="arc-macro-` + ma.toString() + `" stroke="` + temp_color + `" display="none"/>
+            <path id="arc-macro-notch-` + ma.toString() + `" stroke="white" stroke-width="4px" display="none"/>`
             }
             macro_html += `
           `;
@@ -409,6 +410,17 @@
                 + ";"
                 + "playSVG(" + (preplay + macro_origin) + ")"
               );
+
+              var sec = document.getElementById("arc-macro-notch-" + (ma+1).toString());
+              sec.setAttribute("d",
+                describeArc(0, 0, 100, (start_arc + end_arc) / 2, end_arc + 1));
+              sec.removeAttribute("display");
+              sec.setAttribute("onclick",
+                "player.seekTo(" + macro_origin + ")"
+                + ";"
+                + "playSVG(" + (preplay + macro_origin) + ")"
+              );
+
 
               if (Array.isArray(nt[ma])) {
                 for (var me = 0; me < nt[ma].length - 1; me++) {
