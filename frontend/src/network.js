@@ -61,30 +61,20 @@ function loadData(data) {
 }
 // Uploads the data
 function uploadData() {
-  const data = JSON.stringify(state);
+  let data = JSON.stringify(state);
   if (initialData && data == JSON.stringify(initialData)) {
-    if (!confirm("No changes were detected. Proceed?")) {
-      return;
-    }
-  }
-  if (data) {
-    $.ajax({
-      type: 'POST',
-      url: backendUrl + '/add',
-      data: data,
-      success: function (result) {
-        result = JSON.parse(result);
-        if (!result.status) {
-          console.log(result);
-          alert("Error: " + result.message);
-        }
-        else if (result.status) {
-          setSaved();
-          openId(result.message.id);
-        }
-      },
-      contentType: 'application/json',
-      dataType: 'json'
+    alert("Error: No Changes Made");
+  } else if (data) {
+    $.post(backendUrl + "/add", data, function (result) {
+      result = JSON.parse(result);
+      if (!result.status) {
+        console.log(result);
+        alert("Error: " + result.message);
+      }
+      else if (result.status) {
+        setSaved();
+        openId(result.message.id);
+      }
     });
   }
 }
