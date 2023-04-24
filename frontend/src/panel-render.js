@@ -104,6 +104,7 @@ function handleEntryInput(level) {
   if (!player?.getCurrentTime || !player.getCurrentTime()) return;
   const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
   const sectionTitle = prompt("Input section name");
+  if (sectionTitle == null) return;
   const split_input = sectionTitle.split(">").map(title => title.trim());
   let idx = 0;
   for (let m = level; m <= 2; m++) {

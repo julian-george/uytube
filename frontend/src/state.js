@@ -4,6 +4,7 @@ const state = {
   sections: [],
   // Nested array of objects representing hierarchy of sections
   hierarchy: [],
+  svgData: [],
 };
 
 const setState = (newState) => {
