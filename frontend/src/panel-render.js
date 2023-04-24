@@ -92,12 +92,19 @@ function newYoutubeSelection() {
 
 function handleEntryInput(level) {
   if (!player?.getCurrentTime || !player.getCurrentTime()) return;
+  const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
   const sectionTitle = prompt("Input section name");
-  addSection(
-    sectionTitle,
-    Math.floor(player.getCurrentTime() * 10) / 10,
-    level
-  );
+  const split_input = sectionTitle.split(">").map(title => title.trim());
+  let idx = 0;
+  for (let m = level; m <= 2; m++) {
+    addSection(
+      split_input[idx],
+      timestamp,
+      m
+    );
+    idx += 1;
+    if (idx >= split_input.length) return;
+  }
 }
 
 function renderPanel() {
