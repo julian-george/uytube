@@ -64,6 +64,11 @@ function redescribe(sectionIdx) {
   // apply a new title to the timestamp at the existing hierarchical level
   retitleSection(split_input[level] == undefined ? "[delete me]" : split_input[level], sectionIdx);
 
+  // remove the entry at the existing hierarchical level if it gets erased while another level is written
+  if (split_input[level] == "" && split_input.findIndex(title => title?.length >= 1) != -1) {
+    deleteSection(sectionIdx);
+  }
+
   // apply edits at the other hierarchical levels
   for (let m of [2, 1, 0]) {
     if (m == level) continue;
