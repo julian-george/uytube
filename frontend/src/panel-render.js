@@ -38,9 +38,7 @@ function importJson() {
   fr.readAsText(files.item(0));
 }
 
-function cueVideo(r) {
-  entry = r.parentNode.parentNode.firstChild;
-  stamp = Math.round(fs * Number(entry.innerHTML)) / fs;
+function cueVideo(stamp) {
   player.playVideo();
   player.seekTo(stamp);
 }
@@ -152,12 +150,12 @@ function renderPanel() {
       // After recoloring, return early to prevent duplicate render
       return;
     }
-    const stamp = displayTime(time);
+    const stamp = time;
 
     const row = document.createElement("TR");
     row.className = "panel-row";
     const cellTime = document.createElement("TD");
-    const cellCtrl = document.createElement("TD");
+    const cellEdit = document.createElement("TD");
     const cellDesc = document.createElement("TD");
     const cellColor = document.createElement("TD");
     cellDesc.className = "cell-description clickable";
@@ -166,22 +164,22 @@ function renderPanel() {
       "> ".repeat(level) + title
     );
 
-    const timeNode = document.createTextNode(stamp.toString());
-
+    const timeNode = document.createTextNode(displayTime(stamp).toString());
     cellTime.appendChild(timeNode);
     row.appendChild(cellTime);
+
     // TO DO: use ctrl+click https://stackoverflow.com/a/16190994
-    cellCtrl.innerHTML =
+    cellEdit.innerHTML =
       `<nobr style="padding-right:5px">` +
       `<button onclick="deleteSection(${sectionIdx})">DEL</button>` +
-      `<button onclick="cueVideo(this)">Cue</button>` +
+      `<button onclick="cueVideo(${stamp})">Cue</button>` +
       `<button onclick="pushSectionTime(${-10 / fs}, ${sectionIdx})">--</button>` +
       `<button onclick="pushSectionTime(${-1 / fs}, ${sectionIdx})">-</button>` +
       `<button onclick="pushSectionTime(${1 / fs},${sectionIdx})">+</button>` +
       `<button onclick="pushSectionTime(${10 / fs},${sectionIdx})">++</button>` +
       `<button onclick="redescribe(${sectionIdx})">Edit</button>` +
       `</nobr>`;
-    row.appendChild(cellCtrl);
+    row.appendChild(cellEdit);
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
     if (level == 0 && false) { // hide for now
