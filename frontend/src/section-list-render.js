@@ -88,6 +88,7 @@ function renderSections() {
       ${!levelEnd ? `<div class="bottom-tree"></div>` : ""}</div>`)[0];
       treeContainer.appendChild(levelTree);
     }
+    if (currSection.title.toLowerCase() == "[end]") continue;
     sectionElement.append(
       `<div class="section-row">
        ${treeContainer.outerHTML}
