@@ -67,7 +67,10 @@ function uploadData() {
   } else if (data) {
     $.post(backendUrl + "/add", data, function (result) {
       result = JSON.parse(result);
-      if (!result.status) alert("Error: " + result.message);
+      if (!result.status) {
+        console.log(result);
+        alert("Error: " + result.message);
+      }
       else if (result.status) {
         setSaved();
         openId(result.message.id);
