@@ -61,11 +61,11 @@
       };
       function playSVG(cue=null) {
         if (cue == null) {
-          cue = Math.round(fs * (player.getCurrentTime() || 0)) / fs;
+          cue = Math.round(fs * (player?.getCurrentTime() || 0)) / fs;
         }
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(cue);
-        if ( ![0,2].includes(player.getPlayerState()) ) {
+        if ( ![0,2].includes(player?.getPlayerState()) ) {
           svg.unpauseAnimations();
           document.getElementById('svg-play-button').setAttribute("opacity", 1);
         }
@@ -89,7 +89,7 @@
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(0);
         drawForm(extractTimestamps(hierarchy), colors);
-        cue = Math.round(fs * (player.getCurrentTime() || 0)) / fs;
+        cue = Math.round(fs * (player?.getCurrentTime() || 0)) / fs;
         svg.setCurrentTime(cue);
       }
       function findNumber(i) {
@@ -607,7 +607,7 @@
     <!-- Buttons -->
     <div>
       <button onclick="downloadData()">Download</button>
-      <button id="save-button" onclick="uploadData()" style="margin-bottom:6px" disabled >Save to Cloud</button>
+      <button id="save-button" onclick="uploadData()" style="margin-bottom:6px">Save to Cloud</button>
       <br>
       <input type="text" placeholder="Type form animation ID" id="idInput">
       <button onclick="openId()" style="margin-bottom:6px">Load from Cloud</button>

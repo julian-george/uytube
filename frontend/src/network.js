@@ -18,7 +18,7 @@ function fetchData(id) {
     if (result.status) {
       loadData(result.message.data.data);
     } else if (!result.status) alert("Error: " + result.message);
-  }, "json");
+  });
 }
 
 // Converts data from old format into new format
@@ -68,17 +68,24 @@ function uploadData() {
     }
   }
   if (data) {
-    $.post(backendUrl + "/add", data, function (result) {
-      result = JSON.parse(result);
-      if (!result.status) {
-        console.log(result);
-        alert("Error: " + result.message);
-      }
-      else if (result.status) {
-        setSaved();
-        openId(result.message.id);
-      }
-    }, "json");
+    $.ajax({
+      type: 'POST',
+      url: backendUrl + '/add',
+      data: data,
+      success: function (result) {
+        result = JSON.parse(result);
+        if (!result.status) {
+          console.log(result);
+          alert("Error: " + result.message);
+        }
+        else if (result.status) {
+          setSaved();
+          openId(result.message.id);
+        }
+      },
+      contentType: 'application/json',
+      dataType: 'json'
+    });
   }
 }
 
