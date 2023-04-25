@@ -67,6 +67,7 @@ function renderSections() {
   const sectionElement = $("#section-guide-list");
   sectionElement.html("");
   // Iterate thru nestedData's outer sections and render them
+  if (!state.sections || !state.sections.length) return null;
   for (let i = 0; i < state.sections.length; i++) {
     const currSection = state.sections[i];
     // provide some clickable whitespace when the section is untitled

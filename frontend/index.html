@@ -84,7 +84,7 @@
       function renderSVG(hierarchy = state.hierarchy, colors = defaultColors) {
         // for frontend development, uncomment following line
         // hierarchy = demo_data.hierarchy;
-        if (colors.length != hierarchy.length) {
+        if (colors.length == 0) {
           colors = defaultColors;
         }
         let svg = document.getElementById('form_animation');
@@ -402,11 +402,14 @@
                 * (macro_terminus - form_origin) / (form_terminus - form_origin)
               );
 
+              let sec_color = "black";
+              try {
+                sec_color = colors[ma % Math.max(1, colors.length)];
+              } catch { }
               sec.setAttribute("d",
                 describeArc(0, 0, 100, start_arc, end_arc+1));
               sec.removeAttribute("display");
-              sec.setAttribute("stroke",
-                colors?.[ma % colors?.length] || defaultMacroColors[ma % colors.length]);
+              sec.setAttribute("stroke", sec_color);
 
               // cue video
               sec.setAttribute("onclick",

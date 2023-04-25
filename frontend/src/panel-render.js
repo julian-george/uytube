@@ -162,6 +162,7 @@ function displayTime(time) {
 
 function renderPanel() {
   $("#table>tbody>.panel-row").remove();
+  if (!state.sections || !state.sections.length) return null;
   for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
     const section = state.sections[sectionIdx];
     if (section?.invisible) continue;

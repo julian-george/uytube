@@ -19,19 +19,24 @@ const setSections = (newSections) => {
 };
 
 const generateColorList = () => {
-  const section_colors = state.hierarchy.map(
-    (section) => state.colorScheme[section.schemeIndex]
-  );
-  let faulty = false;
+  if (state.hierarchy == undefined) return [];
+  let section_colors = [];
+  try {
+    section_colors = state.hierarchy.filter(section => section.title.trim().toLowerCase() != "[end]").map(section => state.colorScheme[section.schemeIndex % state.colorScheme.length]);
+
+  } catch {
+    // When there the schemeIndex property is absent, look for the color property (backward compatability)
+    section_colors = state.hierarchy.filter(section => section.title.trim().toLowerCase() != "[end]").map(section => section.color);
+  }
   for (let idx = 1; idx < section_colors.length; idx++) {
     if (section_colors[idx] == section_colors[idx - 1]) {
-      faulty = true;
+      console.log(
+        "Falling back on default colors because two contiguous sections used the same color"
+      );
+      return [];
     }
   }
-  console.log(
-    "Falling back on default colors because two contiguous sections used the same color"
-  );
-  return faulty ? [] : section_colors;
+  return section_colors;
 };
 
 const onStateChange = () => {
@@ -50,6 +55,7 @@ const updateHierarchy = () => {
   //   ie, if sections[i] is the first subdivision within division 2 of section 3, indices = [2, 1, 0]
   let indices = [];
 
+  if (!state.sections || !state.sections.length) return state.hierarchy = newHierarchy;
   for (let i = 0; i < state.sections.length; i++) {
     // Giving sections a children property to store subsections
     const currSection = { ...state.sections[i], children: [] };
@@ -141,6 +147,7 @@ const validateSections = (newSections) => {
 
 // Takes a time within the video and returns what section index that it falls under
 const timeToSectionIdx = (time, level = Infinity) => {
+  if (!state.sections || !state.sections.length) return -1;
   if (state.sections.length > 0 && time < state.sections[0].time) {
     return -1;
   }
@@ -184,8 +191,14 @@ const timeToHierarchyIdx = (time) => {
 
 const addSection = (title, time, level, schemeIndex = null) => {
   if (time < 0) time = 0;
+  if (state.sections == undefined) {
+    state.sections = [];
+  }
+  if (state.colorScheme == undefined) {
+    state.colorScheme = [];
+  }
   if (!schemeIndex) {
-    schemeIndex = state.sections.length % state.colorScheme.length;
+    schemeIndex = state.sections.length % Math.max(1, state.colorScheme.length);
   }
   const newSection = {
     title,
@@ -254,8 +267,12 @@ const recolorScheme = (newColor, schemeIndex) => {
 };
 
 const addColor = () => {
+  const placeholderColors = [
+    defaultMacroColors[(state.colorScheme.length + 0) % defaultMacroColors.length],
+    defaultMacroColors[(state.colorScheme.length + 1) % defaultMacroColors.length]
+  ];
   state.colorScheme.push(
-    defaultMacroColors[state.colorScheme.length % defaultMacroColors.length]
+    placeholderColors.find(color => color != state.colorScheme[state.colorScheme.length - 1])
   );
   onStateChange();
   setUnsaved();
@@ -263,19 +280,7 @@ const addColor = () => {
 
 const removeColor = (schemeIndex) => {
   state.colorScheme.splice(schemeIndex, 1);
-  const newSections = state.sections.map((section) => {
-    if (section?.schemeIndex === undefined) {
-      return section;
-    } else if (section?.schemeIndex === schemeIndex) {
-      // Just removing the property from sections whose scheme was deleted
-      const { schemeIndex, ...newSection } = section;
-      return newSection;
-    } else if (section?.schemeIndex > schemeIndex) {
-      return { ...section, schemeIndex: section.schemeIndex - 1 };
-    }
-  });
-  console.log(newSections);
-  setSections(newSections);
+  onStateChange();
   setUnsaved();
 };
 
