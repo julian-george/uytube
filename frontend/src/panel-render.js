@@ -210,7 +210,7 @@ function renderPanel() {
     row.appendChild(cellEdit);
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
-    if (level == 0) {
+    if (level == 0 && title.trim().toLowerCase() != "[end]") {
       cellColor.innerHTML = `<input type="number" class="scheme-input" id="scheme-input-${sectionIdx}" value="${
         section.schemeIndex + 1
       }"></input>`;

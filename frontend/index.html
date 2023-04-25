@@ -5,7 +5,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
   <script src="src/lib/iris.js"></script>
   <script src="src/index.js"></script>
-  <script src="src/dial-render.js"></script>
   <script src="src/state.js"></script>
   <script src="src/network.js"></script>
   <script src="src/video-player.js"></script>
@@ -16,6 +15,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,400i,700,700i" />
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css"/>
   <link rel="stylesheet" href="./index.css" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
 </head>
 <html>
 <body style="background-color:#FAFAFA">
@@ -89,7 +90,10 @@
         let svg = document.getElementById('form_animation');
         svg.setCurrentTime(0);
         drawForm(extractTimestamps(hierarchy), colors);
-        cue = Math.round(fs * (player?.getCurrentTime() || 0)) / fs;
+        let cue = 0;
+        try {
+          cue = Math.round(fs * (player.getCurrentTime() || 0)) / fs;
+        } catch { }
         svg.setCurrentTime(cue);
       }
       function findNumber(i) {
@@ -414,7 +418,7 @@
               var sec = document.getElementById("arc-macro-notch-" + (ma+1).toString());
               const start_notch = Math.max((start_arc + end_arc) / 2, end_arc - 6);
               sec.setAttribute("d",
-                describeArc(0, 0, 92, start_notch, end_arc + 1));
+                describeArc(0, 0, 92, start_notch, end_arc + 2));
               sec.removeAttribute("display");
 
               if (Array.isArray(nt[ma])) {
@@ -627,7 +631,7 @@
           <th style="text-align:left;padding-right:16px">Time</th>
           <th style="text-align:left;padding-right:16px">Edit</th>
           <th style="text-align:left;padding-right:16px">Description</th>
-          <th style="text-align:left;min-width:185px">Color</th>
+          <th style="text-align:left">Color</th>
         </tr>
       </table>
     </div>
