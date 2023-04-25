@@ -61,9 +61,10 @@ function loadData(data) {
 }
 // Uploads the data
 function uploadData() {
-  const data =
-    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
-  if (initialData && data == JSON.stringify(initialData)) {
+  // We don't need to store hierarchy in the DB since it will be generated from state.sections
+  const { hierarchy, ...prunedState } = state;
+  const data = encodeURIComponent(JSON.stringify(prunedState));
+  if (initialData && data == encodeURIComponent(JSON.stringify(initialData))) {
     alert("Error: No Changes Made");
   } else if (data) {
     console.log(data);
