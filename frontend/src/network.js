@@ -61,7 +61,8 @@ function loadData(data) {
 }
 // Uploads the data
 function uploadData() {
-  const data = JSON.stringify(state);
+  const data =
+    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state));
   if (initialData && data == JSON.stringify(initialData)) {
     alert("Error: No Changes Made");
   } else if (data) {
