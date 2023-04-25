@@ -20,10 +20,11 @@ const setSections = (newSections) => {
 };
 
 const generateColorList = () => {
-  if (state.hierarchy == undefined) return [];
+  if (state.sections == undefined) return [];
   let section_colors = [];
   try {
-    section_colors = state.hierarchy
+    section_colors = state.sections
+      .filter((section) => section.level == 0)
       .filter((section) => section.title.trim().toLowerCase() != "[end]")
       .map(
         (section) =>
@@ -31,7 +32,8 @@ const generateColorList = () => {
       );
   } catch {
     // When there the colorIndex property is absent, look for the color property (backward compatability)
-    section_colors = state.hierarchy
+    section_colors = state.sections
+      .filter((section) => section.level == 0)
       .filter((section) => section.title.trim().toLowerCase() != "[end]")
       .map((section) => section.color);
   }
