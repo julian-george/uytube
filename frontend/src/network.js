@@ -63,20 +63,29 @@ function loadData(data) {
 function uploadData() {
   // We don't need to store hierarchy in the DB since it will be generated from state.sections
   const { hierarchy, ...prunedState } = state;
-  const data = JSON.stringify(prunedState).replace("}:", "}");
+  // The .replace fixes a strange error with JSON.stringify having a colon at the end
+  //  remove in future - this may be something to do with encoding or the nested object we're sending
+  const data = JSON.stringify(prunedState);
   if (initialData && data == JSON.stringify(initialData)) {
     alert("Error: No Changes Made");
   } else if (data) {
     console.log(data);
-    $.post(backendUrl + "/add", data, function (result) {
-      result = JSON.parse(result);
-      if (!result.status) {
-        console.log(result);
-        alert("Error: " + result.message);
-      } else if (result.status) {
-        setSaved();
-        openId(result.message.id);
-      }
+    $.ajax({
+      url: url,
+      type: "POST",
+      data: data,
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      success: function () {
+        result = JSON.parse(result);
+        if (!result.status) {
+          console.log(result);
+          alert("Error: " + result.message);
+        } else if (result.status) {
+          setSaved();
+          openId(result.message.id);
+        }
+      },
     });
   }
 }
