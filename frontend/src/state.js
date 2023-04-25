@@ -4,7 +4,6 @@ const state = {
   sections: [],
   // Nested array of objects representing hierarchy of sections
   hierarchy: [],
-  svgData: [],
 };
 
 const setState = (newState) => {
@@ -22,13 +21,15 @@ const generateColorList = () => {
   const section_colors = state.hierarchy.map((section) => section.color);
   let faulty = false;
   for (let idx = 1; idx < section_colors.length; idx++) {
-    if (section_colors[idx] == section_colors[idx-1] ) {
+    if (section_colors[idx] == section_colors[idx - 1]) {
       faulty = true;
     }
   }
-  console.log("Falling back on default colors because two contiguous sections used the same color");
+  console.log(
+    "Falling back on default colors because two contiguous sections used the same color"
+  );
   return faulty ? [] : section_colors;
-}
+};
 
 const onStateChange = () => {
   updateHierarchy();
@@ -108,7 +109,7 @@ const validateSections = (newSections) => {
         title: "   ",
         level: currSection.level - 1,
       };
-      console.log({"missingParent": missingParent});
+      console.log({ missingParent: missingParent });
       return validateSections(sortSections([...newSections, missingParent]));
       // if (currSection.level == 1)
       //   throw new Error("Invalid hierarchy: divisions must belong to sections");
@@ -117,15 +118,21 @@ const validateSections = (newSections) => {
       //     "Invalid hierarchy: subdivisions must belong to divisions"
       //   );
     }
-    if (prevSection.time != undefined && prevSection.level == currSection.level - 1 && prevSection.time != currSection.time) {
+    if (
+      prevSection.time != undefined &&
+      prevSection.level == currSection.level - 1 &&
+      prevSection.time != currSection.time
+    ) {
       const missingElderSibling = {
         time: prevSection.time,
         invisible: false,
         title: "   ",
         level: currSection.level,
       };
-      console.log({"missingElderSibling": missingElderSibling});
-      return validateSections(sortSections([...newSections, missingElderSibling]));
+      console.log({ missingElderSibling: missingElderSibling });
+      return validateSections(
+        sortSections([...newSections, missingElderSibling])
+      );
     }
   }
   return newSections;
@@ -235,16 +242,15 @@ const recolorSection = (newColor, sectionIndex) => {
 const pushSectionTime = (incrementAmount, sectionIndex) => {
   // Rounding incremented time to 1 decimal place and ensuring it stays above 0
   const oldTime = state.sections[sectionIndex].time;
-  let newTime = Math.max(
-    Math.round((oldTime + incrementAmount) * 10) / 10,
-    0
-  );
+  let newTime = Math.max(Math.round((oldTime + incrementAmount) * 10) / 10, 0);
   if (player.getDuration) {
     // Ensuring it stays below video length
     newTime = Math.min(newTime, Math.floor(player.getDuration() * 10) / 10);
   }
   let newSections = state.sections
-    .map((section) => (section.time == oldTime ? { ...section, time: newTime } : section))
+    .map((section) =>
+      section.time == oldTime ? { ...section, time: newTime } : section
+    )
     .filter((section) => !section?.invisible);
   try {
     newSections = validateSections(sortSections(newSections));

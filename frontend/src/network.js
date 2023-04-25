@@ -1,7 +1,7 @@
-let backendUrl = window.location.protocol + "//" + window.location.hostname;
+// let backendUrl = window.location.protocol + "//" + window.location.hostname;
 // when deploying locally, use this instead for backendUrl: (change 3000 to whatever port is in your env)
-// let backendUrl =
-//   window.location.protocol + "//" + window.location.hostname + ":3000";
+let backendUrl =
+  window.location.protocol + "//" + window.location.hostname + ":3000";
 let videoId;
 let initialData;
 
@@ -70,14 +70,23 @@ function uploadData() {
     alert("Error: No Changes Made");
   } else if (data) {
     console.log(data);
+    // $.post(backendUrl + "/add", data, function (result) {
+    //   result = JSON.parse(result);
+    //   if (!result.status) {
+    //     console.log(result);
+    //     alert("Error: " + result.message);
+    //   } else if (result.status) {
+    //     setSaved();
+    //     openId(result.message.id);
+    //   }
+    // });
     $.ajax({
       url: backendUrl + "/add",
       type: "POST",
       data: data,
       contentType: "application/json; charset=utf-8",
       dataType: "json",
-      success: function () {
-        result = JSON.parse(result);
+      success: function (result) {
         if (!result.status) {
           console.log(result);
           alert("Error: " + result.message);
@@ -85,6 +94,9 @@ function uploadData() {
           setSaved();
           openId(result.message.id);
         }
+      },
+      error: function (err) {
+        alert("Error: " + err);
       },
     });
   }

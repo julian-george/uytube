@@ -63,34 +63,27 @@ app.get("/get", (req, res) => {
 });
 
 app.post("/add", (req, res, next) => {
-  req.on("data", (data) => {
-    let musObj;
-    try {
-      musObj = JSON.parse(data.toString());
-    } catch (err) {
-      res.end(JSON.stringify(new Failure(err.message)));
-    }
-    ID()
-      .then((id) => {
-        const newMusic = new Music({
-          id: id,
-          data: musObj,
-        });
-        newMusic
-          .save()
-          .then(() => {
-            res.end(JSON.stringify(new Success({ id })));
-          })
-          .catch((err) => {
-            throw err;
-          });
-      })
-      .catch((error) => {
-        const errorText = "Error: " + error;
-        console.log(errorText);
-        res.end(JSON.stringify(new Failure(errorText)));
+  let musObj = req.body;
+  ID()
+    .then((id) => {
+      const newMusic = new Music({
+        id: id,
+        data: musObj,
       });
-  });
+      newMusic
+        .save()
+        .then(() => {
+          res.end(JSON.stringify(new Success({ id })));
+        })
+        .catch((err) => {
+          throw err;
+        });
+    })
+    .catch((error) => {
+      const errorText = "Error: " + error;
+      console.log(errorText);
+      res.end(JSON.stringify(new Failure(errorText)));
+    });
 });
 
 app.use(express.static("./frontend"));
