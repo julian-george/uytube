@@ -139,8 +139,33 @@ function displayTime(time) {
 }
 
 function renderPanel() {
-  $("#table>tbody>.panel-row").remove();
+  $("div#color-scheme-table>div.color-input-container").remove();
+  for (let i = 0; i < state.colorScheme.length; i++) {
+    $("div#color-scheme-table").append(
+      `<div class="color-input-container" id="color-scheme-${i}-container">
+        <div class="color-input-top-row">
+          <button class="scheme-delete" onclick="removeColor(${i})">DEL #${i+1}</button>
+          <input id="color-scheme-${i}" class="color-input" value="${state.colorScheme[i]}" style="border-color:${state.colorScheme[i]}"></input>
+          <button class="section-picker-close" style="display:none">Collapse</button>
+        </div>
+      </div>`
+    );
+    $(`#color-scheme-${i}`).iris({
+      width: 200,
+      hide: true,
+      target: $(`#color-scheme-${i}-container`),
+      change: (event, ui) => {
+        const hsl = ui.color._hsl;
+        $(event.target).css(
+          "border-color",
+          `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`
+        );
+        $(event.target).val(ui.color.toString());
+      },
+    });
+  }
   if (!state.sections || !state.sections.length) return null;
+  $("#table>tbody>.panel-row").remove();
   for (let sectionIdx = 0; sectionIdx < state.sections.length; sectionIdx++) {
     const section = state.sections[sectionIdx];
     if (section?.invisible) continue;
@@ -200,32 +225,6 @@ function renderPanel() {
       });
     }
     $("#table>tbody").append(row);
-
-    $("div#color-scheme-table>div.color-input-container").remove();
-    for (let i = 0; i < state.colorScheme.length; i++) {
-      $("div#color-scheme-table").append(
-        `<div class="color-input-container" id="color-scheme-${i}-container">
-          <div class="color-input-top-row">
-            <input id="color-scheme-${i}" class="color-input" value="${state.colorScheme[i]}" style="border-color:${state.colorScheme[i]}"></input>
-            <button class="scheme-delete" onclick="removeColor(${i})">Delete</button>
-            <button class="section-picker-close" style="display:none">Done Picking</button>
-          </div>
-        </div>`
-      );
-      $(`#color-scheme-${i}`).iris({
-        width: 200,
-        hide: true,
-        target: $(`#color-scheme-${i}-container`),
-        change: (event, ui) => {
-          const hsl = ui.color._hsl;
-          $(event.target).css(
-            "border-color",
-            `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`
-          );
-          $(event.target).val(ui.color.toString());
-        },
-      });
-    }
   }
 }
 

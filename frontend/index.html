@@ -619,10 +619,10 @@
       <input type="text" placeholder="Type form animation ID" id="idInput">
       <button onclick="openId()" style="margin-bottom:6px">Load from Cloud</button>
       <br>
-      <button onclick="handleEntryInput(0)" accesskey="a" style="margin-bottom:6px">Add macro</button>
-      <button onclick="handleEntryInput(1)" accesskey="e">Add meso</button>
-      <button onclick="handleEntryInput(2)" accesskey="i">Add micro</button>
-      <button onclick="redescribeCurrent()" accesskey="r">Rename current section</button>
+      <button onclick="handleEntryInput(0)" accesskey="a" class="real-time-button">Add macro</button>
+      <button onclick="handleEntryInput(1)" accesskey="e" class="real-time-button">Add meso</button>
+      <button onclick="handleEntryInput(2)" accesskey="i" class="real-time-button">Add micro</button>
+      <button onclick="redescribeCurrent()" accesskey="r" class="real-time-button">Rename current section</button>
       <br>
     </div>
 
@@ -639,10 +639,10 @@
       </table>
     </div>
     <div id ="color-scheme">
+      <button onclick="addColor()">Add Color</button>
       <div id="color-scheme-table">
 
       </div>
-      <button onclick="addColor()">Add Color</button>
     </div>
   </div>
 

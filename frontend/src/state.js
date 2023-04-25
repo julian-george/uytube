@@ -275,19 +275,18 @@ const recolorScheme = (newColor, colorIndex) => {
 };
 
 const addColor = () => {
+  const colorTally = isNaN(state?.colorScheme?.length) ? 0 : state.colorScheme.length;
   const placeholderColors = [
-    defaultMacroColors[
-      (state.colorScheme.length + 0) % defaultMacroColors.length
-    ],
-    defaultMacroColors[
-      (state.colorScheme.length + 1) % defaultMacroColors.length
-    ],
+    defaultMacroColors[(colorTally + 0) % defaultMacroColors.length],
+    defaultMacroColors[(colorTally + 1) % defaultMacroColors.length]
   ];
+  if (state.colorScheme == undefined) {
+    state.colorScheme = [];
+  }
   state.colorScheme.push(
-    placeholderColors.find(
-      (color) => color != state.colorScheme[state.colorScheme.length - 1]
-    )
+    placeholderColors.find(color => color != state.colorScheme[state.colorScheme.length - 1])
   );
+  console.log(state.colorScheme);
   onStateChange();
   setUnsaved();
 };

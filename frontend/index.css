@@ -212,6 +212,22 @@ table button {
   height: 50%;
 }
 
+.real-time-button {
+  margin-top: 10px;
+  font-weight: bold;
+}
+#table {
+  margin-top: 16px;
+}
+#color-scheme {
+  margin-top: 16px;
+}
+#add-color-button {
+  margin-bottom: 4px;
+}
+.scheme-delete {
+  margin-right: 8px;
+}
 .scheme-input {
   width: 2.5em;
 }
@@ -226,7 +242,7 @@ table button {
 .color-input-container {
   display: flex;
   flex-direction: column;
-  min-width: 200px;
+/*  min-width: 200px;*/
 }
 .color-input-top-row {
   display: flex;
@@ -238,5 +254,5 @@ table button {
   border-radius: 1;
   border-style: solid;
   border-width: 2px;
-  width: 84px;
+/*  width: 84px;*/
 }
