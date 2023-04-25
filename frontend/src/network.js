@@ -71,7 +71,7 @@ function uploadData() {
   } else if (data) {
     console.log(data);
     $.ajax({
-      url: url,
+      url: backendUrl + "/add",
       type: "POST",
       data: data,
       contentType: "application/json; charset=utf-8",
