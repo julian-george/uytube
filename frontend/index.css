@@ -231,7 +231,8 @@ table button {
 .color-input-top-row {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  gap: 4px;
+  /* justify-content: space-between; */
 }
 .color-input {
   border-radius: 1;

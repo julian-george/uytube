@@ -16,28 +16,6 @@ $(window).on("load", () => {
   else if (urlParams.get("listen") != null) listenHandler();
 });
 
-function importJson() {
-  // loads existing data into table if no file selected
-  // https://stackoverflow.com/questions/36127648/uploading-a-json-file-and-using-it
-  // adapted
-  var files = document.getElementById("selectFiles").files;
-  if (files.length <= 0) {
-    return false;
-  }
-
-  var fr = new FileReader();
-
-  fr.onload = function (e) {
-    var result = JSON.parse(e.target.result);
-    setUnsaved();
-    player.cueVideoById(result["videoId"]);
-
-    // renderSVG(result);
-  };
-
-  fr.readAsText(files.item(0));
-}
-
 function cueVideo(stamp) {
   player.playVideo();
   player.seekTo(stamp);
@@ -176,7 +154,7 @@ function renderPanel() {
     const cellDesc = document.createElement("TD");
     const cellColor = document.createElement("TD");
     cellDesc.className = "cell-description clickable";
-    if (section.level == 0 && section.schemeIndex === undefined) {
+    if (section.level == 0 && section.colorIndex === undefined) {
       recolorSection(
         sectionIdx,
         // This approximates the desired color scheme index by finding the number of index inputs rendered before it
@@ -213,7 +191,7 @@ function renderPanel() {
     row.appendChild(cellDesc);
     if (level == 0 && title.trim().toLowerCase() != "[end]") {
       cellColor.innerHTML = `<input type="number" class="scheme-input" id="scheme-input-${sectionIdx}" value="${
-        section.schemeIndex + 1
+        section.colorIndex + 1
       }"></input>`;
 
       row.appendChild(cellColor);

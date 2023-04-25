@@ -10,6 +10,7 @@ const state = {
 const setState = (newState) => {
   state.youtubeId = newState.youtubeId;
   state.sections = newState.sections;
+  state.colorScheme = newState.colorScheme;
   onStateChange();
 };
 
@@ -22,11 +23,17 @@ const generateColorList = () => {
   if (state.hierarchy == undefined) return [];
   let section_colors = [];
   try {
-    section_colors = state.hierarchy.filter(section => section.title.trim().toLowerCase() != "[end]").map(section => state.colorScheme[section.schemeIndex % state.colorScheme.length]);
-
+    section_colors = state.hierarchy
+      .filter((section) => section.title.trim().toLowerCase() != "[end]")
+      .map(
+        (section) =>
+          state.colorScheme[section.colorIndex % state.colorScheme.length]
+      );
   } catch {
-    // When there the schemeIndex property is absent, look for the color property (backward compatability)
-    section_colors = state.hierarchy.filter(section => section.title.trim().toLowerCase() != "[end]").map(section => section.color);
+    // When there the colorIndex property is absent, look for the color property (backward compatability)
+    section_colors = state.hierarchy
+      .filter((section) => section.title.trim().toLowerCase() != "[end]")
+      .map((section) => section.color);
   }
   for (let idx = 1; idx < section_colors.length; idx++) {
     if (section_colors[idx] == section_colors[idx - 1]) {
@@ -55,7 +62,8 @@ const updateHierarchy = () => {
   //   ie, if sections[i] is the first subdivision within division 2 of section 3, indices = [2, 1, 0]
   let indices = [];
 
-  if (!state.sections || !state.sections.length) return state.hierarchy = newHierarchy;
+  if (!state.sections || !state.sections.length)
+    return (state.hierarchy = newHierarchy);
   for (let i = 0; i < state.sections.length; i++) {
     // Giving sections a children property to store subsections
     const currSection = { ...state.sections[i], children: [] };
@@ -189,7 +197,7 @@ const timeToHierarchyIdx = (time) => {
   return indices;
 };
 
-const addSection = (title, time, level, schemeIndex = null) => {
+const addSection = (title, time, level, colorIndex = null) => {
   if (time < 0) time = 0;
   if (state.sections == undefined) {
     state.sections = [];
@@ -197,14 +205,14 @@ const addSection = (title, time, level, schemeIndex = null) => {
   if (state.colorScheme == undefined) {
     state.colorScheme = [];
   }
-  if (!schemeIndex) {
-    schemeIndex = state.sections.length % Math.max(1, state.colorScheme.length);
+  if (!colorIndex) {
+    colorIndex = state.sections.length % Math.max(1, state.colorScheme.length);
   }
   const newSection = {
     title,
     time,
     level,
-    schemeIndex,
+    colorIndex,
   };
   let newSections = [...state.sections, newSection].filter(
     (section) => !section?.invisible
@@ -250,36 +258,42 @@ const retitleSection = (newTitle, sectionIndex) => {
   setUnsaved();
 };
 
-const recolorSection = (sectionIndex, newSchemeIndex = null) => {
+const recolorSection = (sectionIndex, newColorIndex = null) => {
   const oldSection = state.sections[sectionIndex];
-  if (newSchemeIndex === null) {
-    newSchemeIndex = sectionIndex % state.colorScheme.length;
-  } else if (newSchemeIndex >= state.colorScheme.length || newSchemeIndex < 0) {
-    newSchemeIndex = oldSection.schemeIndex;
+  if (newColorIndex === null) {
+    newColorIndex = sectionIndex % state.colorScheme.length;
+  } else if (newColorIndex >= state.colorScheme.length || newColorIndex < 0) {
+    newColorIndex = oldSection.colorIndex;
   }
-  editSection(sectionIndex, { ...oldSection, schemeIndex: newSchemeIndex });
+  editSection(sectionIndex, { ...oldSection, colorIndex: newColorIndex });
 };
 
-const recolorScheme = (newColor, schemeIndex) => {
-  state.colorScheme[schemeIndex] = newColor;
+const recolorScheme = (newColor, colorIndex) => {
+  state.colorScheme[colorIndex] = newColor;
   onStateChange();
   setUnsaved();
 };
 
 const addColor = () => {
   const placeholderColors = [
-    defaultMacroColors[(state.colorScheme.length + 0) % defaultMacroColors.length],
-    defaultMacroColors[(state.colorScheme.length + 1) % defaultMacroColors.length]
+    defaultMacroColors[
+      (state.colorScheme.length + 0) % defaultMacroColors.length
+    ],
+    defaultMacroColors[
+      (state.colorScheme.length + 1) % defaultMacroColors.length
+    ],
   ];
   state.colorScheme.push(
-    placeholderColors.find(color => color != state.colorScheme[state.colorScheme.length - 1])
+    placeholderColors.find(
+      (color) => color != state.colorScheme[state.colorScheme.length - 1]
+    )
   );
   onStateChange();
   setUnsaved();
 };
 
-const removeColor = (schemeIndex) => {
-  state.colorScheme.splice(schemeIndex, 1);
+const removeColor = (colorIndex) => {
+  state.colorScheme.splice(colorIndex, 1);
   onStateChange();
   setUnsaved();
 };

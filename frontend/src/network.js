@@ -1,6 +1,6 @@
 let backendUrl = window.location.protocol + "//" + window.location.hostname;
 // when deploying locally, use this instead for backendUrl: (change 3000 to whatever port is in your env)
-// let backendUrl =
+// backendUrl =
 //   window.location.protocol + "//" + window.location.hostname + ":3000";
 let videoId;
 let initialData;
@@ -63,8 +63,6 @@ function loadData(data) {
 function uploadData() {
   // We don't need to store hierarchy in the DB since it will be generated from state.sections
   const { hierarchy, ...prunedState } = state;
-  // The .replace fixes a strange error with JSON.stringify having a colon at the end
-  //  remove in future - this may be something to do with encoding or the nested object we're sending
   const data = JSON.stringify(prunedState);
   if (initialData && data == JSON.stringify(initialData)) {
     alert("Error: No Changes Made");
@@ -91,8 +89,10 @@ function uploadData() {
 }
 
 const downloadData = () => {
+  const { hierarchy, ...prunedState } = state;
   const dataStr =
-    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
+    "data:text/json;charset=utf-8," +
+    encodeURIComponent(JSON.stringify(prunedState, null, 2));
   const downloadAnchorNode = document.createElement("a");
   downloadAnchorNode.setAttribute("href", dataStr);
   downloadAnchorNode.setAttribute("download", state.youtubeId + ".uytube.json");
