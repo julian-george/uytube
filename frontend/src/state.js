@@ -33,7 +33,6 @@ const generateColorList = () => {
 
 const onStateChange = () => {
   updateHierarchy();
-  // renderDials();
   renderPanel();
   renderSections();
   renderSVG(state.hierarchy, generateColorList());

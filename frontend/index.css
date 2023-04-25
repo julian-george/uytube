@@ -29,7 +29,7 @@ table button {
   width: 20vw;
   min-width: 300px;
 }
-#form-column {
+#panel-column {
   min-width: 20vw;
 }
 #animation-column > div {
@@ -209,4 +209,8 @@ table button {
 #play-button > img {
   width: 50%;
   height: 50%;
+}
+
+.color-input {
+  width: 2.5em;
 }

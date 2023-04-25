@@ -59,13 +59,19 @@ function redescribe(sectionIdx) {
     "> ".repeat(currSection.level) + currSection.title
   )?.trim();
   if (!sectionTitle) return; // previously forebade a blank title
-  const split_input = sectionTitle.split(">").map(title => title.trim());
+  const split_input = sectionTitle.split(">").map((title) => title.trim());
 
   // apply a new title to the timestamp at the existing hierarchical level
-  retitleSection(split_input[level] == undefined ? "[delete me]" : split_input[level], sectionIdx);
+  retitleSection(
+    split_input[level] == undefined ? "[delete me]" : split_input[level],
+    sectionIdx
+  );
 
   // remove the entry at the existing hierarchical level if it gets erased while another level is written
-  if (split_input[level] == "" && split_input.findIndex(title => title?.length >= 1) != -1) {
+  if (
+    split_input[level] == "" &&
+    split_input.findIndex((title) => title?.length >= 1) != -1
+  ) {
     deleteSection(sectionIdx);
   }
 
@@ -74,7 +80,9 @@ function redescribe(sectionIdx) {
     if (m == level) continue;
     const title = split_input[m] || false;
     if (title && title != "") {
-      const extantSectionIdx = state.sections.findIndex(section => section.time == timestamp && section.level == m);
+      const extantSectionIdx = state.sections.findIndex(
+        (section) => section.time == timestamp && section.level == m
+      );
       if (extantSectionIdx != -1) {
         retitleSection(title, extantSectionIdx);
       } else {
@@ -108,9 +116,12 @@ function redescribeCurrent() {
   // compare timeToSectionIdx ?
   if (!player?.getCurrentTime || !player.getCurrentTime()) return;
   const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
-  const currentIdx = state.sections.length - 1
-    - state.sections.toReversed().findIndex(section => (section.time < timestamp))
-    || -1;
+  const currentIdx =
+    state.sections.length -
+      1 -
+      state.sections
+        .toReversed()
+        .findIndex((section) => section.time < timestamp) || -1;
   if (currentIdx != -1) {
     redescribe(currentIdx);
   }
@@ -121,14 +132,10 @@ function handleEntryInput(level) {
   const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
   const sectionTitle = prompt("Input section name");
   if (sectionTitle == null) return;
-  const split_input = sectionTitle.split(">").map(title => title.trim());
+  const split_input = sectionTitle.split(">").map((title) => title.trim());
   let idx = 0;
   for (let m = level; m <= 2; m++) {
-    addSection(
-      split_input[idx],
-      timestamp,
-      m
-    );
+    addSection(split_input[idx], timestamp, m);
     idx += 1;
     if (idx >= split_input.length) return;
   }
@@ -177,9 +184,7 @@ function renderPanel() {
     const cellColor = document.createElement("TD");
     cellDesc.className = "cell-description clickable";
 
-    const descNode = document.createTextNode(
-      "> ".repeat(level) + title
-    );
+    const descNode = document.createTextNode("> ".repeat(level) + title);
 
     const timeNode = document.createTextNode(displayTime(stamp).toString());
     cellTime.appendChild(timeNode);
@@ -190,23 +195,26 @@ function renderPanel() {
       `<nobr style="padding-right:5px">` +
       `<button onclick="deleteSection(${sectionIdx})">DEL</button>` +
       `<button onclick="cueVideo(${stamp})">Cue</button>` +
-      `<button onclick="pushSectionTime(${-10 / fs}, ${sectionIdx})">--</button>` +
-      `<button onclick="pushSectionTime(${-1 / fs}, ${sectionIdx})">-</button>` +
+      `<button onclick="pushSectionTime(${
+        -10 / fs
+      }, ${sectionIdx})">--</button>` +
+      `<button onclick="pushSectionTime(${
+        -1 / fs
+      }, ${sectionIdx})">-</button>` +
       `<button onclick="pushSectionTime(${1 / fs},${sectionIdx})">+</button>` +
-      `<button onclick="pushSectionTime(${10 / fs},${sectionIdx})">++</button>` +
+      `<button onclick="pushSectionTime(${
+        10 / fs
+      },${sectionIdx})">++</button>` +
       `<button onclick="redescribe(${sectionIdx})">Edit</button>` +
       `</nobr>`;
     row.appendChild(cellEdit);
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
     if (level == 0) {
+      // hide for now
       const currentColor = color;
 
-      cellColor.innerHTML = `
-    <div id="picker-${sectionIdx}">
-    <input type="text" class="section-color-picker" value="${currentColor}" style="border-color:${currentColor}" name="section-color-picker-${sectionIdx}"> </input>
-    <button class="section-picker-close" style="display:none">Done Picking Color</button>
-    <div class="section-picker-container"></div></div>`;
+      cellColor.innerHTML = `<input type="number" class="color-input"></input>`;
 
       row.appendChild(cellColor);
     }
@@ -286,14 +294,14 @@ function theaterHandler() {
     width: newSize.width,
   });
   if (theaterActive) {
-    $("#form-column").show();
+    $("#panel-column").show();
     $("#video-selection-button").show();
     $("#listen-button").show();
     $("#theater-button").text(theaterOffButton);
     theaterActive = false;
     currUrl.delete("theater");
   } else {
-    $("#form-column").hide();
+    $("#panel-column").hide();
     $("#video-selection-button").hide();
     $("#listen-button").hide();
     $("#theater-button").text(theaterOnButton);
@@ -314,7 +322,7 @@ function listenHandler() {
     width: newSize.width,
   });
   if (listenActive) {
-    $("#form-column > ").show();
+    $("#panel-column > ").show();
     $("#video-selection-button").show();
     $("#theater-button").show();
     $("#listen-button").text(listenOffButton);
@@ -324,7 +332,7 @@ function listenHandler() {
     listenActive = false;
     currUrl.delete("listen");
   } else {
-    $("#form-column > ").hide();
+    $("#panel-column > ").hide();
     $("#video-selection-button").hide();
     $("#theater-button").hide();
     $("#listen-button").text(listenOnButton);
