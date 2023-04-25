@@ -199,7 +199,7 @@ function renderPanel() {
     row.appendChild(cellEdit);
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
-    if (level == 0 && false) { // hide for now
+    if (level == 0) {
       const currentColor = color;
 
       cellColor.innerHTML = `
