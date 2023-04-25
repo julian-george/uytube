@@ -61,17 +61,17 @@ function loadData(data) {
 }
 // Uploads the data
 function uploadData() {
-  let data = JSON.stringify(state);
+  const data = JSON.stringify(state);
   if (initialData && data == JSON.stringify(initialData)) {
     alert("Error: No Changes Made");
   } else if (data) {
+    console.log(data);
     $.post(backendUrl + "/add", data, function (result) {
       result = JSON.parse(result);
       if (!result.status) {
         console.log(result);
         alert("Error: " + result.message);
-      }
-      else if (result.status) {
+      } else if (result.status) {
         setSaved();
         openId(result.message.id);
       }
@@ -102,4 +102,5 @@ const importData = () => {
   };
 
   fr.readAsText(files.item(0));
+  setUnsaved();
 };
