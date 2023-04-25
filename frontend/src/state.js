@@ -10,7 +10,7 @@ const state = {
 const setState = (newState) => {
   state.youtubeId = newState.youtubeId;
   state.sections = newState.sections;
-  state.colorScheme = newState.colorScheme;
+  state.colorScheme = newState?.colorScheme || [...defaultMacroColors];
   onStateChange();
 };
 
