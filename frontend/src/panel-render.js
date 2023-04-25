@@ -87,6 +87,17 @@ function redescribe(sectionIdx) {
 function newYoutubeSelection() {
   const idInput = prompt("Enter new Youtube ID", state?.youtubeId || "");
   if (!idInput || idInput == "") return;
+  // makes assumptions about Youtube videoID which may not remain true
+  // https://webapps.stackexchange.com/a/101153
+  if (/^[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]$/.test(idInput.trim())) {
+    setYoutubeId(idInput.trim());
+    return;
+  }
+  const regexMatches = idInput.match(/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]/g);
+  if (regexMatches.length == 1) {
+    setYoutubeId(regexMatches[0]);
+    return;
+  }
   const parsedId = new URLSearchParams(idInput.split("?")?.[1] || idInput).get(
     "v"
   );
@@ -188,7 +199,7 @@ function renderPanel() {
     row.appendChild(cellEdit);
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
-    if (level == 0 && false) { // hide for now
+    if (level == 0) {
       const currentColor = color;
 
       cellColor.innerHTML = `

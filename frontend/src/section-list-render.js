@@ -69,6 +69,8 @@ function renderSections() {
   // Iterate thru nestedData's outer sections and render them
   for (let i = 0; i < state.sections.length; i++) {
     const currSection = state.sections[i];
+    // provide some clickable whitespace when the section is untitled
+    const currTitle = currSection?.title?.trim()?.length > 0 ? currSection.title : "      ";
 
     // The tree-element, consisting of a top and bottom half, with bottom half only rendered if curr row isn't last of level
     const treeContainer = document.createElement("DIV");
@@ -88,14 +90,14 @@ function renderSections() {
       ${!levelEnd ? `<div class="bottom-tree"></div>` : ""}</div>`)[0];
       treeContainer.appendChild(levelTree);
     }
-    if (currSection.title.toLowerCase() == "[end]") continue;
+    if (currTitle.toLowerCase() == "[end]") continue;
     sectionElement.append(
       `<div class="section-row">
        ${treeContainer.outerHTML}
         <div id="section-row-${i}" class="section-nav ${
         levelClasses[currSection.level]
       }" onclick="player.seekTo(${currSection.time});">${
-        currSection.title
+        currTitle
       }</div>
       </div>`
     );
