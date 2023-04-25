@@ -4,6 +4,7 @@ const state = {
   sections: [],
   // Nested array of objects representing hierarchy of sections
   hierarchy: [],
+  colorScheme: [...defaultMacroColors],
 };
 
 const setState = (newState) => {
@@ -18,7 +19,9 @@ const setSections = (newSections) => {
 };
 
 const generateColorList = () => {
-  const section_colors = state.hierarchy.map((section) => section.color);
+  const section_colors = state.hierarchy.map(
+    (section) => state.colorScheme[section.schemeIndex]
+  );
   let faulty = false;
   for (let idx = 1; idx < section_colors.length; idx++) {
     if (section_colors[idx] == section_colors[idx - 1]) {
@@ -108,7 +111,6 @@ const validateSections = (newSections) => {
         title: "   ",
         level: currSection.level - 1,
       };
-      console.log({ missingParent: missingParent });
       return validateSections(sortSections([...newSections, missingParent]));
       // if (currSection.level == 1)
       //   throw new Error("Invalid hierarchy: divisions must belong to sections");
@@ -180,13 +182,16 @@ const timeToHierarchyIdx = (time) => {
   return indices;
 };
 
-const addSection = (title, time, level, color = null) => {
+const addSection = (title, time, level, schemeIndex = null) => {
   if (time < 0) time = 0;
+  if (!schemeIndex) {
+    schemeIndex = state.sections.length % state.colorScheme.length;
+  }
   const newSection = {
     title,
     time,
     level,
-    color,
+    schemeIndex,
   };
   let newSections = [...state.sections, newSection].filter(
     (section) => !section?.invisible
@@ -232,9 +237,45 @@ const retitleSection = (newTitle, sectionIndex) => {
   setUnsaved();
 };
 
-const recolorSection = (newColor, sectionIndex) => {
+const recolorSection = (sectionIndex, newSchemeIndex = null) => {
   const oldSection = state.sections[sectionIndex];
-  editSection(sectionIndex, { ...oldSection, color: newColor });
+  if (newSchemeIndex === null) {
+    newSchemeIndex = sectionIndex % state.colorScheme.length;
+  } else if (newSchemeIndex >= state.colorScheme.length || newSchemeIndex < 0) {
+    newSchemeIndex = oldSection.schemeIndex;
+  }
+  editSection(sectionIndex, { ...oldSection, schemeIndex: newSchemeIndex });
+};
+
+const recolorScheme = (newColor, schemeIndex) => {
+  state.colorScheme[schemeIndex] = newColor;
+  onStateChange();
+  setUnsaved();
+};
+
+const addColor = () => {
+  state.colorScheme.push(
+    defaultMacroColors[state.colorScheme.length % defaultMacroColors.length]
+  );
+  onStateChange();
+  setUnsaved();
+};
+
+const removeColor = (schemeIndex) => {
+  state.colorScheme.splice(schemeIndex, 1);
+  const newSections = state.sections.map((section) => {
+    if (section?.schemeIndex === undefined) {
+      return section;
+    } else if (section?.schemeIndex === schemeIndex) {
+      // Just removing the property from sections whose scheme was deleted
+      const { schemeIndex, ...newSection } = section;
+      return newSection;
+    } else if (section?.schemeIndex > schemeIndex) {
+      return { ...section, schemeIndex: section.schemeIndex - 1 };
+    }
+  });
+  console.log(newSections);
+  setSections(newSections);
   setUnsaved();
 };
 

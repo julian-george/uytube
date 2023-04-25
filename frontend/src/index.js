@@ -43,7 +43,6 @@ setInterval(() => {
       player.pauseVideo();
     }
   }
-  animateIndicator(currTime);
   updateSVGPlaying(); // unnecessary to call this constantly
 }, 50);
 

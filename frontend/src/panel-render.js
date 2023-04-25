@@ -166,14 +166,6 @@ function renderPanel() {
     const section = state.sections[sectionIdx];
     if (section?.invisible) continue;
     const { time, level, title, color } = section;
-    if (level == 0 && !color) {
-      recolorSection(
-        defaultMacroColors[sectionIdx % defaultMacroColors.length],
-        sectionIdx
-      );
-      // After recoloring, return early to prevent duplicate render
-      return;
-    }
     const stamp = time;
 
     const row = document.createElement("TR");
@@ -183,6 +175,14 @@ function renderPanel() {
     const cellDesc = document.createElement("TD");
     const cellColor = document.createElement("TD");
     cellDesc.className = "cell-description clickable";
+    if (section.level == 0 && section.schemeIndex === undefined) {
+      recolorSection(
+        sectionIdx,
+        // This approximates the desired color scheme index by finding the number of index inputs rendered before it
+        $(".scheme-input").length % state.colorScheme.length
+      );
+      return;
+    }
 
     const descNode = document.createTextNode("> ".repeat(level) + title);
 
@@ -211,47 +211,56 @@ function renderPanel() {
     cellDesc.appendChild(descNode);
     row.appendChild(cellDesc);
     if (level == 0) {
-      // hide for now
-      const currentColor = color;
-
-      cellColor.innerHTML = `<input type="number" class="color-input"></input>`;
+      cellColor.innerHTML = `<input type="number" class="scheme-input" id="scheme-input-${sectionIdx}" value="${
+        section.schemeIndex + 1
+      }"></input>`;
 
       row.appendChild(cellColor);
+      $(cellColor).on("input", (event) => {
+        recolorSection(sectionIdx, Number(event.target.value) - 1);
+      });
     }
     $("#table>tbody").append(row);
 
-    if (level == 0)
-      $(cellColor)
-        .find("input")
-        .iris({
-          width: 200,
-          hide: true,
-          target: $(cellColor).find(".section-picker-container"),
-          change: (event, ui) => {
-            const hsl = ui.color._hsl;
-            $(cellColor)
-              .find("input")
-              .css("border-color", `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`);
-            $(event.target).val(ui.color.toString());
-          },
-        });
+    $("div#color-scheme-table>div.color-input-container").remove();
+    for (let i = 0; i < state.colorScheme.length; i++) {
+      $("div#color-scheme-table").append(
+        `<div class="color-input-container" id="color-scheme-${i}-container">
+          <div class="color-input-top-row">
+            <input id="color-scheme-${i}" class="color-input" value="${state.colorScheme[i]}" style="border-color:${state.colorScheme[i]}"></input>
+            <button class="scheme-delete" onclick="removeColor(${i})">Delete</button>
+            <button class="section-picker-close" style="display:none">Done Picking</button>
+          </div>
+        </div>`
+      );
+      $(`#color-scheme-${i}`).iris({
+        width: 200,
+        hide: true,
+        target: $(`#color-scheme-${i}-container`),
+        change: (event, ui) => {
+          const hsl = ui.color._hsl;
+          $(event.target).css(
+            "border-color",
+            `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`
+          );
+          $(event.target).val(ui.color.toString());
+        },
+      });
+    }
   }
 }
 
-$(document).on("focus", ".section-color-picker", (event) => {
-  $(event.target)
-    .siblings(".section-picker-container")
-    .find(".iris-picker")
-    .show();
-  $(event.target).siblings("button").show();
+$(document).on("focus", ".color-input", (event) => {
+  $(event.target).siblings().find(".iris-picker").show();
+  $(event.target).siblings(".section-picker-close").show();
   setUnsaved();
 });
 $(document).on("click", ".section-picker-close", (event) => {
-  const inputEle = $(event.target).siblings("input.section-color-picker");
-  const sectionIdx = inputEle.attr("name").split("-").pop();
+  const inputEle = $(event.target).siblings("input");
+  const schemeIdx = inputEle.attr("id").split("-").pop();
   const newColor = inputEle.val();
   // The re-render from this hides the color picker
-  recolorSection(newColor, sectionIdx);
+  recolorScheme(newColor, schemeIdx);
 });
 
 // Before the page is unloaded (exited), returns a warning messages that will pop up for the user

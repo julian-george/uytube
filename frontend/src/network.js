@@ -69,17 +69,6 @@ function uploadData() {
   if (initialData && data == JSON.stringify(initialData)) {
     alert("Error: No Changes Made");
   } else if (data) {
-    console.log(data);
-    // $.post(backendUrl + "/add", data, function (result) {
-    //   result = JSON.parse(result);
-    //   if (!result.status) {
-    //     console.log(result);
-    //     alert("Error: " + result.message);
-    //   } else if (result.status) {
-    //     setSaved();
-    //     openId(result.message.id);
-    //   }
-    // });
     $.ajax({
       url: backendUrl + "/add",
       type: "POST",
@@ -88,7 +77,6 @@ function uploadData() {
       dataType: "json",
       success: function (result) {
         if (!result.status) {
-          console.log(result);
           alert("Error: " + result.message);
         } else if (result.status) {
           setSaved();
