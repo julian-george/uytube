@@ -33,7 +33,7 @@ function redescribe(sectionIdx) {
   const level = currSection.level;
 
   let sectionTitle = prompt(
-    "Describe",
+    "Edit section title, use > for hierarchical indentations",
     "> ".repeat(currSection.level) + currSection.title
   )?.trim();
   if (!sectionTitle) return; // previously forebade a blank title
@@ -98,24 +98,10 @@ function redescribeCurrent() {
     state.sections.length -
       1 -
       state.sections
-        .toReversed()
+        .slice().reverse()
         .findIndex((section) => section.time < timestamp) || -1;
   if (currentIdx != -1) {
     redescribe(currentIdx);
-  }
-}
-
-function handleEntryInput(level) {
-  if (!player?.getCurrentTime || !player.getCurrentTime()) return;
-  const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
-  const sectionTitle = prompt("Input section name");
-  if (sectionTitle == null) return;
-  const split_input = sectionTitle.split(">").map((title) => title.trim());
-  let idx = 0;
-  for (let m = level; m <= 2; m++) {
-    addSection(split_input[idx], timestamp, m);
-    idx += 1;
-    if (idx >= split_input.length) return;
   }
 }
 
@@ -136,6 +122,22 @@ function displayTime(time) {
   ret += ":" + (secs < 10 ? "0" : "") + secs;
 
   return ret;
+}
+
+function handleEntryInput(level) {
+  if (!player?.getCurrentTime || !player.getCurrentTime()) return;
+  const timestamp = Math.floor(player.getCurrentTime() * 10) / 10;
+  const sectionTitle = prompt("Enter title for new section ("
+    + ["macro","meso","micro"][level] + " level) at "
+    + displayTime(timestamp).split(".")[0]);
+  if (sectionTitle == null) return;
+  const split_input = sectionTitle.split(">").map((title) => title.trim());
+  let idx = 0;
+  for (let m = level; m <= 2; m++) {
+    addSection(split_input[idx], timestamp, m);
+    idx += 1;
+    if (idx >= split_input.length) return;
+  }
 }
 
 function renderPanel() {
@@ -276,22 +278,32 @@ const theaterOnButton = "Exit theater mode";
 function theaterHandler() {
   const currUrl = new URLSearchParams(window.location.search);
   const newSize = theaterActive ? smallPlayerSize : largePlayerSize;
-  $(player.h).css({
-    height: newSize.height,
+  $("#player").css({
     width: newSize.width,
+    height: newSize.height,
+    minWidth: newSize.min_width,
+    minHeight: newSize.min_height,
+    maxWidth: newSize.max_width,
+    maxHeight: newSize.max_height
   });
   if (theaterActive) {
     $("#panel-column").show();
     $("#video-selection-button").show();
+    $("#video-column").css({marginTop: "10px"});
     $("#listen-button").show();
     $("#theater-button").text(theaterOffButton);
+    $("#section-guide").css({maxHeight: "500vh"});
+    // $("body").css({backgroundColor: "#FAFAFA"});
     theaterActive = false;
     currUrl.delete("theater");
   } else {
     $("#panel-column").hide();
     $("#video-selection-button").hide();
+    $("#video-column").css({marginTop: "0px"});
     $("#listen-button").hide();
     $("#theater-button").text(theaterOnButton);
+    $("#section-guide").css({maxHeight: "calc(100vh - 160px)"});
+    // $("body").css({backgroundColor: "black"});
     theaterActive = true;
     currUrl.set("theater", "true");
   }
@@ -304,28 +316,38 @@ const listenOnButton = "Exit listening mode";
 function listenHandler() {
   const currUrl = new URLSearchParams(window.location.search);
   const newSize = listenActive ? smallPlayerSize : tinyPlayerSize;
-  $(player.h).css({
+  $("#player").css({
     height: newSize.height,
     width: newSize.width,
+    minWidth: newSize.min_width,
+    minHeight: newSize.min_height,
+    maxWidth: newSize.max_width,
+    maxHeight: newSize.max_height
   });
   if (listenActive) {
     $("#panel-column > ").show();
+    $("#panel-column").css({maxWidth: "100vw"});
     $("#video-selection-button").show();
+    $("#video-column").css({marginTop: "10px"});
     $("#theater-button").show();
     $("#listen-button").text(listenOffButton);
     $(".ui-row").css("justify-content", "flex-start");
-    $("#video-column").css("order", "1");
     $("#animation-column").css("order", "0");
+    $("#video-column").css("order", "1");
+    $("#panel-column").css("order", "2");
     listenActive = false;
     currUrl.delete("listen");
   } else {
     $("#panel-column > ").hide();
+    $("#panel-column").css({maxWidth: "0px"});// because tinyPlayerSize.width = 160px and current padding = 35px
     $("#video-selection-button").hide();
+    $("#video-column").css({marginTop: "0px"});
     $("#theater-button").hide();
     $("#listen-button").text(listenOnButton);
     $(".ui-row").css("justify-content", "space-between");
-    $("#video-column").css("order", "0");
+    $("#panel-column").css("order", "0");
     $("#animation-column").css("order", "1");
+    $("#video-column").css("order", "2");
     listenActive = true;
     currUrl.set("listen", "true");
   }

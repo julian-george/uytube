@@ -3,9 +3,30 @@
 
 let player;
 
-const tinyPlayerSize = { width: "240", height: "120" };
-const smallPlayerSize = { width: "420", height: "250" };
-const largePlayerSize = { width: "80vw", height: "92.5vh" };
+const tinyPlayerSize = {
+  width: "160px",
+  height: "90px",
+  min_width: "auto",
+  min_height: "auto",
+  max_width: "auto",
+  max_height: "auto"
+};
+const smallPlayerSize = {
+  width: "272px",
+  height: "153px",
+  min_width: "auto",
+  min_height: "auto",
+  max_width: "auto",
+  max_height: "auto"
+};
+const largePlayerSize = {
+  width: "100vw",
+  height: "100vh",
+  min_width: "272px",
+  min_height: "153px",
+  max_width: "calc(100vw - 290px)",
+  max_height: "calc(100vh - 0px - 38px)"
+};
 
 // List of alernating colors that will be used before user inputs their own
 const defaultMacroColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
