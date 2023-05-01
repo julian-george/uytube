@@ -1,0 +1,266 @@
+body,
+.font_a,
+button,
+input::file-selector-button,
+input {
+  font-family: "Roboto Condensed";
+}
+button,
+input::file-selector-button {
+  height: 1.75em;
+}
+table,
+table button {
+  font-size: 0.9em;
+}
+.ui-row {
+  display: inline-flex;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100vw;
+}
+.column {
+  /*flex: 50%;*/
+  display: flex;
+  flex-direction: column;
+}
+#animation-column {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 10px;
+  width: 270px;
+/*  width: 20vw;*/
+/*  min-width: 270px;*/
+}
+#video-column {
+  margin-top: 10px;
+}
+#panel-column {
+  margin-left: 25px;
+  margin-right: 10px;
+  margin-top: 10px;
+/*  max-width: 45vw;*/
+}
+#animation-column > div {
+  width: 100%;
+}
+#video-controls-row {
+  display: inline-flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+#video-mode-col {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  gap: 4px;
+}
+
+#section-guide {
+  overflow: hidden;
+}
+#section-guide-list {
+  margin-top: 12px;
+  margin-left: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 12px;
+  position: relative;
+}
+#section-arrow {
+  position: absolute;
+  width: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  top: 0;
+  animation: top 500ms;
+}
+
+.tree-container-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.tree-container {
+  width: 12px;
+  display: flex;
+  flex-direction: column;
+  /* TODO: make only on subsecitons */
+  margin-left: 0.6em;
+}
+
+.top-tree {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  height: 50%;
+  box-sizing: border-box;
+}
+.bottom-tree {
+  border-left: 1px solid black;
+  height: 50%;
+}
+
+.dashed > div {
+  border-left-style: dotted;
+  border-color: black;
+}
+.dashed > .top-tree {
+  /* border-bottom-style: dashed; */
+  border-bottom-style: none;
+  border-left-style: dotted;
+  border-color: black;
+}
+
+.section-row {
+  display: inline-flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  min-height: 1em;
+}
+
+.section-nav {
+  cursor: pointer;
+  display: inline-block;
+  word-break: break-word;
+  max-width: 280px;
+  padding: 2px 0;
+  font-size: 16px;
+  height: 100%;
+}
+
+.division {
+  font-size: 14px;
+  padding-left: 2px;
+  /* margin-left: 40px; */
+}
+
+.subdivision {
+  font-size: 12px;
+  padding-left: 2px;
+  /* margin-left: 56px; */
+}
+
+.section-color-picker {
+  border-width: 2.5px;
+  border-style: solid;
+}
+
+#player {
+  max-width: 70vw;
+}
+
+.dial-0 {
+  border-radius: 50%;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: absolute;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dial-1 {
+  border-radius: 50%;
+  width: 75%;
+  aspect-ratio: 1 / 1;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 25%;
+  left: 12.5%;
+}
+
+.circle-mask {
+  width: 80%;
+  height: 80%;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#dial-container {
+  overflow: hidden;
+  aspect-ratio: 2/1;
+  position: relative;
+}
+
+#dial-indicator {
+  width: 28%;
+  height: 4px;
+  background-color: #222;
+  position: absolute;
+  left: 22%;
+  top: calc(100% - 4px);
+  transform-origin: 100% 100%;
+  z-index: 1;
+  transition: transform 40ms;
+}
+
+#play-button {
+  width: 10%;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+  z-index: 2;
+  background-color: wheat;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+#play-button > img {
+  width: 50%;
+  height: 50%;
+}
+
+.real-time-button {
+  margin-top: 10px;
+  font-weight: bold;
+}
+#table {
+  margin-top: 16px;
+}
+#color-scheme {
+  margin-top: 16px;
+}
+#add-color-button {
+  margin-bottom: 4px;
+}
+.scheme-delete {
+  margin-right: 8px;
+}
+.scheme-input {
+  width: 2.5em;
+}
+#color-scheme-table {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+.color-input-container {
+  display: flex;
+  flex-direction: column;
+/*  min-width: 200px;*/
+}
+.color-input-top-row {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  /* justify-content: space-between; */
+}
+.color-input {
+  border-radius: 1;
+  border-style: solid;
+  border-width: 2px;
+/*  width: 84px;*/
+}
