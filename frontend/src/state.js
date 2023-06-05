@@ -1,3 +1,68 @@
+const demo_state = { // Purcell Fairy Queen chaconne // demo
+  youtubeId: "Ct0GJqRRo_8",
+  sections: [
+    {"time":1.9,"title":"CONTINUOUS VARIATIONS","colorIndex":0,"level":0},
+    {"time":1.9,"title":"Variation 1","level":1},
+    {"time":1.9,"title":"basic idea","level":2},
+    {"time":4.5,"title":"repetition of basic idea (sequential)","level":2},
+    {"time":7.2,"title":"cadential progression (HC)","level":2},
+    {"time":12.5,"title":"Variation 2","level":1},
+    {"time":23.7,"title":"Variation 3","level":1},
+    {"time":34.5,"title":"Variation 4","level":1},
+    {"time":45.4,"title":"Variation 5","level":1},
+    {"time":56.2,"title":"Variation 6","level":1},
+    {"time":67,"title":"Variation 7","level":1},
+    {"time":78.3,"title":"Variation 8","level":1},
+    {"time":90,"title":"Minore","colorIndex":1,"level":0},
+    {"time":90,"title":"Variation 9","level":1},
+    {"time":101,"title":"Variation 10","level":1},
+    {"time":101,"title":"basic idea","level":2},
+    {"time":103.2,"title":"repetition of basic idea (sequential)","level":2},
+    {"time":106.5,"title":"cadential progression (PAC in major)","level":2},
+    {"time":112,"title":"Majore","colorIndex":0,"level":0},
+    {"time":112,"title":"Variation 11","level":1},
+    {"time":123.1,"title":"Variation 12","level":1},
+    {"time":134.1,"title":"Variation 13","level":1},
+    {"time":145.1,"title":"Variation 14","level":1},
+    {"time":160,"title":"","colorIndex":2,"level":0}
+  ],
+  hierarchy: [
+    {"time":1.9,"title":"CONTINUOUS VARIATIONS","children":[
+        {"time":1.9,"title":"Variation 1","children":[
+            {"time":1.9,"title":"basic idea"},
+            {"time":4.5,"title":"repetition of basic idea (sequential)"},
+            {"time":7.2,"title":"cadential progression (HC)"}
+          ]},
+        {"time":12.5,"title":"Variation 2"},
+        {"time":23.7,"title":"Variation 3"},
+        {"time":34.5,"title":"Variation 4"},
+        {"time":45.4,"title":"Variation 5"},
+        {"time":56.2,"title":"Variation 6"},
+        {"time":67,"title":"Variation 7"},
+        {"time":78.3,"title":"Variation 8"}
+      ]},
+    {"time":90,"title":"Minore","children":[
+        {"time":90,"title":"Variation 9"},
+        {"time":101,"title":"Variation 10","children":[
+            {"time":101,"title":"basic idea"},
+            {"time":103.2,"title":"repetition of basic idea (sequential)"},
+            {"time":106.5,"title":"cadential progression (PAC in major)"}
+          ]}
+      ]},
+    {"time":112,"title":"Majore","children":[
+        {"time":112,"title":"Variation 11"},
+        {"time":123.1,"title":"Variation 12"},
+        {"time":134.1,"title":"Variation 13"},
+        {"time":145.1,"title":"Variation 14"}
+      ]},
+    {"time":160,"title":""}
+  ],
+  colorScheme: [
+    "#7dcffd",
+    "#f69e70"
+  ]
+};
+
 const state = {
   youtubeId: null,
   // 1-D array of sections ordered by time
