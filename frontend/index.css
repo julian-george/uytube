@@ -92,23 +92,26 @@ table button {
 .top-tree {
   border-bottom: 1px solid black;
   border-left: 1px solid black;
-  height: 50%;
+  height: 10px;
   box-sizing: border-box;
 }
 .bottom-tree {
   border-left: 1px solid black;
-  height: 50%;
+  height: calc(100% - 10px);
 }
 
 .dashed > div {
-  border-left-style: dotted;
+  /* border-left-style: dotted; */
   border-color: black;
 }
 .dashed > .top-tree {
   /* border-bottom-style: dashed; */
   border-bottom-style: none;
-  border-left-style: dotted;
+  /* border-left-style: dotted; */
   border-color: black;
+}
+.dashed.ghost > .top-tree, .dashed.ghost > .bottom-tree {
+  visibility: hidden;
 }
 
 .section-row {
