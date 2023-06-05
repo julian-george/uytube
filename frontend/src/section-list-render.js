@@ -6,8 +6,16 @@ const VERT_CENTER = window.innerHeight * 0.6;
 
 function animateSections() {
   const arrowElement = $("#section-arrow");
-  if (currentSectionIdx == -1) {
+  console.log(state.sections?.[currentSectionIdx]?.title
+      ?.toLowerCase());
+  if (
+    currentSectionIdx == -1
+    || state.sections?.[currentSectionIdx]?.title
+      ?.toLowerCase()
+      ?.includes("[end]")
+  ) {
     arrowElement.hide();
+    return;
   }
   const arrowHeight = parseFloat(arrowElement.css("height") || 0);
   const currentRowElement = $(`#section-row-${currentSectionIdx}`);
@@ -43,7 +51,7 @@ function animateSections() {
 }
 
 $(window).on("load", () => {
-  renderSections();
+  renderSections(generateColorList());
   animateSections();
   $(".section-nav").click((event) => {
     const clickedRowIndex = $(event.target)
@@ -107,7 +115,6 @@ function renderSections(colors = defaultColors) {
         && ([0,2].includes(state.sections[i+1]?.level) || i+1 == state.sections.length)
         && (state.sections?.slice(i+1)?.findIndex(item => item.level == 0) < state.sections?.slice(i+1)?.findIndex(item => item.level == 1)
           || state.sections?.slice(i+1)?.findIndex(item => item.level == 1) == -1);
-      console.log(state.sections[i].title, parentLevelEnd);
       const levelTree = $(`<div class="tree-container${
         dashedTree ? " dashed" : ""
       }${

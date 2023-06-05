@@ -3,7 +3,7 @@ const use_demo_state = false;
 const demo_state = { // Purcell Fairy Queen chaconne // demo
   youtubeId: "Ct0GJqRRo_8",
   sections: [
-    {"time":1.9,"title":"CONTINUOUS VARIATIONS","colorIndex":0,"level":0},
+    {"time":1.9,"title":"CONTINUOUS VARIATIONS over a ground bass in G major","colorIndex":0,"level":0},
     {"time":1.9,"title":"Variation 1","level":1},
     {"time":1.9,"title":"`a basic idea","level":2},
     {"time":4.5,"title":"`a′ sequential repetition of basic idea","level":2},
@@ -15,21 +15,21 @@ const demo_state = { // Purcell Fairy Queen chaconne // demo
     {"time":56.2,"title":"Variation 6","level":1},
     {"time":67,"title":"Variation 7","level":1},
     {"time":78.3,"title":"Variation 8","level":1},
-    {"time":90,"title":"Minore","colorIndex":1,"level":0},
+    {"time":90,"title":"G minor (“minore” section)","colorIndex":1,"level":0},
     {"time":90,"title":"Variation 9","level":1},
     {"time":101,"title":"Variation 10","level":1},
     {"time":101,"title":"`c basic idea","level":2},
     {"time":103.8,"title":"`c′ sequential repetition of basic idea","level":2},
     {"time":106.5,"title":"`d′ cadential progression (PAC in major)","level":2},
-    {"time":112,"title":"Majore","colorIndex":0,"level":0},
+    {"time":112,"title":"G major","colorIndex":0,"level":0},
     {"time":112,"title":"Variation 11","level":1},
     {"time":123.1,"title":"Variation 12","level":1},
     {"time":134.1,"title":"Variation 13","level":1},
     {"time":145.1,"title":"Variation 14","level":1},
-    {"time":160,"title":"","colorIndex":2,"level":0}
+    {"time":160,"title":"[end]","colorIndex":2,"level":0}
   ],
   hierarchy: [
-    {"time":1.9,"title":"CONTINUOUS VARIATIONS","children":[
+    {"time":1.9,"title":"CONTINUOUS VARIATIONS over a ground bass in G major","children":[
         {"time":1.9,"title":"Variation 1","children":[
             {"time":1.9,"title":"basic idea"},
             {"time":4.5,"title":"repetition of basic idea (sequential)"},
@@ -43,7 +43,7 @@ const demo_state = { // Purcell Fairy Queen chaconne // demo
         {"time":67,"title":"Variation 7"},
         {"time":78.3,"title":"Variation 8"}
       ]},
-    {"time":90,"title":"Minore","children":[
+    {"time":90,"title":"G minor (“minore” section)","children":[
         {"time":90,"title":"Variation 9"},
         {"time":101,"title":"Variation 10","children":[
             {"time":101,"title":"basic idea"},
@@ -51,13 +51,13 @@ const demo_state = { // Purcell Fairy Queen chaconne // demo
             {"time":106.5,"title":"cadential progression (PAC in major)"}
           ]}
       ]},
-    {"time":112,"title":"Majore","children":[
+    {"time":112,"title":"G major","children":[
         {"time":112,"title":"Variation 11"},
         {"time":123.1,"title":"Variation 12"},
         {"time":134.1,"title":"Variation 13"},
         {"time":145.1,"title":"Variation 14"}
       ]},
-    {"time":160,"title":""}
+    {"time":160,"title":"[end]"}
   ],
   colorScheme: [
     "#7dcffd",
@@ -118,7 +118,7 @@ const generateColorList = () => {
 const onStateChange = () => {
   updateHierarchy();
   renderPanel();
-  renderSections();
+  renderSections(generateColorList());
   renderSVG(state.hierarchy, generateColorList());
 };
 
