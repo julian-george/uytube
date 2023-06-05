@@ -85,13 +85,15 @@ function renderSections() {
       } else {
         levelEnd = state.sections?.[i + 1]?.level < l + 1 || (
           state.sections[i].level == 1
-          && state.sections[i+1]?.level == 2
-          && state.sections?.slice(i+1)?.findIndex(item => item.level == 0) < state.sections?.slice(i+1)?.findIndex(item => item.level == 1)
+          && (state.sections[i+1]?.level == 2 || i+1 == state.sections.length)
+          && (state.sections?.slice(i+1)?.findIndex(item => item.level == 0) < state.sections?.slice(i+1)?.findIndex(item => item.level == 1)
+            || state.sections?.slice(i+1)?.findIndex(item => item.level == 1) == -1)
         );
       }
       let parentLevelEnd = state.sections[i].level == 2
-        && [0,2].includes(state.sections[i+1]?.level)
-        && state.sections?.slice(i+1)?.findIndex(item => item.level == 0) < state.sections?.slice(i+1)?.findIndex(item => item.level == 1);
+        && ([0,2].includes(state.sections[i+1]?.level) || i+1 == state.sections.length)
+        && (state.sections?.slice(i+1)?.findIndex(item => item.level == 0) < state.sections?.slice(i+1)?.findIndex(item => item.level == 1)
+          || state.sections?.slice(i+1)?.findIndex(item => item.level == 1) == -1);
       console.log(state.sections[i].title, parentLevelEnd);
       const levelTree = $(`<div class="tree-container${
         dashedTree ? " dashed" : ""
