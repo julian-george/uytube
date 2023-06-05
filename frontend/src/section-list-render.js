@@ -80,8 +80,10 @@ function renderSections(colors = defaultColors) {
     } catch { }
 
     const currTitle = currSection?.title?.trim()?.length > 0 ?
-      (currSection?.level == 0 ? "<span class=\"macro-swatch\" style=\"background-color:" + sec_color + "\"></span> " :"") +
-      currSection.title.replace(/`([A-Za-z0-9′″'"]+)/g, "<span class=\"form-letter\">$1</span>")
+      (currSection?.level == 0 && currSection?.title.toLowerCase() != "[end]" ?
+        "<span class=\"macro-swatch\" style=\"background-color:" + sec_color + "\"></span> "
+        : ""
+      ) + currSection.title.replace(/`([A-Za-z0-9′″'"]+)/g, "<span class=\"form-letter\">$1</span>")
       : "      "; // provide some clickable whitespace when the section is untitled
 
     // The tree-element, consisting of a top and bottom half, with bottom half only rendered if curr row isn't last of level
