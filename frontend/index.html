@@ -26,40 +26,6 @@
     <script>
       const defaultColors = ["#7dcffd", "#f69e70", "#fdd998", "#fc468e"];
       // example of what may be stored in the global state variable (minus the sections array)
-      const demo_data = { // Purcell Fairy Queen chaconne // demo
-        "videoId":"Ct0GJqRRo_8",
-        "hierarchy":[
-          {"time":1.9,"title":"","children":[
-              {"time":1.9,"title":"Variation 1","children":[
-                  {"time":1.9,"title":"basic idea"},
-                  {"time":4.5,"title":"repetition of basic idea (sequential)"},
-                  {"time":7.2,"title":"cadential progression (HC)"}
-                ]},
-              {"time":12.5,"title":"Variation 2"},
-              {"time":23.7,"title":"Variation 3"},
-              {"time":34.5,"title":"Variation 4"},
-              {"time":45.4,"title":"Variation 5"},
-              {"time":56.2,"title":"Variation 6"},
-              {"time":67,"title":"Variation 7"},
-              {"time":78.3,"title":"Variation 8"}
-            ]},
-          {"time":90,"title":"Minore","children":[
-              {"time":90,"title":"Variation 9"},
-              {"time":101,"title":"Variation 10","children":[
-                  {"time":101,"title":"basic idea"},
-                  {"time":103.2,"title":"repetition of basic idea (sequential)"},
-                  {"time":106.5,"title":"cadential progression (PAC in major)"}
-                ]}
-            ]},
-          {"time":112,"title":"Majore","children":[
-              {"time":112,"title":"Variation 11"},
-              {"time":123.1,"title":"Variation 12"},
-              {"time":134.1,"title":"Variation 13"},
-              {"time":145.1,"title":"Variation 14"}
-            ]},
-          {"time":160,"title":""}
-        ]
-      };
       function playSVG(cue=null) {
         if (cue == null) {
           cue = Math.round(fs * (player?.getCurrentTime() || 0)) / fs;
@@ -82,8 +48,6 @@
         return nt;
       }
       function renderSVG(hierarchy = state.hierarchy, colors = defaultColors) {
-        // for frontend development, uncomment following line
-        // hierarchy = demo_data.hierarchy;
         if (colors.length == 0) {
           colors = defaultColors;
         }
@@ -579,7 +543,8 @@
 
     
     <div id="section-guide">
-      <div id="section-arrow" style="display:none">→</div>
+      <div id="section-arrow" style="display:none">•</div>
+      <!-- → -->
       <div id="section-guide-list">
 
       </div>

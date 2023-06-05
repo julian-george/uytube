@@ -61,7 +61,7 @@ table button {
 }
 #section-guide-list {
   margin-top: 12px;
-  margin-left: 16px;
+  margin-left: 6px;
   display: flex;
   flex-direction: column;
   padding: 0px 12px;
@@ -73,7 +73,9 @@ table button {
   font-size: 24px;
   font-weight: bold;
   top: 0;
-  animation: top 500ms;
+  animation: top 100ms;
+  padding-left: 6px;
+  padding-top: 3px;
 }
 
 .tree-container-row {
@@ -86,7 +88,7 @@ table button {
   display: flex;
   flex-direction: column;
   /* TODO: make only on subsecitons */
-  margin-left: 0.6em;
+  margin-left: calc(0.6em + 10px);
 }
 
 .top-tree {
@@ -112,6 +114,26 @@ table button {
 }
 .dashed.ghost > .top-tree, .dashed.ghost > .bottom-tree {
   visibility: hidden;
+}
+
+.form-letter {
+  border: 0px solid white;
+  padding:0px 4px;
+  border-radius:2px;
+  font-weight: 400;
+  background-color: lightgray;
+  min-width: 12px;
+  display: inline-block;
+  text-align: center;
+}
+.macro-swatch {
+  border-radius:1px;
+  border: 0px solid white;
+  display: inline-block;
+  min-width: 6px;
+  min-height: 12px;
+  padding:0px;
+  background-color: lightgray;
 }
 
 .section-row {

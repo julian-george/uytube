@@ -1,11 +1,13 @@
+const use_demo_state = false;
+
 const demo_state = { // Purcell Fairy Queen chaconne // demo
   youtubeId: "Ct0GJqRRo_8",
   sections: [
     {"time":1.9,"title":"CONTINUOUS VARIATIONS","colorIndex":0,"level":0},
     {"time":1.9,"title":"Variation 1","level":1},
-    {"time":1.9,"title":"basic idea","level":2},
-    {"time":4.5,"title":"repetition of basic idea (sequential)","level":2},
-    {"time":7.2,"title":"cadential progression (HC)","level":2},
+    {"time":1.9,"title":"`a basic idea","level":2},
+    {"time":4.5,"title":"`a′ sequential repetition of basic idea","level":2},
+    {"time":7.2,"title":"`b cadential progression (HC)","level":2},
     {"time":12.5,"title":"Variation 2","level":1},
     {"time":23.7,"title":"Variation 3","level":1},
     {"time":34.5,"title":"Variation 4","level":1},
@@ -16,9 +18,9 @@ const demo_state = { // Purcell Fairy Queen chaconne // demo
     {"time":90,"title":"Minore","colorIndex":1,"level":0},
     {"time":90,"title":"Variation 9","level":1},
     {"time":101,"title":"Variation 10","level":1},
-    {"time":101,"title":"basic idea","level":2},
-    {"time":103.2,"title":"repetition of basic idea (sequential)","level":2},
-    {"time":106.5,"title":"cadential progression (PAC in major)","level":2},
+    {"time":101,"title":"`c basic idea","level":2},
+    {"time":103.8,"title":"`c′ sequential repetition of basic idea","level":2},
+    {"time":106.5,"title":"`d′ cadential progression (PAC in major)","level":2},
     {"time":112,"title":"Majore","colorIndex":0,"level":0},
     {"time":112,"title":"Variation 11","level":1},
     {"time":123.1,"title":"Variation 12","level":1},
@@ -63,7 +65,7 @@ const demo_state = { // Purcell Fairy Queen chaconne // demo
   ]
 };
 
-const state = {
+const state = use_demo_state ? demo_state : {
   youtubeId: null,
   // 1-D array of sections ordered by time
   sections: [],
